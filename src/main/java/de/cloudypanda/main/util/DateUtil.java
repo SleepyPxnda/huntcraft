@@ -10,7 +10,7 @@ import java.util.Date;
 public class DateUtil {
 
     public static String getFormattedStringForDateAfterMillis(long death, long timeout){
-        String pattern = "yyyy-MM-dd HH-mm-ss";
+        String pattern = "HH:mm:ss dd/MM/yyyy";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         return simpleDateFormat.format(Date.from(Instant.ofEpochMilli(death).plusMillis(timeout)));
     }

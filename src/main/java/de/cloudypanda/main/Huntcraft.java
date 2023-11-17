@@ -6,7 +6,7 @@ import de.cloudypanda.main.listener.JoinListener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Huntcraft extends JavaPlugin {
-    public final FileManager configManager = new FileManager("huntcraft_config", this);
+    public final FileManager configManager = new FileManager("huntcraft", this);
 
     @Override
     public void onEnable() {

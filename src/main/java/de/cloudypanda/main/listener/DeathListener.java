@@ -25,7 +25,10 @@ public class DeathListener implements Listener {
     public void onDeathEvent(PlayerDeathEvent e){
         ConfigModel model = huntcraft.configManager.readFromFile();
         Instant dateOfDeath = Instant.now();
-        if(!model.currentDeathTimeOutetPlayers.stream().filter(x -> x.playerUUID.equals(e.getPlayer().getUniqueId())).findFirst().isEmpty()){
+        boolean isPlayerInList = model.currentDeathTimeOutetPlayers.stream()
+                .anyMatch(x -> x.playerUUID.equals(e.getPlayer().getUniqueId()));
+
+        if(isPlayerInList){
             model.currentDeathTimeOutetPlayers.removeIf(x -> x.playerUUID.equals(e.getPlayer().getUniqueId()));
         }
         model.currentDeathTimeOutetPlayers.add(new UserTimeout(e.getPlayer().getUniqueId(), dateOfDeath.toEpochMilli()));
@@ -35,7 +38,12 @@ public class DeathListener implements Listener {
     @EventHandler
     public void onPostRespawnEvent(PlayerPostRespawnEvent e){
         ConfigModel model = huntcraft.configManager.readFromFile();
-        Instant dateOfDeath = Instant.ofEpochMilli(model.currentDeathTimeOutetPlayers.stream().filter(x -> x.playerUUID.equals(e.getPlayer().getUniqueId())).findFirst().get().latestDeath);
+        Instant dateOfDeath = Instant.ofEpochMilli(model.currentDeathTimeOutetPlayers
+                .stream()
+                .filter(x -> x.playerUUID.equals(e.getPlayer().getUniqueId()))
+                .findFirst()
+                .get().latestDeath);
+
         String date = DateUtil.getFormattedStringForDateAfterMillis(dateOfDeath.toEpochMilli(), model.getDeathTimeout());
         String timeout = DateUtil.getFormattedDurationUntilJoin(0, model.deathTimeout);
 

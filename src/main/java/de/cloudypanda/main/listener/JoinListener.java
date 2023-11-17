@@ -52,10 +52,7 @@ public class JoinListener implements Listener {
                 .append(Component.text(DateUtil.getFormattedDurationUntilJoin(Instant.now().toEpochMilli()
                         ,user.getLatestDeath(), model.getDeathTimeout()), TextColor.color(124,252,0)));
 
-        Component messages = Component.text("You died. \n You can't rejoin until " + date + ".");
-
-        e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, message);
-
+        e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, message);
     }
 
 }
