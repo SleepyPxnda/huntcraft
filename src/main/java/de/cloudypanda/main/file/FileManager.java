@@ -1,25 +1,19 @@
 package de.cloudypanda.main.file;
 
-import com.fasterxml.jackson.core.exc.StreamWriteException;
-import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.cloudypanda.main.Huntcraft;
 import de.cloudypanda.main.util.ConfigModel;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
-import org.bukkit.Bukkit;
-import org.checkerframework.checker.units.qual.C;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 public class FileManager {
     private final Path filePath;
+    private final Huntcraft huntcraft;
 
-    public FileManager (String fileName){
+    public FileManager (String fileName, Huntcraft huntcraft){
         this.filePath = Path.of(String.format("%s.json", fileName));
+        this.huntcraft = huntcraft;
     }
 
     public void createFileIfExists() {
@@ -27,7 +21,7 @@ public class FileManager {
             createFile();
             saveToFile(new ConfigModel());
         } else {
-            System.out.println("File already exists, continuing");
+            huntcraft.getComponentLogger().info("File already exists, continuing");
         }
     }
 
@@ -50,7 +44,7 @@ public class FileManager {
         try {
             mapper.writeValue(filePath.toFile(), config);
         } catch (IOException e) {
-           System.out.println("Something went wrong writing to file. " + e.getMessage());
+            huntcraft.getComponentLogger().error("Something went wrong writing to file. " + e.getMessage());
         }
     }
 
@@ -60,7 +54,7 @@ public class FileManager {
         try {
             model =  mapper.readValue(filePath.toFile(), ConfigModel.class);
         } catch (IOException e) {
-            System.out.println("Something went wrong reading from file. " + e.getMessage());
+            huntcraft.getComponentLogger().error("Something went wrong reading from file. " + e.getMessage());
         }
         return model;
     }
