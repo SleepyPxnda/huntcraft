@@ -7,9 +7,12 @@ public class UserTimeout {
     public UUID playerUUID;
     public long latestDeath;
 
-    public UserTimeout(UUID playerUUID, long latestDeath) {
+    public String playerName;
+
+    public UserTimeout(UUID playerUUID, long latestDeath, String playerName) {
         this.playerUUID = playerUUID;
         this.latestDeath = latestDeath;
+        this.playerName = playerName;
     }
 
     public UserTimeout() {
@@ -29,5 +32,13 @@ public class UserTimeout {
 
     public void setLatestDeath(long latestDeath) {
         this.latestDeath = latestDeath;
+    }
+
+    public String getPlayerName() {
+        return playerName;
+    }
+
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
     }
 }
