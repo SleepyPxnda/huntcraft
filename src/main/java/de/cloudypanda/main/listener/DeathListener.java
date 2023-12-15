@@ -2,6 +2,7 @@ package de.cloudypanda.main.listener;
 
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import de.cloudypanda.main.Huntcraft;
+import de.cloudypanda.main.integrations.WebhookManager;
 import de.cloudypanda.main.timeout.UserTimeout;
 import de.cloudypanda.main.util.ConfigModel;
 import de.cloudypanda.main.util.DateUtil;
@@ -11,6 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
+import java.net.URISyntaxException;
 import java.time.Instant;
 
 public class DeathListener implements Listener {
@@ -37,6 +39,7 @@ public class DeathListener implements Listener {
                                 dateOfDeath.toEpochMilli(),
                                 e.getPlayer().getName()));
         huntcraft.configManager.saveToFile(model);
+        WebhookManager.sendDeathMessage(e.getDeathMessage());
     }
 
     @EventHandler
@@ -59,7 +62,7 @@ public class DeathListener implements Listener {
         Component message = Component.text("Due to the rules of 'Huntcraft' \n you were dispelled from the server for: \n\n")
                         .append(Component.text(timeout, TextColor.color(255,0,0)))
                 .append(Component.text("\n\n\n", TextColor.color(255,255,255)))
-                .append(Component.text("Red more about the rules in our discord"))
+                .append(Component.text("Read more about the rules in our discord"))
                 .append(Component.text());
         e.getPlayer().kick(message);
     }

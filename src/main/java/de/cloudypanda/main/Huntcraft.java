@@ -12,13 +12,9 @@ public final class Huntcraft extends JavaPlugin {
     public void onEnable() {
         //Create config file
         configManager.createFileIfExists();
+
         //Register Event Listener
         getServer().getPluginManager().registerEvents(new JoinListener(this), this);
         getServer().getPluginManager().registerEvents(new DeathListener(this), this);
-    }
-
-    @Override
-    public void onDisable() {
-        // Plugin shutdown logic
     }
 }
