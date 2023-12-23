@@ -12,8 +12,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
-import java.net.URISyntaxException;
 import java.time.Instant;
+import java.util.Optional;
 
 public class DeathListener implements Listener {
 
@@ -45,6 +45,16 @@ public class DeathListener implements Listener {
     @EventHandler
     public void onPostRespawnEvent(PlayerPostRespawnEvent e){
         ConfigModel model = huntcraft.configManager.readFromFile();
+
+        Optional<UserTimeout> presentPlayer = model.currentDeathTimeOutetPlayers
+                .stream()
+                .filter(x -> x.getPlayerUUID().equals(e.getPlayer().getUniqueId()))
+                .findFirst();
+
+        if(presentPlayer.isPresent() && presentPlayer.get().isAllowedToJoin(model.deathTimeout)){
+            return;
+        }
+
         Instant dateOfDeath = Instant.ofEpochMilli(model.currentDeathTimeOutetPlayers
                 .stream()
                 .filter(x -> x.playerUUID.equals(e.getPlayer().getUniqueId()))

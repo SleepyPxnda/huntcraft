@@ -1,5 +1,6 @@
 package de.cloudypanda.main.timeout;
 
+import java.time.Instant;
 import java.util.UUID;
 
 public class UserTimeout {
@@ -40,5 +41,9 @@ public class UserTimeout {
 
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
+    }
+
+    public boolean isAllowedToJoin(long deathTimeout) {
+        return Instant.now().isAfter(Instant.ofEpochMilli(latestDeath + deathTimeout));
     }
 }

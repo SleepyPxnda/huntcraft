@@ -39,7 +39,7 @@ public class JoinListener implements Listener {
                 .findFirst()
                 .get();
 
-        if(Instant.now().isAfter(Instant.ofEpochMilli(userConfig.latestDeath + model.deathTimeout))){
+        if(userConfig.isAllowedToJoin(model.deathTimeout)){
             e.allow();
             return;
         }
