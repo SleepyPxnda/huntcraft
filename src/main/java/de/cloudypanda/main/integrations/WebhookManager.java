@@ -34,10 +34,6 @@ public class WebhookManager {
 
             connection.getInputStream().close(); //I'm not sure why but it doesn't work without getting the InputStream
             connection.disconnect();
-        } catch (ProtocolException e) {
-            throw new RuntimeException(e);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

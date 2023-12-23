@@ -16,7 +16,7 @@ public class FileManager {
         this.huntcraft = huntcraft;
     }
 
-    public void createFileIfExists() {
+    public void createFileIfNotExists() {
         if(!checkIfFileExists()){
             createFile();
             saveToFile(new ConfigModel());

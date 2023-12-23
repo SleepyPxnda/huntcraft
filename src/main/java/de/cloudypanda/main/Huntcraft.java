@@ -11,7 +11,7 @@ public final class Huntcraft extends JavaPlugin {
     @Override
     public void onEnable() {
         //Create config file
-        configManager.createFileIfExists();
+        configManager.createFileIfNotExists();
 
         //Register Event Listener
         getServer().getPluginManager().registerEvents(new JoinListener(this), this);

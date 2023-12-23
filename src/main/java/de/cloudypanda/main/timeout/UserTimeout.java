@@ -15,32 +15,11 @@ public class UserTimeout {
         this.latestDeath = latestDeath;
         this.playerName = playerName;
     }
-
-    public UserTimeout() {
-    }
-
     public UUID getPlayerUUID() {
         return playerUUID;
     }
-
-    public void setPlayerUUID(UUID playerUUID) {
-        this.playerUUID = playerUUID;
-    }
-
     public long getLatestDeath() {
         return latestDeath;
-    }
-
-    public void setLatestDeath(long latestDeath) {
-        this.latestDeath = latestDeath;
-    }
-
-    public String getPlayerName() {
-        return playerName;
-    }
-
-    public void setPlayerName(String playerName) {
-        this.playerName = playerName;
     }
 
     public boolean isAllowedToJoin(long deathTimeout) {

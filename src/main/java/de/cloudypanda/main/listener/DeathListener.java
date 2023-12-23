@@ -70,7 +70,7 @@ public class DeathListener implements Listener {
                 date));
 
         Component message = Component.text("Due to the rules of 'Huntcraft' \n you were dispelled from the server for: \n\n")
-                        .append(Component.text(timeout, TextColor.color(255,0,0)))
+                .append(Component.text(timeout, TextColor.color(255,0,0)))
                 .append(Component.text("\n\n\n", TextColor.color(255,255,255)))
                 .append(Component.text("Read more about the rules in our discord"))
                 .append(Component.text());
