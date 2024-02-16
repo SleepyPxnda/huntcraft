@@ -9,7 +9,7 @@ import java.net.*;
 
 public class WebhookManager {
 
-    private static final String webhookUrl = "https://discord.com/api/webhooks/1185221668835168328/ve37BZ0rAI9ERHgN8ial6k3vkiXvVoTibKupBzpikDshvi2CdmOMMHehFrvBrP46eG52";
+    private static final String webhookUrl = "[WebHook]";
 
     public static void sendDeathMessage(String deathMessage) {
         String requestContent = String.format(
