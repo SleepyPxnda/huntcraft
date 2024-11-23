@@ -1,8 +1,8 @@
-package de.cloudypanda.main.listener;
+package de.cloudypanda.main.common.event;
 
 import de.cloudypanda.main.Huntcraft;
-import de.cloudypanda.main.timeout.UserTimeout;
-import de.cloudypanda.main.util.DeathTimerConfigModel;
+import de.cloudypanda.main.deathtimer.UserTimeout;
+import de.cloudypanda.main.deathtimer.DeathTimerConfigModel;
 import de.cloudypanda.main.util.DateUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -23,9 +23,10 @@ public class JoinListener implements Listener {
     @EventHandler
     public void onAsyncPlayerPreLoginEvent(AsyncPlayerPreLoginEvent e){
         DeathTimerConfigModel model = huntcraft.deathTimerConfigManager.readFromFile();
+
         boolean isPlayerInList = model.currentDeathTimeOutetPlayers
                         .stream()
-                        .anyMatch(x -> x.playerUUID.equals(e.getUniqueId()));
+                        .anyMatch(x -> x.getPlayerUUID().equals(e.getUniqueId()));
 
         if(!isPlayerInList){
             e.allow();
@@ -34,7 +35,7 @@ public class JoinListener implements Listener {
 
         UserTimeout userConfig = model.currentDeathTimeOutetPlayers
                 .stream()
-                .filter(x -> x.playerUUID.equals(e.getUniqueId()))
+                .filter(x -> x.getPlayerUUID().equals(e.getUniqueId()))
                 .findFirst()
                 .get();
 
@@ -43,7 +44,7 @@ public class JoinListener implements Listener {
             return;
         }
 
-        String date = DateUtil.getFormattedStringForDateAfterMillis(userConfig.latestDeath, model.getDeathTimeout());
+        String date = DateUtil.getFormattedStringForDateAfterMillis(userConfig.getLatestDeath(), model.getDeathTimeout());
         Component message = Component.text("You died. \n", TextColor.color(255, 0,0))
                 .append(Component.text("You can't rejoin until " + date + ". \n\n", TextColor.color(255, 255, 255)))
                 .append(Component.text("Time until rejoin is possible: \n", TextColor.color(255, 255, 255)))

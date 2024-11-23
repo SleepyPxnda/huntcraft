@@ -1,10 +1,10 @@
-package de.cloudypanda.main.listener;
+package de.cloudypanda.main.common.event;
 
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import de.cloudypanda.main.Huntcraft;
 import de.cloudypanda.main.integrations.WebhookManager;
-import de.cloudypanda.main.timeout.UserTimeout;
-import de.cloudypanda.main.util.DeathTimerConfigModel;
+import de.cloudypanda.main.deathtimer.UserTimeout;
+import de.cloudypanda.main.deathtimer.DeathTimerConfigModel;
 import de.cloudypanda.main.util.DateUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -28,18 +28,24 @@ public class DeathListener implements Listener {
         DeathTimerConfigModel model = huntcraft.deathTimerConfigManager.readFromFile();
         Instant dateOfDeath = Instant.now();
         boolean isPlayerInList = model.currentDeathTimeOutetPlayers.stream()
-                .anyMatch(x -> x.playerUUID.equals(e.getPlayer().getUniqueId()));
+                .anyMatch(x -> x.getPlayerUUID().equals(e.getPlayer().getUniqueId()));
 
         if(isPlayerInList){
-            model.currentDeathTimeOutetPlayers.removeIf(x -> x.playerUUID.equals(e.getPlayer().getUniqueId()));
+            model.currentDeathTimeOutetPlayers.removeIf(x -> x.getPlayerUUID().equals(e.getPlayer().getUniqueId()));
         }
 
         model.currentDeathTimeOutetPlayers.add(
                 new UserTimeout(e.getPlayer().getUniqueId(),
                                 dateOfDeath.toEpochMilli(),
                                 e.getPlayer().getName()));
+
         huntcraft.deathTimerConfigManager.saveToFile(model);
-        WebhookManager.sendDeathMessage(e.getDeathMessage());
+
+        try {
+            //WebhookManager.sendDeathMessage(e.getDeathMessage());
+        }catch (Exception ex){
+            huntcraft.getComponentLogger().error("Error sending death message to webhook. {}", ex.getMessage());
+        }
     }
 
     @EventHandler
@@ -57,9 +63,9 @@ public class DeathListener implements Listener {
 
         Instant dateOfDeath = Instant.ofEpochMilli(model.currentDeathTimeOutetPlayers
                 .stream()
-                .filter(x -> x.playerUUID.equals(e.getPlayer().getUniqueId()))
+                .filter(x -> x.getPlayerUUID().equals(e.getPlayer().getUniqueId()))
                 .findFirst()
-                .get().latestDeath);
+                .get().getLatestDeath());
 
         String date = DateUtil.getFormattedStringForDateAfterMillis(dateOfDeath.toEpochMilli(), model.getDeathTimeout());
         String timeout = DateUtil.getFormattedDurationUntilJoin(0, model.deathTimeout);

@@ -1,12 +1,14 @@
-package de.cloudypanda.main.file;
+package de.cloudypanda.main.common.file;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.cloudypanda.main.Huntcraft;
+import lombok.Getter;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+@Getter
 public abstract class AbstractFileManager<T> {
 
     private final Path filePath;
@@ -15,14 +17,6 @@ public abstract class AbstractFileManager<T> {
     public AbstractFileManager (String fileName, Huntcraft huntcraft){
         this.filePath = Path.of(String.format("%s.json", fileName));
         this.huntcraft = huntcraft;
-    }
-
-    public Path getFilePath() {
-        return filePath;
-    }
-
-    public Huntcraft getHuntcraft() {
-        return huntcraft;
     }
 
     public void createFileIfNotExists() {

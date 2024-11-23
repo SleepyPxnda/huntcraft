@@ -1,8 +1,8 @@
-package de.cloudypanda.main.file;
+package de.cloudypanda.main.deathtimer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.cloudypanda.main.Huntcraft;
-import de.cloudypanda.main.util.DeathTimerConfigModel;
+import de.cloudypanda.main.common.file.AbstractFileManager;
 
 import java.io.IOException;
 
@@ -15,12 +15,11 @@ public class DeathTimerConfigManager extends AbstractFileManager<DeathTimerConfi
     @Override
     public DeathTimerConfigModel readFromFile() {
         ObjectMapper mapper = new ObjectMapper();
-        DeathTimerConfigModel model = null;
         try {
-            model =  mapper.readValue(super.getFilePath().toFile(), DeathTimerConfigModel.class);
+            return mapper.readValue(super.getFilePath().toFile(), DeathTimerConfigModel.class);
         } catch (IOException e) {
             super.getHuntcraft().getComponentLogger().error("Something went wrong reading from file. {}", e.getMessage());
         }
-        return model;
+        return new DeathTimerConfigModel();
     }
 }

@@ -1,6 +1,12 @@
 name: huntcraft
 version: '${version}'
 main: de.cloudypanda.main.Huntcraft
-api-version: '1.20'
+api-version: '1.21'
 load: STARTUP
 authors: [Pxnda]
+
+commands:
+  command:
+    description: 'Submit command for the advent calendar'
+    usage: '/huntcraft-submit'
+    aliases: [hcs,submit]
