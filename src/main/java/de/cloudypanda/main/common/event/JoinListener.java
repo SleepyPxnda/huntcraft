@@ -1,6 +1,7 @@
 package de.cloudypanda.main.common.event;
 
 import de.cloudypanda.main.Huntcraft;
+import de.cloudypanda.main.adventcalendar.config.AdventCalendarConfigModel;
 import de.cloudypanda.main.deathtimer.UserTimeout;
 import de.cloudypanda.main.deathtimer.DeathTimerConfigModel;
 import de.cloudypanda.main.util.DateUtil;
@@ -9,6 +10,7 @@ import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.time.Instant;
 
@@ -54,4 +56,17 @@ public class JoinListener implements Listener {
         e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, message);
     }
 
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent e){
+        e.getPlayer().sendMessage(Component.text("Welcome to the server! Todays Challenge is as follows:"));
+
+        AdventCalendarConfigModel adventCalendarConfigModel = huntcraft.adventCalendarConfigManager.readFromFile();
+
+        if(adventCalendarConfigModel.getChallenges().isEmpty()){
+            e.getPlayer().sendMessage(Component.text("No challenges available"));
+            return;
+        }
+
+        e.getPlayer().sendMessage(Component.text(adventCalendarConfigModel.getChallenges().get(0).getMessage()));
+    }
 }

@@ -15,12 +15,11 @@ public class AdventCalendarConfigManager extends AbstractFileManager<AdventCalen
     @Override
     public AdventCalendarConfigModel readFromFile() {
         ObjectMapper mapper = new ObjectMapper();
-        AdventCalendarConfigModel model = null;
         try {
-            model =  mapper.readValue(super.getFilePath().toFile(), AdventCalendarConfigModel.class);
+            return mapper.readValue(super.getFilePath().toFile(), AdventCalendarConfigModel.class);
         } catch (IOException e) {
             super.getHuntcraft().getComponentLogger().error("Something went wrong reading from file. {}", e.getMessage());
         }
-        return model;
+        return new AdventCalendarConfigModel();
     }
 }

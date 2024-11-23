@@ -1,9 +1,15 @@
 package de.cloudypanda.main.adventcalendar.config;
 
-import java.time.LocalDate;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@NoArgsConstructor
+@Getter
+@Setter
 public class AdventCalendarDayConfig {
-    private LocalDate date;
+    private String date;
     private String message;
     private int points;
+    private AdventCalendarSubmitItemConfig itemToSubmit;
 }
