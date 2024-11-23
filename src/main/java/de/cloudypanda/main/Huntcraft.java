@@ -1,6 +1,7 @@
 package de.cloudypanda.main;
 
-import de.cloudypanda.main.adventcalendar.command.AdventCalendarSubmitCommandListener;
+import de.cloudypanda.main.adventcalendar.command.AdventCalendarLeaderboardCommand;
+import de.cloudypanda.main.adventcalendar.command.AdventCalendarSubmitCommand;
 import de.cloudypanda.main.adventcalendar.config.*;
 import de.cloudypanda.main.deathtimer.DeathTimerConfigManager;
 import de.cloudypanda.main.common.event.DeathListener;
@@ -9,13 +10,8 @@ import de.cloudypanda.main.deathtimer.DeathTimerConfigModel;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
-import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.nio.file.Files;
-import java.util.List;
 
 public final class Huntcraft extends JavaPlugin {
     public final DeathTimerConfigManager deathTimerConfigManager = new DeathTimerConfigManager("hc_deathtimer", this);
@@ -36,7 +32,8 @@ public final class Huntcraft extends JavaPlugin {
         LifecycleEventManager<Plugin> manager = this.getLifecycleManager();
         manager.registerEventHandler(LifecycleEvents.COMMANDS, event -> {
             final Commands commands = event.registrar();
-            commands.register("huntcraft-submit", new AdventCalendarSubmitCommandListener(this));
+            commands.register("huntcraft-submit", new AdventCalendarSubmitCommand(this));
+            commands.register("huntcraft-leaderboard", new AdventCalendarLeaderboardCommand(this));
         });
     }
 }

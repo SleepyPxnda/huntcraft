@@ -39,7 +39,6 @@ public class AdventCalendarConfigManager extends AbstractFileManager<AdventCalen
 
     private void setupAdventCalendar() {
         AdventCalendarConfigModel adventCalendarConfigModel = new AdventCalendarConfigModel();
-        // Do something with the config model
 
         AdventCalendarDayConfig day1Config = new AdventCalendarDayConfig();
         day1Config.setDate("2024-11-24");

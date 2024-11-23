@@ -4,6 +4,7 @@ import de.cloudypanda.main.Huntcraft;
 import de.cloudypanda.main.adventcalendar.config.AdventCalendarConfigModel;
 import de.cloudypanda.main.adventcalendar.config.AdventCalendarDayConfig;
 import de.cloudypanda.main.adventcalendar.config.AdventCalendarSubmitItemConfig;
+import de.cloudypanda.main.integrations.WebhookManager;
 import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.entity.EntityType;
@@ -14,11 +15,11 @@ import org.bukkit.inventory.meta.Damageable;
 import java.time.LocalDate;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class AdventCalendarSubmitCommandListener implements BasicCommand {
+public class AdventCalendarSubmitCommand implements BasicCommand {
 
     private final Huntcraft huntcraft;
 
-    public AdventCalendarSubmitCommandListener(Huntcraft huntcraft) {
+    public AdventCalendarSubmitCommand(Huntcraft huntcraft) {
         this.huntcraft = huntcraft;
     }
 
@@ -64,6 +65,7 @@ public class AdventCalendarSubmitCommandListener implements BasicCommand {
                 wasItemSubmitted.set(true);
                 adventCalendarConfigModel.setCompletedForPlayer(player.getUniqueId(), LocalDate.now(), dayConfig.getPoints());
                 huntcraft.adventCalendarConfigManager.saveToFile(adventCalendarConfigModel);
+                WebhookManager.sendAchievementMessage(String.format("@here %s has completed the challenge for today", player.getName()));
             }
         });
 
