@@ -65,7 +65,7 @@ public class AdventCalendarSubmitCommand implements BasicCommand {
                 wasItemSubmitted.set(true);
                 adventCalendarConfigModel.setCompletedForPlayer(player.getUniqueId(), LocalDate.now(), dayConfig.getPoints());
                 huntcraft.adventCalendarConfigManager.saveToFile(adventCalendarConfigModel);
-                WebhookManager.sendAchievementMessage(String.format("@here %s has completed the challenge for today", player.getName()));
+                WebhookManager.sendAchievementMessage(String.format("%s has completed the challenge for today", player.getName()));
             }
         });
 

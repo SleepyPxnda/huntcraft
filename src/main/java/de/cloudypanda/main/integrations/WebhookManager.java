@@ -43,8 +43,8 @@ public class WebhookManager {
         String requestContent = String.format(
                 """
                         {
-                            "username": "Death Bot",
-                            "avatar_url":"https://www.iconpacks.net/icons/1/free-trash-icon-347-thumb.png",
+                            "username": "Achievement Bot",
+                            "avatar_url":"https://www.iconpacks.net/free-icon/medal-1369.html",
                             "content": "@here %s"
                         }
                 """, achievementMessage);
