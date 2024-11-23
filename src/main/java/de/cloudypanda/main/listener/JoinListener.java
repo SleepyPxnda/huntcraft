@@ -2,7 +2,7 @@ package de.cloudypanda.main.listener;
 
 import de.cloudypanda.main.Huntcraft;
 import de.cloudypanda.main.timeout.UserTimeout;
-import de.cloudypanda.main.util.ConfigModel;
+import de.cloudypanda.main.util.DeathTimerConfigModel;
 import de.cloudypanda.main.util.DateUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -22,7 +22,7 @@ public class JoinListener implements Listener {
 
     @EventHandler
     public void onAsyncPlayerPreLoginEvent(AsyncPlayerPreLoginEvent e){
-        ConfigModel model = huntcraft.configManager.readFromFile();
+        DeathTimerConfigModel model = huntcraft.deathTimerConfigManager.readFromFile();
         boolean isPlayerInList = model.currentDeathTimeOutetPlayers
                         .stream()
                         .anyMatch(x -> x.playerUUID.equals(e.getUniqueId()));

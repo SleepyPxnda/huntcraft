@@ -4,7 +4,7 @@ import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import de.cloudypanda.main.Huntcraft;
 import de.cloudypanda.main.integrations.WebhookManager;
 import de.cloudypanda.main.timeout.UserTimeout;
-import de.cloudypanda.main.util.ConfigModel;
+import de.cloudypanda.main.util.DeathTimerConfigModel;
 import de.cloudypanda.main.util.DateUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -25,7 +25,7 @@ public class DeathListener implements Listener {
 
     @EventHandler
     public void onDeathEvent(PlayerDeathEvent e){
-        ConfigModel model = huntcraft.configManager.readFromFile();
+        DeathTimerConfigModel model = huntcraft.deathTimerConfigManager.readFromFile();
         Instant dateOfDeath = Instant.now();
         boolean isPlayerInList = model.currentDeathTimeOutetPlayers.stream()
                 .anyMatch(x -> x.playerUUID.equals(e.getPlayer().getUniqueId()));
@@ -38,13 +38,13 @@ public class DeathListener implements Listener {
                 new UserTimeout(e.getPlayer().getUniqueId(),
                                 dateOfDeath.toEpochMilli(),
                                 e.getPlayer().getName()));
-        huntcraft.configManager.saveToFile(model);
+        huntcraft.deathTimerConfigManager.saveToFile(model);
         WebhookManager.sendDeathMessage(e.getDeathMessage());
     }
 
     @EventHandler
     public void onPostRespawnEvent(PlayerPostRespawnEvent e){
-        ConfigModel model = huntcraft.configManager.readFromFile();
+        DeathTimerConfigModel model = huntcraft.deathTimerConfigManager.readFromFile();
 
         Optional<UserTimeout> presentPlayer = model.currentDeathTimeOutetPlayers
                 .stream()

@@ -9,9 +9,6 @@ public class UserTimeout {
     public long latestDeath;
     public String playerName;
 
-    public UserTimeout() {
-    }
-
     public UserTimeout(UUID playerUUID, long latestDeath, String playerName) {
         this.playerUUID = playerUUID;
         this.latestDeath = latestDeath;

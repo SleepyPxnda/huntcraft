@@ -5,7 +5,7 @@ import de.cloudypanda.main.timeout.UserTimeout;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConfigModel {
+public class DeathTimerConfigModel {
 
     public long deathTimeout = 86400000L;
 
