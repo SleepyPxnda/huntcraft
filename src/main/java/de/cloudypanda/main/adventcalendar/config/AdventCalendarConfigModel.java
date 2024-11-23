@@ -15,7 +15,7 @@ import java.util.UUID;
 @Setter
 public class AdventCalendarConfigModel {
     private List<AdventCalendarDayConfig> challenges = new ArrayList<>();
-    private List<AdventCalendarLeaderboardConfigModel> leaderboard = new ArrayList<>();
+    private List<AdventCalendarLeaderboardConfig> leaderboard = new ArrayList<>();
 
     @JsonIgnore
     public AdventCalendarDayConfig getConfigForDay(LocalDate day) {
@@ -26,7 +26,7 @@ public class AdventCalendarConfigModel {
 
     @JsonIgnore
     public boolean hasPlayerAlreadyCompletedDay(UUID playerID, LocalDate day) {
-        AdventCalendarLeaderboardConfigModel player = leaderboard.stream()
+        AdventCalendarLeaderboardConfig player = leaderboard.stream()
                 .filter(playerConfig -> playerConfig.getPlayerID().equals(playerID))
                 .findFirst()
                 .orElse(null);
@@ -35,14 +35,14 @@ public class AdventCalendarConfigModel {
     }
 
     @JsonIgnore
-    public AdventCalendarLeaderboardConfigModel setCompletedForPlayer(UUID playerID, LocalDate day, int points) {
-        AdventCalendarLeaderboardConfigModel player = leaderboard.stream()
+    public AdventCalendarLeaderboardConfig setCompletedForPlayer(UUID playerID, LocalDate day, int points) {
+        AdventCalendarLeaderboardConfig player = leaderboard.stream()
                 .filter(playerConfig -> playerConfig.getPlayerID().equals(playerID))
                 .findFirst()
                 .orElse(null);
 
         if(player == null) {
-            player = new AdventCalendarLeaderboardConfigModel();
+            player = new AdventCalendarLeaderboardConfig();
             player.setPlayerID(playerID);
             player.setPoints(points);
             player.setCompletedDays(List.of(day.toString()));

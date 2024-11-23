@@ -14,6 +14,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.nio.file.Files;
 import java.util.List;
 
 public final class Huntcraft extends JavaPlugin {
@@ -37,27 +38,5 @@ public final class Huntcraft extends JavaPlugin {
             final Commands commands = event.registrar();
             commands.register("huntcraft-submit", new AdventCalendarSubmitCommandListener(this));
         });
-
-        setupAdventCalendar();
-    }
-
-    private void setupAdventCalendar() {
-        AdventCalendarConfigModel adventCalendarConfigModel = new AdventCalendarConfigModel();
-        // Do something with the config model
-
-        AdventCalendarDayConfig day1Config = new AdventCalendarDayConfig();
-        day1Config.setDate("2024-11-24");
-        day1Config.setMessage("Welcome to the first day of the Advent Calendar! \n Today's challenge ist to submit a workbench");
-        day1Config.setPoints(10);
-        day1Config.setItemToSubmit(new AdventCalendarSubmitItemConfig(Material.DIAMOND_SWORD,
-                1,
-                null,
-                null,
-                List.of(new AdventCalendarSubmitItemEnchantConfig(Enchantment.SHARPNESS, 5))
-        ));
-
-        adventCalendarConfigModel.getChallenges().add(day1Config);
-
-        adventCalendarConfigManager.saveToFile(adventCalendarConfigModel);
     }
 }
