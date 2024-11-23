@@ -25,7 +25,12 @@ public class AdventCalendarLeaderboardCommand implements BasicCommand {
 
         Player player = (Player) commandSourceStack.getExecutor();
 
-        player.sendMessage("Leaderboard");
+        if(adventCalendarConfigModel.getLeaderboard().isEmpty()) {
+            player.sendMessage("Leaderboard is empty");
+            return;
+        }
+
+        player.sendMessage(" *** Leaderboard *** ");
 
         adventCalendarConfigModel.getLeaderboard().sort((o1, o2) -> o2.getPoints() - o1.getPoints());
 
