@@ -10,6 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class AdventCalendarSubmitItemConfig {
     private @NonNull Material material;
     private @NonNull Integer amount;

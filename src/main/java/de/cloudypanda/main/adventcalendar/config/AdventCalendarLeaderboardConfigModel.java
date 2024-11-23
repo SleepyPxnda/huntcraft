@@ -15,5 +15,5 @@ import java.util.UUID;
 public class AdventCalendarLeaderboardConfigModel {
     private UUID playerID;
     private int points;
-    private List<LocalDate> completedDays = new ArrayList<>();
+    private List<String> completedDays = new ArrayList<>();
 }

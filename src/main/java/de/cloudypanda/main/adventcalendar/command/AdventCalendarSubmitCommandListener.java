@@ -37,8 +37,15 @@ public class AdventCalendarSubmitCommandListener implements BasicCommand {
             return;
         }
 
+        if(adventCalendarConfigModel.hasPlayerAlreadyCompletedDay(player.getUniqueId(), LocalDate.now())) {
+            player.sendMessage("You have already completed the challenge for today");
+            return;
+        }
+
         AdventCalendarDayConfig dayConfig = adventCalendarConfigModel.getConfigForDay(LocalDate.now());
         AdventCalendarSubmitItemConfig itemConfig = dayConfig.getItemToSubmit();
+
+        AtomicBoolean wasItemSubmitted = new AtomicBoolean(false);
 
         player.getInventory().forEach(item -> {
             if(item == null){
@@ -53,8 +60,16 @@ public class AdventCalendarSubmitCommandListener implements BasicCommand {
                 } else {
                     player.getInventory().remove(item);
                 }
+
+                wasItemSubmitted.set(true);
+                adventCalendarConfigModel.setCompletedForPlayer(player.getUniqueId(), LocalDate.now(), dayConfig.getPoints());
+                huntcraft.adventCalendarConfigManager.saveToFile(adventCalendarConfigModel);
             }
         });
+
+        if(!wasItemSubmitted.get()) {
+            player.sendMessage("No matching item found in your inventory");
+        }
     }
 
     private boolean validateItemSubmition(ItemStack item, AdventCalendarSubmitItemConfig itemConfig) {
@@ -70,8 +85,7 @@ public class AdventCalendarSubmitCommandListener implements BasicCommand {
 
         //Only check durability if its configured
         if(itemConfig.getDurability() != null ) {
-            if(item.getItemMeta() instanceof Damageable) {
-                Damageable damageable = (Damageable) item.getItemMeta();
+            if(item.getItemMeta() instanceof Damageable damageable) {
 
                 if((item.getType().getMaxDurability() - damageable.getDamage()) != itemConfig.getDurability()) {
                     validSubmission.set(false);
