@@ -19,7 +19,7 @@ public class DeathTimerConfigManager extends AbstractFileManager<DeathTimerConfi
         try {
             model =  mapper.readValue(super.getFilePath().toFile(), DeathTimerConfigModel.class);
         } catch (IOException e) {
-            super.getHuntcraft().getComponentLogger().error("Something went wrong reading from file. " + e.getMessage());
+            super.getHuntcraft().getComponentLogger().error("Something went wrong reading from file. {}", e.getMessage());
         }
         return model;
     }
