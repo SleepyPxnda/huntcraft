@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 
 import java.time.LocalDate;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AdventCalendarSubmitCommandListener implements BasicCommand {
 
@@ -57,24 +58,43 @@ public class AdventCalendarSubmitCommandListener implements BasicCommand {
     }
 
     private boolean validateItemSubmition(ItemStack item, AdventCalendarSubmitItemConfig itemConfig) {
-        boolean validSubmission = true;
+        AtomicBoolean validSubmission = new AtomicBoolean(true);
 
         if(item.getType() != itemConfig.getMaterial()) {
-            validSubmission = false;
+            validSubmission.set(false);
         }
 
         if(item.getAmount() < itemConfig.getAmount()) {
-            validSubmission = false;
+            validSubmission.set(false);
         }
 
-        if(itemConfig.getDurability() != null && item.getItemMeta() instanceof Damageable) {
-            Damageable damageable = (Damageable) item.getItemMeta();
+        //Only check durability if its configured
+        if(itemConfig.getDurability() != null ) {
+            if(item.getItemMeta() instanceof Damageable) {
+                Damageable damageable = (Damageable) item.getItemMeta();
 
-            if((item.getType().getMaxDurability() - damageable.getDamage()) != itemConfig.getDurability()) {
-                validSubmission = false;
+                if((item.getType().getMaxDurability() - damageable.getDamage()) != itemConfig.getDurability()) {
+                    validSubmission.set(false);
+                }
             }
         }
 
-        return validSubmission;
+        //Only check name if its configured
+        if(itemConfig.getName() != null) {
+            if(!item.getItemMeta().displayName().equals(itemConfig.getName())) {
+                validSubmission.set(false);
+            }
+        }
+
+        //Only if enchants are configured
+        if(itemConfig.getEnchants() != null && !itemConfig.getEnchants().isEmpty()) {
+            itemConfig.getEnchants().forEach(ench -> {
+                if(!item.getEnchantments().containsKey(ench.getEnchant()) || item.getEnchantmentLevel(ench.getEnchant()) != ench.getLevel()) {
+                    validSubmission.set(false);
+                }
+            });
+        }
+
+        return validSubmission.get();
     }
 }
