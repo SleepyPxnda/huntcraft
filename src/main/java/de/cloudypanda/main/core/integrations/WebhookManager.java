@@ -1,6 +1,4 @@
-package de.cloudypanda.main.integrations;
-
-import de.cloudypanda.main.Huntcraft;
+package de.cloudypanda.main.core.integrations;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;

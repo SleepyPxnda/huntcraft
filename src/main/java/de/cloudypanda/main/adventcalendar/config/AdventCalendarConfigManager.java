@@ -13,28 +13,12 @@ import java.util.List;
 public class AdventCalendarConfigManager extends AbstractFileManager<AdventCalendarConfigModel> {
 
     public AdventCalendarConfigManager(String fileName, Huntcraft huntcraft) {
-        super(fileName, huntcraft);
+        super(fileName, huntcraft, AdventCalendarConfigModel.class);
     }
 
     @Override
-    public void createFileIfNotExists() {
-        if(Files.exists(super.getFilePath())){
-            super.getHuntcraft().getComponentLogger().info("Adventure Calendar config file already initialized");
-        } else {
-            super.createFileIfNotExists();
-            this.setupAdventCalendar();
-        }
-    }
-
-    @Override
-    public AdventCalendarConfigModel readFromFile() {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.readValue(super.getFilePath().toFile(), AdventCalendarConfigModel.class);
-        } catch (IOException e) {
-            super.getHuntcraft().getComponentLogger().error("Something went wrong reading from file. {}", e.getMessage());
-        }
-        return new AdventCalendarConfigModel();
+    public void afterInit() {
+        setupAdventCalendar();
     }
 
     private void setupAdventCalendar() {

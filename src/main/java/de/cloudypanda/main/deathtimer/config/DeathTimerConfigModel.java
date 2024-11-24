@@ -1,4 +1,4 @@
-package de.cloudypanda.main.deathtimer;
+package de.cloudypanda.main.deathtimer.config;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,5 +10,5 @@ import java.util.List;
 @Getter
 public class DeathTimerConfigModel {
     public long deathTimeout = 86400000L;
-    public List<UserTimeout> currentDeathTimeOutetPlayers = new ArrayList<>();
+    public List<UserTimeoutConfig> currentDeathTimeOutetPlayers = new ArrayList<>();
 }
