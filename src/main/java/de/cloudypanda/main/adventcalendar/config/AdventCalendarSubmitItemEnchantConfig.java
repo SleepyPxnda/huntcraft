@@ -2,8 +2,6 @@ package de.cloudypanda.main.adventcalendar.config;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import de.cloudypanda.main.common.file.SubmitItemEnchantDeserializer;
-import de.cloudypanda.main.common.file.SubmitItemEnchantSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

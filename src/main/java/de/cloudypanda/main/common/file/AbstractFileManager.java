@@ -2,7 +2,6 @@ package de.cloudypanda.main.common.file;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.cloudypanda.main.Huntcraft;
-import de.cloudypanda.main.core.config.CoreConfigModel;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -10,6 +9,10 @@ import java.lang.reflect.Constructor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+/**
+ * Abstract class for handling file management based on given config model
+ * @param <T> Config model class
+ */
 @Getter
 public abstract class AbstractFileManager<T> {
 
@@ -23,6 +26,10 @@ public abstract class AbstractFileManager<T> {
         this.clazz = clazz;
     }
 
+    /**
+     * Create and initialize the config file if it does not exist
+     * Also allows to overwrite the {@link AbstractFileManager#afterInit()} method to add custom logic after the file has been created
+     */
     public void createFileIfNotExists() {
         if(!checkIfFileExists()){
             createFile();
@@ -33,10 +40,17 @@ public abstract class AbstractFileManager<T> {
         }
     }
 
+    /**
+     * Override this method to add custom logic after the file has been created
+     */
     public void afterInit() {
         // Override this method to add custom logic after the file has been created
     };
 
+    /**
+     * Save the config model to the file
+     * @param config Config model to save
+     */
     public void saveToFile(T config) {
         ObjectMapper mapper = new ObjectMapper();
 
@@ -47,6 +61,10 @@ public abstract class AbstractFileManager<T> {
         }
     }
 
+    /**
+     * Read the config model from the file
+     * @return Config model
+     */
     public T readFromFile() {
         ObjectMapper mapper = new ObjectMapper();
         try {
@@ -57,6 +75,9 @@ public abstract class AbstractFileManager<T> {
         return newClazzInstance();
     }
 
+    /**
+     * Create the file
+     */
     private void createFile(){
         try{
             Files.createFile(filePath);
@@ -65,10 +86,18 @@ public abstract class AbstractFileManager<T> {
         }
     }
 
+    /**
+     * Check if the file exists
+     * @return True if the file exists, false otherwise
+     */
     private boolean checkIfFileExists(){
         return Files.exists(filePath);
     }
 
+    /**
+     * Create a new instance of the config model
+     * @return New instance of the config model
+     */
     private T newClazzInstance() {
         try {
             Constructor<T> constructor = clazz.getDeclaredConstructor();

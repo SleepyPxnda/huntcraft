@@ -1,9 +1,8 @@
-package de.cloudypanda.main.common.file;
+package de.cloudypanda.main.adventcalendar.config;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import de.cloudypanda.main.adventcalendar.config.AdventCalendarSubmitItemEnchantConfig;
 
 import java.io.IOException;
 
