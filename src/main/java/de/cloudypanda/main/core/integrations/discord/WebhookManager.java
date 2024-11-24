@@ -1,4 +1,4 @@
-package de.cloudypanda.main.core.integrations;
+package de.cloudypanda.main.core.integrations.discord;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;

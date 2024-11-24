@@ -1,4 +1,4 @@
-package de.cloudypanda.main.common.file;
+package de.cloudypanda.main.common.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.cloudypanda.main.Huntcraft;

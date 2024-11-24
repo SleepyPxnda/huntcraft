@@ -1,13 +1,10 @@
 package de.cloudypanda.main.adventcalendar.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.cloudypanda.main.Huntcraft;
-import de.cloudypanda.main.common.file.AbstractFileManager;
+import de.cloudypanda.main.common.config.AbstractFileManager;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.List;
 
 public class AdventCalendarConfigManager extends AbstractFileManager<AdventCalendarConfigModel> {

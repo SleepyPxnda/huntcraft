@@ -4,7 +4,7 @@ import de.cloudypanda.main.Huntcraft;
 import de.cloudypanda.main.adventcalendar.config.AdventCalendarConfigModel;
 import de.cloudypanda.main.adventcalendar.config.AdventCalendarDayConfig;
 import de.cloudypanda.main.adventcalendar.config.AdventCalendarSubmitItemConfig;
-import de.cloudypanda.main.core.integrations.WebhookManager;
+import de.cloudypanda.main.core.integrations.discord.WebhookManager;
 import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.entity.EntityType;
