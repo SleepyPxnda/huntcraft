@@ -3,9 +3,6 @@ package de.cloudypanda.main.deathtimer.config;
 import de.cloudypanda.main.Huntcraft;
 import de.cloudypanda.main.common.config.AbstractFileManager;
 
-public class DeathTimerConfigManager extends AbstractFileManager<DeathTimerConfigModel> {
-
-    public DeathTimerConfigManager(String fileName, Huntcraft huntcraft) {
-        super(fileName, huntcraft, DeathTimerConfigModel.class);
-    }
+public class DeathTimerConfigManager(fileName: String, huntcraft: Huntcraft) :
+    AbstractFileManager<DeathTimerConfigModel>(fileName, huntcraft, DeathTimerConfigModel::class.java) {
 }

@@ -4,16 +4,14 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
-import java.io.IOException;
+class SubmitItemEnchantSerializer : JsonSerializer<AdventCalendarSubmitItemEnchantConfig>() {
 
-public class SubmitItemEnchantSerializer extends JsonSerializer<AdventCalendarSubmitItemEnchantConfig> {
-    @Override
-    public void serialize(AdventCalendarSubmitItemEnchantConfig adventCalendarSubmitItemEnchantConfig, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+    override fun serialize(adventCalendarSubmitItemEnchantConfig: AdventCalendarSubmitItemEnchantConfig, jsonGenerator: JsonGenerator, serializerProvider: SerializerProvider?) {
         jsonGenerator.writeStartObject();
         jsonGenerator.writeFieldName("enchant");
-        jsonGenerator.writeString(adventCalendarSubmitItemEnchantConfig.getEnchant().getKey().getKey());
+        jsonGenerator.writeString(adventCalendarSubmitItemEnchantConfig.enchantment.key.key);
         jsonGenerator.writeFieldName("level");
-        jsonGenerator.writeNumber(adventCalendarSubmitItemEnchantConfig.getLevel());
+        jsonGenerator.writeNumber(adventCalendarSubmitItemEnchantConfig.level);
         jsonGenerator.writeEndObject();
     }
 }

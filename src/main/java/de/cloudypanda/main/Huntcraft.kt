@@ -15,29 +15,29 @@ import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public final class Huntcraft extends JavaPlugin {
-    public final DeathTimerConfigManager deathTimerConfigManager = new DeathTimerConfigManager("hc_deathtimer", this);
-    public final AdventCalendarConfigManager adventCalendarConfigManager = new AdventCalendarConfigManager("hc_adventcalendar", this);
-    public final CoreConfigManager coreConfigManager = new CoreConfigManager("hc_core", this);
+class Huntcraft : JavaPlugin () {
+    val deathTimerConfigManager = DeathTimerConfigManager("hc_deathtimer", this);
+    val adventCalendarConfigManager = AdventCalendarConfigManager("hc_adventcalendar", this);
+    val coreConfigManager = CoreConfigManager("hc_core", this);
 
-    @Override
-    public void onEnable() {
+    override fun onEnable() {
         //Create main Config file
         coreConfigManager.createFileIfNotExists();
 
-        CoreConfigModel coreConfigModel = coreConfigManager.readFromFile();
-        LifecycleEventManager<Plugin> manager = this.getLifecycleManager();
+        val coreConfigModel = coreConfigManager.readFromFile();
+        val manager: LifecycleEventManager<Plugin> = this.getLifecycleManager();
 
         if(coreConfigModel.adventCalendar.enabled){
             // Create config file
             adventCalendarConfigManager.createFileIfNotExists();
-            getServer().getPluginManager().registerEvents(new AdventCalendarEventListener(this), this);
+            getServer().getPluginManager().registerEvents(AdventCalendarEventListener(this), this);
 
-            manager.registerEventHandler(LifecycleEvents.COMMANDS, event -> {
-                final Commands commands = event.registrar();
-                commands.register("huntcraft-submit", new AdventCalendarSubmitCommand(this));
-                commands.register("huntcraft-leaderboard", new AdventCalendarLeaderboardCommand(this));
-            });
+            manager.registerEventHandler(LifecycleEvents.COMMANDS) { event ->
+                val commands: Commands = event.registrar();
+                commands.register("huntcraft-submit", AdventCalendarSubmitCommand(this));
+                commands.register("huntcraft-leaderboard", AdventCalendarLeaderboardCommand(this));
+            }
+
             this.getComponentLogger().info("Adventcalendar Module is enabled");
         }
 
@@ -46,7 +46,7 @@ public final class Huntcraft extends JavaPlugin {
             deathTimerConfigManager.createFileIfNotExists();
 
             //Register Event Listener
-            getServer().getPluginManager().registerEvents(new DeathTimerEventListener(this), this);
+            getServer().getPluginManager().registerEvents(DeathTimerEventListener(this), this);
             this.getComponentLogger().info("DeathTimer Module is enabled");
         }
     }

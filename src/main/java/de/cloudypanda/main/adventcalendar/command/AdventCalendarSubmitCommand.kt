@@ -15,100 +15,107 @@ import org.bukkit.inventory.meta.Damageable;
 import java.time.LocalDate;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class AdventCalendarSubmitCommand implements BasicCommand {
+class AdventCalendarSubmitCommand(val huntcraft: Huntcraft) : BasicCommand {
 
-    private final Huntcraft huntcraft;
-
-    public AdventCalendarSubmitCommand(Huntcraft huntcraft) {
-        this.huntcraft = huntcraft;
-    }
-
-    @Override
-    public void execute(CommandSourceStack commandSourceStack, String[] strings) {
-        if(!EntityType.PLAYER.equals(commandSourceStack.getExecutor().getType())) {
+    override fun execute(commandSourceStack: CommandSourceStack , args: Array<out String>) {
+        if(EntityType.PLAYER != commandSourceStack.executor.type) {
             return;
         }
 
-        Player player = (Player) commandSourceStack.getExecutor();
+        val player = commandSourceStack.executor as Player;
 
-        AdventCalendarConfigModel adventCalendarConfigModel = huntcraft.adventCalendarConfigManager.readFromFile();
+        val adventCalendarConfigModel = huntcraft.adventCalendarConfigManager.readFromFile();
 
         if(adventCalendarConfigModel.getConfigForDay(LocalDate.now()) == null){
             player.sendMessage("There is no challenge for today");
             return;
         }
 
-        if(adventCalendarConfigModel.hasPlayerAlreadyCompletedDay(player.getUniqueId(), LocalDate.now())) {
+        if(adventCalendarConfigModel.hasPlayerAlreadyCompletedDay(player.uniqueId, LocalDate.now())) {
             player.sendMessage("You have already completed the challenge for today");
             return;
         }
 
-        AdventCalendarDayConfig dayConfig = adventCalendarConfigModel.getConfigForDay(LocalDate.now());
-        AdventCalendarSubmitItemConfig itemConfig = dayConfig.getItemToSubmit();
+        val dayConfig = adventCalendarConfigModel.getConfigForDay(LocalDate.now());
+        val itemConfig = dayConfig?.itemToSubmit;
 
-        AtomicBoolean wasItemSubmitted = new AtomicBoolean(false);
+        val wasItemSubmitted = AtomicBoolean(false);
 
-        player.getInventory().forEach(item -> {
-            if(item == null){
-                return;
-            }
-
-            if(validateItemSubmition(item, itemConfig)) {
-                player.sendMessage("You have successfully submitted the item");
-
-                if(itemConfig.getAmount() != 1){
-                    player.getInventory().removeItem(new ItemStack(itemConfig.getMaterial(), itemConfig.getAmount()));
-                } else {
-                    player.getInventory().remove(item);
+        player.inventory.forEach { item ->
+                if (item == null) {
+                    return;
                 }
 
-                wasItemSubmitted.set(true);
-                adventCalendarConfigModel.setCompletedForPlayer(player.getUniqueId(), LocalDate.now(), dayConfig.getPoints());
-                huntcraft.adventCalendarConfigManager.saveToFile(adventCalendarConfigModel);
-                WebhookManager.sendAchievementMessage(String.format("%s has completed the challenge for today", player.getName()));
-            }
-        });
+                if (validateItemSubmition(item, itemConfig!!)) {
+                    player.sendMessage("You have successfully submitted the item");
+
+                    if (itemConfig.amount != 1) {
+                        player.inventory
+                            .removeItem(ItemStack (itemConfig.material, itemConfig.amount));
+                    } else {
+                        player.inventory.remove(item);
+                    }
+
+                    wasItemSubmitted.set(true);
+                    adventCalendarConfigModel.setCompletedForPlayer(
+                        player.uniqueId,
+                        LocalDate.now(),
+                        dayConfig.points
+                    );
+                    huntcraft.adventCalendarConfigManager.saveToFile(adventCalendarConfigModel);
+                    WebhookManager.sendAchievementMessage(
+                        String.format(
+                            "%s has completed the challenge for today",
+                            player.name
+                        )
+                    );
+                }
+        };
 
         if(!wasItemSubmitted.get()) {
             player.sendMessage("No matching item found in your inventory");
         }
     }
 
-    private boolean validateItemSubmition(ItemStack item, AdventCalendarSubmitItemConfig itemConfig) {
-        AtomicBoolean validSubmission = new AtomicBoolean(true);
+    private fun validateItemSubmition(item: ItemStack, itemConfig: AdventCalendarSubmitItemConfig): Boolean {
+        val validSubmission = AtomicBoolean(true);
 
-        if(item.getType() != itemConfig.getMaterial()) {
+        if(item.type != itemConfig.material) {
             validSubmission.set(false);
         }
 
-        if(item.getAmount() < itemConfig.getAmount()) {
+        if(item.amount < itemConfig.amount) {
             validSubmission.set(false);
         }
 
         //Only check durability if its configured
-        if(itemConfig.getDurability() != null ) {
-            if(item.getItemMeta() instanceof Damageable damageable) {
+        if(itemConfig.durability != null ) {
+            if(item.itemMeta is Damageable) {
 
-                if((item.getType().getMaxDurability() - damageable.getDamage()) != itemConfig.getDurability()) {
+                val damageable = item.itemMeta as Damageable;
+                if((item.type.maxDurability - damageable.damage) != itemConfig.durability) {
                     validSubmission.set(false);
                 }
             }
         }
 
         //Only check name if its configured
-        if(itemConfig.getName() != null) {
-            if(!item.getItemMeta().displayName().equals(itemConfig.getName())) {
+        if(itemConfig.name != null) {
+            if(!item.itemMeta.displayName()?.equals(itemConfig.name)!!) {
                 validSubmission.set(false);
             }
         }
 
         //Only if enchants are configured
-        if(itemConfig.getEnchants() != null && !itemConfig.getEnchants().isEmpty()) {
-            itemConfig.getEnchants().forEach(ench -> {
-                if(!item.getEnchantments().containsKey(ench.getEnchant()) || item.getEnchantmentLevel(ench.getEnchant()) != ench.getLevel()) {
-                    validSubmission.set(false);
-                }
-            });
+        if(itemConfig.enchants.isNotEmpty()) {
+            itemConfig.enchants.forEach { ench ->
+                    if (!item.enchantments
+                            .containsKey(ench.enchantment) || item.getEnchantmentLevel(ench.enchantment) != ench.level
+                    ) {
+                        validSubmission.set(false);
+                    }
+
+            };
         }
 
         return validSubmission.get();

@@ -8,17 +8,9 @@ import lombok.Setter;
 import java.time.Instant;
 import java.util.UUID;
 
-@Setter
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
-public class UserTimeoutConfig {
 
-    private UUID playerUUID;
-    private long latestDeath;
-    private String playerName;
-
-    public boolean isAllowedToJoin(long deathTimeout) {
+data class UserTimeoutConfig(val playerUUID: UUID, val latestDeath: Long, val playerName: String) {
+    fun isAllowedToJoin(deathTimeout: Long): Boolean {
         return Instant.now().isAfter(Instant.ofEpochMilli(latestDeath + deathTimeout));
     }
 }

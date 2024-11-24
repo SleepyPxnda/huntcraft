@@ -7,22 +7,23 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
 
-public class DateUtil {
+class DateUtil {
 
-    public static String getFormattedStringForDateAfterMillis(long death, long timeout){
-        String pattern = "HH:mm:ss dd/MM/yyyy";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-        return simpleDateFormat.format(Date.from(Instant.ofEpochMilli(death).plusMillis(timeout)));
+    companion object {
+        fun getFormattedStringForDateAfterMillis(death: Long, timeout: Long): String{
+            val pattern = "HH:mm:ss dd/MM/yyyy";
+            val simpleDateFormat = SimpleDateFormat(pattern);
+            return simpleDateFormat.format(Date.from(Instant.ofEpochMilli(death).plusMillis(timeout)));
+        }
+
+        fun getFormattedDurationUntilJoin(start: Long , timeout: Long ): String{
+            val duration = Duration.between(Instant.ofEpochMilli(start), Instant.ofEpochMilli(start + timeout));
+            return DurationFormatUtils.formatDuration(duration.toMillis(), "HH:mm:ss", true);
+        }
+
+        fun getFormattedDurationUntilJoin(now: Long, start: Long, timeout: Long): String{
+            val duration = Duration.between(Instant.ofEpochMilli(now), Instant.ofEpochMilli(start + timeout));
+            return DurationFormatUtils.formatDuration(duration.toMillis(), "HH:mm:ss", true);
+        }
     }
-
-    public static String getFormattedDurationUntilJoin(long start, long timeout){
-        Duration d = Duration.between(Instant.ofEpochMilli(start), Instant.ofEpochMilli(start + timeout));
-        return DurationFormatUtils.formatDuration(d.toMillis(), "HH:mm:ss", true);
-    }
-
-    public static String getFormattedDurationUntilJoin(long now, long start, long timeout){
-        Duration d = Duration.between(Instant.ofEpochMilli(now), Instant.ofEpochMilli(start + timeout));
-        return DurationFormatUtils.formatDuration(d.toMillis(), "HH:mm:ss", true);
-    }
-
 }

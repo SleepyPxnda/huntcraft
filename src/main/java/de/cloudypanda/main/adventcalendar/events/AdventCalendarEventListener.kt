@@ -7,25 +7,19 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-public class AdventCalendarEventListener implements Listener {
-
-    private final Huntcraft huntcraft;
-
-    public AdventCalendarEventListener(Huntcraft huntcraft) {
-        this.huntcraft = huntcraft;
-    }
+class AdventCalendarEventListener(val huntcraft: Huntcraft) : Listener {
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent e){
-        e.getPlayer().sendMessage(Component.text("Welcome to the server! Todays Challenge is as follows:"));
+    fun onPlayerJoin(e: PlayerJoinEvent){
+        e.player.sendMessage(Component.text("Welcome to the server! Todays Challenge is as follows:"));
 
-        AdventCalendarConfigModel adventCalendarConfigModel = huntcraft.adventCalendarConfigManager.readFromFile();
+        val adventCalendarConfigModel = huntcraft.adventCalendarConfigManager.readFromFile();
 
-        if(adventCalendarConfigModel.getChallenges().isEmpty()){
-            e.getPlayer().sendMessage(Component.text("No challenges available"));
+        if(adventCalendarConfigModel.challenges.isEmpty()){
+            e.player.sendMessage(Component.text("No challenges available"));
             return;
         }
 
-        e.getPlayer().sendMessage(Component.text(adventCalendarConfigModel.getChallenges().get(0).getMessage()));
+        e.player.sendMessage(Component.text(adventCalendarConfigModel.challenges.get(0).message));
     }
 }

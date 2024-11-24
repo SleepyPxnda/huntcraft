@@ -1,6 +1,5 @@
 package de.cloudypanda.main.core.config;
 
-public class CoreConfigModel {
-    public CoreModuleConfig deathTimer = new CoreModuleConfig();
-    public CoreModuleConfig adventCalendar = new CoreModuleConfig();
+data class CoreConfigModel(val deathTimer: CoreModuleConfig = CoreModuleConfig(),
+                             val adventCalendar: CoreModuleConfig = CoreModuleConfig()) {
 }

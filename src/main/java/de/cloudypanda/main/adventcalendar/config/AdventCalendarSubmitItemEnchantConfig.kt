@@ -8,13 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bukkit.enchantments.Enchantment;
 
-@NoArgsConstructor
-@Getter
-@Setter
-@AllArgsConstructor
-@JsonSerialize(using = SubmitItemEnchantSerializer.class)
-@JsonDeserialize(using = SubmitItemEnchantDeserializer.class)
-public class AdventCalendarSubmitItemEnchantConfig {
-    private Enchantment enchant;
-    private int level;
-}
+
+@JsonSerialize(using = SubmitItemEnchantSerializer::class)
+@JsonDeserialize(using = SubmitItemEnchantDeserializer::class)
+data class AdventCalendarSubmitItemEnchantConfig(val enchantment: Enchantment, val level: Int) {}

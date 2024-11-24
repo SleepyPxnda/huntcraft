@@ -1,14 +1,8 @@
 package de.cloudypanda.main.core.integrations.rest;
 
-public class WebrequestManager {
+class WebrequestManager(val url: String) {
 
-    private final String url;
-
-    public WebrequestManager(String url) {
-        this.url = url;
-    }
-
-    private void sendPostRequest() {
+    fun sendPostRequest() {
 
     }
 

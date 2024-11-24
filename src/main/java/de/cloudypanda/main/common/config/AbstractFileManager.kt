@@ -13,24 +13,15 @@ import java.nio.file.Path;
  * Abstract class for handling file management based on given config model
  * @param <T> Config model class
  */
-@Getter
-public abstract class AbstractFileManager<T> {
+abstract class AbstractFileManager<T>(fileName: String, val huntcraft: Huntcraft, private val clazz: Class<T>) {
 
-    private final Path filePath;
-    private final Huntcraft huntcraft;
-    private final Class<T> clazz;
-
-    public AbstractFileManager (String fileName, Huntcraft huntcraft, Class<T> clazz){
-        this.filePath = Path.of(String.format("%s.json", fileName));
-        this.huntcraft = huntcraft;
-        this.clazz = clazz;
-    }
+    private val filePath: Path = Path.of("$fileName.json")
 
     /**
      * Create and initialize the config file if it does not exist
      * Also allows to overwrite the {@link AbstractFileManager#afterInit()} method to add custom logic after the file has been created
      */
-    public void createFileIfNotExists() {
+    fun createFileIfNotExists() {
         if(!checkIfFileExists()){
             createFile();
             this.saveToFile(newClazzInstance());
@@ -43,7 +34,7 @@ public abstract class AbstractFileManager<T> {
     /**
      * Override this method to add custom logic after the file has been created
      */
-    public void afterInit() {
+    open fun afterInit() {
         // Override this method to add custom logic after the file has been created
     };
 
@@ -51,13 +42,13 @@ public abstract class AbstractFileManager<T> {
      * Save the config model to the file
      * @param config Config model to save
      */
-    public void saveToFile(T config) {
-        ObjectMapper mapper = new ObjectMapper();
+    fun saveToFile(config: T ) {
+        val mapper = ObjectMapper();
 
         try {
             mapper.writeValue(filePath.toFile(), config);
-        } catch (IOException e) {
-            huntcraft.getComponentLogger().error("Something went wrong writing to file. " + e.getMessage());
+        } catch (e: IOException) {
+            huntcraft.componentLogger.error("Something went wrong writing to file. " + e.message);
         }
     }
 
@@ -65,12 +56,12 @@ public abstract class AbstractFileManager<T> {
      * Read the config model from the file
      * @return Config model
      */
-    public T readFromFile() {
-        ObjectMapper mapper = new ObjectMapper();
+    fun readFromFile() : T {
+        val mapper = ObjectMapper();
         try {
-            return mapper.readValue(this.getFilePath().toFile(), clazz);
-        } catch (IOException e) {
-            huntcraft.getComponentLogger().error("Something went wrong reading from file. {}", e.getMessage());
+            return mapper.readValue(filePath.toFile(), clazz);
+        } catch (e: IOException ) {
+            huntcraft.componentLogger.error("Something went wrong reading from file. {}", e.message);
         }
         return newClazzInstance();
     }
@@ -78,11 +69,11 @@ public abstract class AbstractFileManager<T> {
     /**
      * Create the file
      */
-    private void createFile(){
+    private fun createFile(){
         try{
             Files.createFile(filePath);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (e: IOException ) {
+            throw RuntimeException(e);
         }
     }
 
@@ -90,7 +81,7 @@ public abstract class AbstractFileManager<T> {
      * Check if the file exists
      * @return True if the file exists, false otherwise
      */
-    private boolean checkIfFileExists(){
+    private fun checkIfFileExists(): Boolean{
         return Files.exists(filePath);
     }
 
@@ -98,12 +89,12 @@ public abstract class AbstractFileManager<T> {
      * Create a new instance of the config model
      * @return New instance of the config model
      */
-    private T newClazzInstance() {
+    private fun newClazzInstance() : T {
         try {
-            Constructor<T> constructor = clazz.getDeclaredConstructor();
+            val constructor = clazz.getDeclaredConstructor();
             return constructor.newInstance();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (e: Exception ) {
+            throw RuntimeException(e);
         }
     }
 }

@@ -1,55 +1,35 @@
 package de.cloudypanda.main.adventcalendar.config;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore
+import java.time.LocalDate
+import java.util.*
+import kotlin.collections.ArrayList
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-@NoArgsConstructor
-@Getter
-@Setter
-public class AdventCalendarConfigModel {
-    private List<AdventCalendarDayConfig> challenges = new ArrayList<>();
-    private List<AdventCalendarLeaderboardConfig> leaderboard = new ArrayList<>();
+data class AdventCalendarConfigModel(val challenges: MutableList<AdventCalendarDayConfig> = ArrayList(),
+                                     val leaderboard: MutableList<AdventCalendarLeaderboardConfig> = ArrayList()) {
 
     @JsonIgnore
-    public AdventCalendarDayConfig getConfigForDay(LocalDate day) {
-        return challenges.stream()
-                .filter(dayConfig -> LocalDate.parse(dayConfig.getDate()).equals(LocalDate.now()))
-                .findFirst().orElse(null);
+    fun getConfigForDay(day: LocalDate): AdventCalendarDayConfig? {
+        return challenges.firstOrNull() { it.date == day.toString() }
     }
 
     @JsonIgnore
-    public boolean hasPlayerAlreadyCompletedDay(UUID playerID, LocalDate day) {
-        AdventCalendarLeaderboardConfig player = leaderboard.stream()
-                .filter(playerConfig -> playerConfig.getPlayerID().equals(playerID))
-                .findFirst()
-                .orElse(null);
+    fun hasPlayerAlreadyCompletedDay(playerID: UUID, day: LocalDate): Boolean {
+        val player = leaderboard.firstOrNull() { it.playerID == playerID }
 
-        return player != null && player.getCompletedDays().contains(day.toString());
+        return player != null && player.completedDays.contains(day.toString());
     }
 
     @JsonIgnore
-    public AdventCalendarLeaderboardConfig setCompletedForPlayer(UUID playerID, LocalDate day, int points) {
-        AdventCalendarLeaderboardConfig player = leaderboard.stream()
-                .filter(playerConfig -> playerConfig.getPlayerID().equals(playerID))
-                .findFirst()
-                .orElse(null);
+    fun setCompletedForPlayer(playerID: UUID, day: LocalDate, points: Int): AdventCalendarLeaderboardConfig {
+        var player = leaderboard.firstOrNull() { it.playerID == playerID }
 
         if(player == null) {
-            player = new AdventCalendarLeaderboardConfig();
-            player.setPlayerID(playerID);
-            player.setPoints(points);
-            player.setCompletedDays(List.of(day.toString()));
+            player = AdventCalendarLeaderboardConfig(playerID, points, mutableListOf(day.toString()));
             leaderboard.add(player);
         } else {
-            player.getCompletedDays().add(day.toString());
-            player.setPoints(player.getPoints() + points);
+            player.completedDays.add(day.toString());
+            player.points += points;
         }
 
         return player;

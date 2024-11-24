@@ -1,20 +1,9 @@
 package de.cloudypanda.main.adventcalendar.config;
 
-import lombok.*;
-import org.bukkit.Material;
+import org.bukkit.Material
 
-import java.util.ArrayList;
-import java.util.List;
-
-@NoArgsConstructor
-@Getter
-@Setter
-@RequiredArgsConstructor
-@AllArgsConstructor
-public class AdventCalendarSubmitItemConfig {
-    private @NonNull Material material;
-    private @NonNull Integer amount;
-    private Integer durability;
-    private String name;
-    private List<AdventCalendarSubmitItemEnchantConfig> enchants = new ArrayList<>();
-}
+data class AdventCalendarSubmitItemConfig(val material: Material,
+                                          val amount: Int,
+                                          val durability: Int?,
+                                          val name: String?,
+                                          val enchants: List<AdventCalendarSubmitItemEnchantConfig> = ArrayList()) {}

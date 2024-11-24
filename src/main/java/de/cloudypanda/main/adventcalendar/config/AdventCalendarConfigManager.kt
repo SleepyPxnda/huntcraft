@@ -5,35 +5,28 @@ import de.cloudypanda.main.common.config.AbstractFileManager;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 
-import java.util.List;
+class AdventCalendarConfigManager(fileName: String, huntcraft: Huntcraft)
+    : AbstractFileManager<AdventCalendarConfigModel>(fileName, huntcraft, AdventCalendarConfigModel::class.java) {
 
-public class AdventCalendarConfigManager extends AbstractFileManager<AdventCalendarConfigModel> {
-
-    public AdventCalendarConfigManager(String fileName, Huntcraft huntcraft) {
-        super(fileName, huntcraft, AdventCalendarConfigModel.class);
-    }
-
-    @Override
-    public void afterInit() {
+    override fun afterInit() {
         setupAdventCalendar();
     }
 
-    private void setupAdventCalendar() {
-        AdventCalendarConfigModel adventCalendarConfigModel = new AdventCalendarConfigModel();
+    private fun setupAdventCalendar() {
+        val adventCalendarConfigModel = AdventCalendarConfigModel();
 
-        AdventCalendarDayConfig day1Config = new AdventCalendarDayConfig();
-        day1Config.setDate("2024-11-24");
-        day1Config.setMessage("Welcome to the first day of the Advent Calendar! \n Today's challenge ist to submit a workbench");
-        day1Config.setPoints(10);
-        day1Config.setItemToSubmit(new AdventCalendarSubmitItemConfig(Material.DIAMOND_SWORD,
+        val day1Config = AdventCalendarDayConfig(
+            "2024-11-24",
+            "Welcome to the first day of the Advent Calendar! \n Today's challenge ist to submit a workbench",
+            10,
+            AdventCalendarSubmitItemConfig(Material.DIAMOND_SWORD,
                 1,
                 null,
                 null,
-                List.of(new AdventCalendarSubmitItemEnchantConfig(Enchantment.SHARPNESS, 5))
-        ));
+                listOf(AdventCalendarSubmitItemEnchantConfig(Enchantment.SHARPNESS, 5))
+            ));
 
-        adventCalendarConfigModel.getChallenges().add(day1Config);
-
+        adventCalendarConfigModel.challenges.add(day1Config);
         this.saveToFile(adventCalendarConfigModel);
     }
 }

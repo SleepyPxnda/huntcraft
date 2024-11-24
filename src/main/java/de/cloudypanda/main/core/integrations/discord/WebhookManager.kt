@@ -5,12 +5,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.*;
 
-public class WebhookManager {
+class WebhookManager {
 
-    private static final String webhookUrl = "[WebHook]";
+    companion object {
+        private val webhookUrl: String = "[WebHook]";
 
-    public static void sendDeathMessage(String deathMessage) {
-        String requestContent = String.format(
+        fun sendDeathMessage(deathMessage: String) {
+            val requestContent = String.format(
                 """
                         {
                             "username": "Death Bot",
@@ -18,50 +19,51 @@ public class WebhookManager {
                             "content": "@here %s"
                         }
                 """, deathMessage);
-        try {
-            URL url = new URL(webhookUrl);
-            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-            connection.addRequestProperty("Content-Type", "application/json");
-            connection.setDoOutput(true);
-            connection.setRequestMethod("POST");
+            try {
+                val url = URL(webhookUrl);
+                val connection = url.openConnection() as HttpsURLConnection;
+                connection.addRequestProperty("Content-Type", "application/json");
+                connection.setDoOutput(true);
+                connection.setRequestMethod("POST");
 
-            OutputStream stream = connection.getOutputStream();
-            stream.write(requestContent.getBytes());
-            stream.flush();
-            stream.close();
+                val stream = connection.outputStream;
+                stream.write(requestContent.encodeToByteArray());
+                stream.flush();
+                stream.close();
 
-            connection.getInputStream().close(); //I'm not sure why but it doesn't work without getting the InputStream
-            connection.disconnect();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+                connection.inputStream.close(); //I'm not sure why but it doesn't work without getting the InputStream
+                connection.disconnect();
+            } catch ( e: IOException) {
+                throw RuntimeException(e);
+            }
         }
-    }
 
-    public static void sendAchievementMessage(String achievementMessage) {
-        String requestContent = String.format(
+        fun sendAchievementMessage(message: String) {
+            val requestContent = String.format(
                 """
                         {
                             "username": "Achievement Bot",
                             "avatar_url":"https://www.iconpacks.net/free-icon/medal-1369.html",
                             "content": "@here %s"
                         }
-                """, achievementMessage);
-        try {
-            URL url = new URL(webhookUrl);
-            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-            connection.addRequestProperty("Content-Type", "application/json");
-            connection.setDoOutput(true);
-            connection.setRequestMethod("POST");
+                """, message);
+            try {
+                val url = URL(webhookUrl);
+                val connection = url.openConnection() as HttpsURLConnection;
+                connection.addRequestProperty("Content-Type", "application/json");
+                connection.setDoOutput(true);
+                connection.setRequestMethod("POST");
 
-            OutputStream stream = connection.getOutputStream();
-            stream.write(requestContent.getBytes());
-            stream.flush();
-            stream.close();
+                val stream = connection.outputStream;
+                stream.write(requestContent.encodeToByteArray());
+                stream.flush();
+                stream.close();
 
-            connection.getInputStream().close(); //I'm not sure why but it doesn't work without getting the InputStream
-            connection.disconnect();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+                connection.inputStream.close(); //I'm not sure why but it doesn't work without getting the InputStream
+                connection.disconnect();
+            } catch (e: IOException ) {
+                throw RuntimeException(e);
+            }
         }
     }
 }

@@ -1,23 +1,21 @@
 package de.cloudypanda.main.adventcalendar.config;
 
-import com.fasterxml.jackson.core.JacksonException;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonNode;
-import io.papermc.paper.registry.RegistryAccess;
-import io.papermc.paper.registry.RegistryKey;
-import org.bukkit.NamespacedKey;
+import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.core.TreeNode
+import com.fasterxml.jackson.databind.DeserializationContext
+import com.fasterxml.jackson.databind.JsonDeserializer
+import io.papermc.paper.registry.RegistryAccess
+import io.papermc.paper.registry.RegistryKey
+import org.bukkit.NamespacedKey
+import org.w3c.dom.Node
 
-import java.io.IOException;
+class SubmitItemEnchantDeserializer : JsonDeserializer<AdventCalendarSubmitItemEnchantConfig>() {
+    override fun deserialize(jsonParser: JsonParser, deserializationContext: DeserializationContext): AdventCalendarSubmitItemEnchantConfig {
+        val node = jsonParser.readValuesAs(TreeNode::class.java) as TreeNode
 
-public class SubmitItemEnchantDeserializer extends JsonDeserializer<AdventCalendarSubmitItemEnchantConfig> {
-    @Override
-    public AdventCalendarSubmitItemEnchantConfig deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JacksonException {
-        AdventCalendarSubmitItemEnchantConfig config = new AdventCalendarSubmitItemEnchantConfig();
-        JsonNode node = jsonParser.readValueAsTree();
-        config.setEnchant(RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT).get(new NamespacedKey("minecraft", node.get("enchant").asText().toLowerCase())));
-        config.setLevel(node.get("level").asInt());
-        return config;
+        val enchant = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT).get(NamespacedKey("minecraft", node.get("enchant").asToken().asString().lowercase()))!!;
+        val level = node.get("level").asToken().asString().toInt();
+
+        return AdventCalendarSubmitItemEnchantConfig(enchant, level);
     }
 }
