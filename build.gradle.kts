@@ -44,7 +44,6 @@ tasks.jar {
         attributes["paperweight-mappings-namespace"] = "mojang"
     }
     archiveBaseName.set("huntcraft")
-    version = "2.0"
     group = "de.cloudypanda"
 }
 
