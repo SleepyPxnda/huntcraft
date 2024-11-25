@@ -36,8 +36,15 @@ class Huntcraft : JavaPlugin() {
 
             manager.registerEventHandler(LifecycleEvents.COMMANDS) { event ->
                 val commands: Commands = event.registrar();
-                commands.register("huntcraft-submit", AdventCalendarSubmitCommand(this));
-                commands.register("huntcraft-leaderboard", AdventCalendarLeaderboardCommand(this));
+                commands.register("huntcraft-submit",
+                    "Submit command for the advent calendar",
+                    listOf("hcs","submit"),
+
+                    AdventCalendarSubmitCommand(this));
+                commands.register("huntcraft-leaderboard",
+                    "Open the leaderboard for the advent calendar",
+                    listOf("hcl","leaderboard "),
+                    AdventCalendarLeaderboardCommand(this));
             }
 
             this.componentLogger.info("Adventcalendar Module is enabled");
