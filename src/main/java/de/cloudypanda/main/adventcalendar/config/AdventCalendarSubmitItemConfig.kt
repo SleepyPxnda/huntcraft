@@ -8,4 +8,6 @@ data class AdventCalendarSubmitItemConfig(
     val durability: Int?,
     val name: String?,
     val enchants: List<AdventCalendarSubmitItemEnchantConfig> = ArrayList()
-) {}
+) {
+    constructor() : this(Material.AIR, 0, null, null)
+}

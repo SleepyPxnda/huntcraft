@@ -107,7 +107,7 @@ class AdventCalendarSubmitCommand(val huntcraft: Huntcraft) : BasicCommand {
         if (itemConfig.enchants.isNotEmpty()) {
             itemConfig.enchants.forEach { ench ->
                 if (!item.enchantments
-                        .containsKey(ench.enchantment) || item.getEnchantmentLevel(ench.enchantment) != ench.level
+                        .containsKey(ench.enchant) || item.getEnchantmentLevel(ench.enchant) != ench.level
                 ) {
                     validSubmission.set(false);
                 }

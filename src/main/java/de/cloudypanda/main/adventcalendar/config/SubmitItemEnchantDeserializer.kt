@@ -13,12 +13,16 @@ class SubmitItemEnchantDeserializer : JsonDeserializer<AdventCalendarSubmitItemE
         jsonParser: JsonParser,
         deserializationContext: DeserializationContext
     ): AdventCalendarSubmitItemEnchantConfig {
-        val node = jsonParser.readValuesAs(TreeNode::class.java) as TreeNode
 
-        val enchant = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT)
-            .get(NamespacedKey("minecraft", node.get("enchant").asToken().asString().lowercase()))!!;
-        val level = node.get("level").asToken().asString().toInt();
+        val tree = jsonParser.readValueAsTree<TreeNode>()
 
-        return AdventCalendarSubmitItemEnchantConfig(enchant, level);
+        val enchant = tree.get("enchant").toString().replace("\"", "");
+        val parsedEnchant = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT)
+            .get(NamespacedKey("minecraft", enchant.lowercase()))!!;
+
+        val levelToken = tree.get("level").toString().replace("\"", "");
+        val level = levelToken.toInt();
+
+        return AdventCalendarSubmitItemEnchantConfig(parsedEnchant, level);
     }
 }

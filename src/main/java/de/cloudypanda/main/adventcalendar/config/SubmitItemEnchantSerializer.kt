@@ -13,7 +13,7 @@ class SubmitItemEnchantSerializer : JsonSerializer<AdventCalendarSubmitItemEncha
     ) {
         jsonGenerator.writeStartObject();
         jsonGenerator.writeFieldName("enchant");
-        jsonGenerator.writeString(adventCalendarSubmitItemEnchantConfig.enchantment.key.key);
+        jsonGenerator.writeString(adventCalendarSubmitItemEnchantConfig.enchant.key.key);
         jsonGenerator.writeFieldName("level");
         jsonGenerator.writeNumber(adventCalendarSubmitItemEnchantConfig.level);
         jsonGenerator.writeEndObject();

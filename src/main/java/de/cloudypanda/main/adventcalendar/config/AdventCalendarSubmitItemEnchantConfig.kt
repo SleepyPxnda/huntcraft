@@ -7,4 +7,4 @@ import org.bukkit.enchantments.Enchantment
 
 @JsonSerialize(using = SubmitItemEnchantSerializer::class)
 @JsonDeserialize(using = SubmitItemEnchantDeserializer::class)
-data class AdventCalendarSubmitItemEnchantConfig(val enchantment: Enchantment, val level: Int) {}
+data class AdventCalendarSubmitItemEnchantConfig(val enchant: Enchantment, val level: Int) {}
