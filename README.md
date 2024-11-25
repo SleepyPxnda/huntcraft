@@ -1,6 +1,7 @@
 # Huntcraft
 
-Huntcraft is a Minecraft plugin that introduces various features such as death timers, advent calendar challenges, and more. This project is built using Java and Gradle.
+Huntcraft is a Minecraft plugin that introduces various features such as death timers, advent calendar challenges, and
+more. This project is built using Java and Gradle.
 
 ## Features
 
@@ -34,21 +35,25 @@ Huntcraft is a Minecraft plugin that introduces various features such as death t
 
 ### Death Timer
 
-The death timer configuration is managed through a JSON file. The file is automatically created if it does not exist. You can modify the settings in this file to adjust the death timeout duration and other related settings.
+The death timer configuration is managed through a JSON file. The file is automatically created if it does not exist.
+You can modify the settings in this file to adjust the death timeout duration and other related settings.
 
 ### Advent Calendar
 
-The advent calendar configuration is also managed through a JSON file. This file contains the daily challenges for players. You can add or modify challenges in this file.
+The advent calendar configuration is also managed through a JSON file. This file contains the daily challenges for
+players. You can add or modify challenges in this file.
 
 ## Usage
 
 ### Death Timer
 
-When a player dies, they are temporarily banned from rejoining the server. The duration of the ban is configurable. Players will receive a message indicating when they can rejoin.
+When a player dies, they are temporarily banned from rejoining the server. The duration of the ban is configurable.
+Players will receive a message indicating when they can rejoin.
 
 ### Advent Calendar
 
-Players will receive a daily challenge message when they join the server. The challenges are configured in the advent calendar JSON file.
+Players will receive a daily challenge message when they join the server. The challenges are configured in the advent
+calendar JSON file.
 
 ## License
 

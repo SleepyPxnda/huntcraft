@@ -6,7 +6,11 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 
 class SubmitItemEnchantSerializer : JsonSerializer<AdventCalendarSubmitItemEnchantConfig>() {
 
-    override fun serialize(adventCalendarSubmitItemEnchantConfig: AdventCalendarSubmitItemEnchantConfig, jsonGenerator: JsonGenerator, serializerProvider: SerializerProvider?) {
+    override fun serialize(
+        adventCalendarSubmitItemEnchantConfig: AdventCalendarSubmitItemEnchantConfig,
+        jsonGenerator: JsonGenerator,
+        serializerProvider: SerializerProvider?
+    ) {
         jsonGenerator.writeStartObject();
         jsonGenerator.writeFieldName("enchant");
         jsonGenerator.writeString(adventCalendarSubmitItemEnchantConfig.enchantment.key.key);

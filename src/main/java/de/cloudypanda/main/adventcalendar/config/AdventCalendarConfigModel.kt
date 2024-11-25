@@ -3,10 +3,11 @@ package de.cloudypanda.main.adventcalendar.config;
 import com.fasterxml.jackson.annotation.JsonIgnore
 import java.time.LocalDate
 import java.util.*
-import kotlin.collections.ArrayList
 
-data class AdventCalendarConfigModel(val challenges: MutableList<AdventCalendarDayConfig> = ArrayList(),
-                                     val leaderboard: MutableList<AdventCalendarLeaderboardConfig> = ArrayList()) {
+data class AdventCalendarConfigModel(
+    val challenges: MutableList<AdventCalendarDayConfig> = ArrayList(),
+    val leaderboard: MutableList<AdventCalendarLeaderboardConfig> = ArrayList()
+) {
 
     @JsonIgnore
     fun getConfigForDay(day: LocalDate): AdventCalendarDayConfig? {
@@ -24,7 +25,7 @@ data class AdventCalendarConfigModel(val challenges: MutableList<AdventCalendarD
     fun setCompletedForPlayer(playerID: UUID, day: LocalDate, points: Int): AdventCalendarLeaderboardConfig {
         var player = leaderboard.firstOrNull() { it.playerID == playerID }
 
-        if(player == null) {
+        if (player == null) {
             player = AdventCalendarLeaderboardConfig(playerID, points, mutableListOf(day.toString()));
             leaderboard.add(player);
         } else {

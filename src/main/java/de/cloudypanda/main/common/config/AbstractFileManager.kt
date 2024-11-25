@@ -1,13 +1,10 @@
 package de.cloudypanda.main.common.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import de.cloudypanda.main.Huntcraft;
-import lombok.Getter;
-
-import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import com.fasterxml.jackson.databind.ObjectMapper
+import de.cloudypanda.main.Huntcraft
+import java.io.IOException
+import java.nio.file.Files
+import java.nio.file.Path
 
 /**
  * Abstract class for handling file management based on given config model
@@ -22,12 +19,12 @@ abstract class AbstractFileManager<T>(fileName: String, val huntcraft: Huntcraft
      * Also allows to overwrite the {@link AbstractFileManager#afterInit()} method to add custom logic after the file has been created
      */
     fun createFileIfNotExists() {
-        if(!checkIfFileExists()){
+        if (!checkIfFileExists()) {
             createFile();
             this.saveToFile(newClazzInstance());
             afterInit();
         } else {
-            huntcraft.getComponentLogger().info("File already exists, continuing");
+            huntcraft.componentLogger.info("File already exists, continuing");
         }
     }
 
@@ -42,7 +39,7 @@ abstract class AbstractFileManager<T>(fileName: String, val huntcraft: Huntcraft
      * Save the config model to the file
      * @param config Config model to save
      */
-    fun saveToFile(config: T ) {
+    fun saveToFile(config: T) {
         val mapper = ObjectMapper();
 
         try {
@@ -56,11 +53,11 @@ abstract class AbstractFileManager<T>(fileName: String, val huntcraft: Huntcraft
      * Read the config model from the file
      * @return Config model
      */
-    fun readFromFile() : T {
+    fun readFromFile(): T {
         val mapper = ObjectMapper();
         try {
             return mapper.readValue(filePath.toFile(), clazz);
-        } catch (e: IOException ) {
+        } catch (e: IOException) {
             huntcraft.componentLogger.error("Something went wrong reading from file. {}", e.message);
         }
         return newClazzInstance();
@@ -69,10 +66,10 @@ abstract class AbstractFileManager<T>(fileName: String, val huntcraft: Huntcraft
     /**
      * Create the file
      */
-    private fun createFile(){
-        try{
+    private fun createFile() {
+        try {
             Files.createFile(filePath);
-        } catch (e: IOException ) {
+        } catch (e: IOException) {
             throw RuntimeException(e);
         }
     }
@@ -81,7 +78,7 @@ abstract class AbstractFileManager<T>(fileName: String, val huntcraft: Huntcraft
      * Check if the file exists
      * @return True if the file exists, false otherwise
      */
-    private fun checkIfFileExists(): Boolean{
+    private fun checkIfFileExists(): Boolean {
         return Files.exists(filePath);
     }
 
@@ -89,11 +86,11 @@ abstract class AbstractFileManager<T>(fileName: String, val huntcraft: Huntcraft
      * Create a new instance of the config model
      * @return New instance of the config model
      */
-    private fun newClazzInstance() : T {
+    private fun newClazzInstance(): T {
         try {
             val constructor = clazz.getDeclaredConstructor();
             return constructor.newInstance();
-        } catch (e: Exception ) {
+        } catch (e: Exception) {
             throw RuntimeException(e);
         }
     }

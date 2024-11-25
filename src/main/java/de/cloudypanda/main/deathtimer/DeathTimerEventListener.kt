@@ -18,73 +18,84 @@ import java.time.LocalDate
 class DeathTimerEventListener(val huntcraft: Huntcraft) : Listener {
 
     @EventHandler
-    fun onDeathEvent(e: PlayerDeathEvent){
+    fun onDeathEvent(e: PlayerDeathEvent) {
         val model = huntcraft.deathTimerConfigManager.readFromFile();
         val dateOfDeath = Instant.now();
         val isPlayerInList = model.currentDeathTimeOutetPlayers.stream()
-                .anyMatch { x -> x.playerUUID.equals(e.player.uniqueId) };
+            .anyMatch { x -> x.playerUUID.equals(e.player.uniqueId) };
 
-        if(isPlayerInList){
+        if (isPlayerInList) {
             model.currentDeathTimeOutetPlayers.removeIf({ x -> x.playerUUID.equals(e.player.uniqueId) });
         }
 
         model.currentDeathTimeOutetPlayers.add(
-                UserTimeoutConfig(e.player.uniqueId,
-                        dateOfDeath.toEpochMilli(),
-                        e.player.name));
+            UserTimeoutConfig(
+                e.player.uniqueId,
+                dateOfDeath.toEpochMilli(),
+                e.player.name
+            )
+        );
 
         huntcraft.deathTimerConfigManager.saveToFile(model);
 
         try {
             //WebhookManager.sendDeathMessage(e.getDeathMessage());
-        }catch (ex: Exception){
+        } catch (ex: Exception) {
             huntcraft.componentLogger.error("Error sending death message to webhook. {}", ex.message);
         }
     }
 
     @EventHandler
-    fun onPostRespawnEvent(e: PlayerPostRespawnEvent){
+    fun onPostRespawnEvent(e: PlayerPostRespawnEvent) {
         val model = huntcraft.deathTimerConfigManager.readFromFile();
 
         val presentPlayer = model.currentDeathTimeOutetPlayers
-                .stream()
-                .filter { x -> x.playerUUID == e.player.uniqueId }
-                .findFirst();
+            .stream()
+            .filter { x -> x.playerUUID == e.player.uniqueId }
+            .findFirst();
 
-        if(presentPlayer.isPresent && presentPlayer.get().isAllowedToJoin(model.deathTimeout)){
+        if (presentPlayer.isPresent && presentPlayer.get().isAllowedToJoin(model.deathTimeout)) {
             return;
         }
 
-        val dateOfDeath = Instant.ofEpochMilli(model.currentDeathTimeOutetPlayers
-                .stream()
-                .filter { x -> x.playerUUID == e.player.uniqueId }
-                .findFirst()
-                .get().latestDeath);
+        val dateOfDeath = Instant.ofEpochMilli(
+            model.currentDeathTimeOutetPlayers
+            .stream()
+            .filter { x -> x.playerUUID == e.player.uniqueId }
+            .findFirst()
+            .get().latestDeath);
 
         val date = DateUtil.getFormattedStringForDateAfterMillis(dateOfDeath.toEpochMilli(), model.deathTimeout);
         val timeout = DateUtil.getFormattedDurationUntilJoin(0, model.deathTimeout);
 
-        huntcraft.componentLogger.info(String.format("'%s' died. '%s' can join again after %s",
+        huntcraft.componentLogger.info(
+            String.format(
+                "'%s' died. '%s' can join again after %s",
                 e.player.name,
                 e.player.name,
-                date));
+                date
+            )
+        );
 
         val message = Component.text("Due to the rules of 'Huntcraft' \n you were dispelled from the server for: \n\n")
-                .append(Component.text(timeout, TextColor.color(255,0,0)))
-                .append(Component.text("\n\n\n", TextColor.color(255,255,255)))
-                .append(Component.text("Read more about the rules in our discord"))
-                .append(Component.text());
+            .append(Component.text(timeout, TextColor.color(255, 0, 0)))
+            .append(Component.text("\n\n\n", TextColor.color(255, 255, 255)))
+            .append(Component.text("Read more about the rules in our discord"))
+            .append(Component.text());
         e.player.kick(message);
+
+        //TODO: Webhook Message an Discord das Spieler gestorben ist
+        //TODO: Request Message das Spieler gestorben ist
     }
 
     @EventHandler
-    fun onAsyncPlayerPreLoginEvent(e: AsyncPlayerPreLoginEvent){
+    fun onAsyncPlayerPreLoginEvent(e: AsyncPlayerPreLoginEvent) {
         val model = huntcraft.deathTimerConfigManager.readFromFile();
 
         val isPlayerInList = model.currentDeathTimeOutetPlayers
             .any { x -> x.playerUUID == e.uniqueId };
 
-        if(!isPlayerInList){
+        if (!isPlayerInList) {
             e.allow();
             return;
         }
@@ -92,40 +103,45 @@ class DeathTimerEventListener(val huntcraft: Huntcraft) : Listener {
         val userConfig = model.currentDeathTimeOutetPlayers
             .find { x -> x.playerUUID == e.uniqueId };
 
-        if(userConfig == null){
+        if (userConfig == null) {
             e.allow();
             return;
         }
 
-        if(userConfig.isAllowedToJoin(model.deathTimeout)){
+        if (userConfig.isAllowedToJoin(model.deathTimeout)) {
             e.allow();
             return;
         }
 
         val date = DateUtil.getFormattedStringForDateAfterMillis(userConfig.latestDeath, model.deathTimeout);
-        val message = Component.text("You died. \n", TextColor.color(255, 0,0))
-                .append(Component.text("You can't rejoin until $date. \n\n", TextColor.color(255, 255, 255)))
-                .append(Component.text("Time until rejoin is possible: \n", TextColor.color(255, 255, 255)))
-                .append(Component.text(DateUtil.getFormattedDurationUntilJoin(Instant.now().toEpochMilli()
-                        ,userConfig.latestDeath, model.deathTimeout), TextColor.color(124,252,0)));
+        val message = Component.text("You died. \n", TextColor.color(255, 0, 0))
+            .append(Component.text("You can't rejoin until $date. \n\n", TextColor.color(255, 255, 255)))
+            .append(Component.text("Time until rejoin is possible: \n", TextColor.color(255, 255, 255)))
+            .append(
+                Component.text(
+                    DateUtil.getFormattedDurationUntilJoin(
+                        Instant.now().toEpochMilli(), userConfig.latestDeath, model.deathTimeout
+                    ), TextColor.color(124, 252, 0)
+                )
+            );
 
         e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, message);
     }
 
     @EventHandler
-    fun onPlayerJoin(e: PlayerJoinEvent){
+    fun onPlayerJoin(e: PlayerJoinEvent) {
         e.player.sendMessage(Component.text("Welcome to the server! Todays Challenge is as follows:"));
 
         val adventCalendarConfigModel = huntcraft.adventCalendarConfigManager.readFromFile();
 
-        if(adventCalendarConfigModel.challenges.isEmpty()){
+        if (adventCalendarConfigModel.challenges.isEmpty()) {
             e.player.sendMessage(Component.text("No challenges available"));
             return;
         }
 
         val dayConfig = adventCalendarConfigModel.getConfigForDay(LocalDate.now());
 
-        if(dayConfig == null){
+        if (dayConfig == null) {
             e.player.sendMessage(Component.text("No challenges available"));
             return;
         }

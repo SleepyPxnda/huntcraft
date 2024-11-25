@@ -3,10 +3,14 @@ version: '${version}'
 main: de.cloudypanda.main.Huntcraft
 api-version: '1.21'
 load: STARTUP
-authors: [Pxnda]
+authors: [ Pxndarino ]
 
 commands:
-  command:
+  huntcraft-submit:
     description: 'Submit command for the advent calendar'
     usage: '/huntcraft-submit'
-    aliases: [hcs,submit]
+    aliases: [ hcs,submit ]
+  huntcraft-leaderboard:
+    description: 'Open the leaderboard for the advent calendar'
+    usage: '/huntcraft-leaderboard'
+    aliases: [ hcl,leaderboard ]

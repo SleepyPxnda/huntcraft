@@ -10,7 +10,7 @@ import org.bukkit.entity.Player
 class AdventCalendarLeaderboardCommand(val huntcraft: Huntcraft) : BasicCommand {
 
     override fun execute(commandSourceStack: CommandSourceStack, args: Array<out String>) {
-        if(EntityType.PLAYER != (commandSourceStack.getExecutor()?.type ?: EntityType.UNKNOWN)) {
+        if (EntityType.PLAYER != (commandSourceStack.getExecutor()?.type ?: EntityType.UNKNOWN)) {
             return;
         }
 
@@ -18,7 +18,7 @@ class AdventCalendarLeaderboardCommand(val huntcraft: Huntcraft) : BasicCommand 
 
         val player = commandSourceStack.getExecutor() as Player;
 
-        if(adventCalendarConfigModel.leaderboard.isEmpty()) {
+        if (adventCalendarConfigModel.leaderboard.isEmpty()) {
             player.sendMessage("Leaderboard is empty");
             return;
         }

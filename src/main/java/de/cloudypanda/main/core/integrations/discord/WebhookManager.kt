@@ -1,9 +1,8 @@
 package de.cloudypanda.main.core.integrations.discord;
 
-import javax.net.ssl.HttpsURLConnection;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.*;
+import java.io.IOException
+import java.net.URL
+import javax.net.ssl.HttpsURLConnection
 
 class WebhookManager {
 
@@ -18,7 +17,8 @@ class WebhookManager {
                             "avatar_url":"https://www.iconpacks.net/icons/1/free-trash-icon-347-thumb.png",
                             "content": "@here %s"
                         }
-                """, deathMessage);
+                """, deathMessage
+            );
             try {
                 val url = URL(webhookUrl);
                 val connection = url.openConnection() as HttpsURLConnection;
@@ -33,7 +33,7 @@ class WebhookManager {
 
                 connection.inputStream.close(); //I'm not sure why but it doesn't work without getting the InputStream
                 connection.disconnect();
-            } catch ( e: IOException) {
+            } catch (e: IOException) {
                 throw RuntimeException(e);
             }
         }
@@ -46,7 +46,8 @@ class WebhookManager {
                             "avatar_url":"https://www.iconpacks.net/free-icon/medal-1369.html",
                             "content": "@here %s"
                         }
-                """, message);
+                """, message
+            );
             try {
                 val url = URL(webhookUrl);
                 val connection = url.openConnection() as HttpsURLConnection;
@@ -61,7 +62,7 @@ class WebhookManager {
 
                 connection.inputStream.close(); //I'm not sure why but it doesn't work without getting the InputStream
                 connection.disconnect();
-            } catch (e: IOException ) {
+            } catch (e: IOException) {
                 throw RuntimeException(e);
             }
         }
