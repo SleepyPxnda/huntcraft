@@ -1,5 +1,5 @@
 name: huntcraft
-version: '${version}'
+version: '2'
 main: de.cloudypanda.main.Huntcraft
 api-version: '1.21'
 load: STARTUP
