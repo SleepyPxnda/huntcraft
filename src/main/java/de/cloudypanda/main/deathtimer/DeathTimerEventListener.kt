@@ -2,6 +2,8 @@ package de.cloudypanda.main.deathtimer;
 
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import de.cloudypanda.main.Huntcraft;
+import de.cloudypanda.main.core.integrations.discord.WebhookManager
+import de.cloudypanda.main.core.integrations.rest.RequestManager
 import de.cloudypanda.main.deathtimer.config.UserTimeoutConfig;
 import de.cloudypanda.main.util.DateUtil;
 import net.kyori.adventure.text.Component;
@@ -22,10 +24,10 @@ class DeathTimerEventListener(val huntcraft: Huntcraft) : Listener {
         val model = huntcraft.deathTimerConfigManager.readFromFile();
         val dateOfDeath = Instant.now();
         val isPlayerInList = model.currentDeathTimeOutetPlayers.stream()
-            .anyMatch { x -> x.playerUUID.equals(e.player.uniqueId) };
+            .anyMatch { x -> x.playerUUID == e.player.uniqueId };
 
         if (isPlayerInList) {
-            model.currentDeathTimeOutetPlayers.removeIf({ x -> x.playerUUID.equals(e.player.uniqueId) });
+            model.currentDeathTimeOutetPlayers.removeIf({ x -> x.playerUUID == e.player.uniqueId });
         }
 
         model.currentDeathTimeOutetPlayers.add(
@@ -38,11 +40,8 @@ class DeathTimerEventListener(val huntcraft: Huntcraft) : Listener {
 
         huntcraft.deathTimerConfigManager.saveToFile(model);
 
-        try {
-            //WebhookManager.sendDeathMessage(e.getDeathMessage());
-        } catch (ex: Exception) {
-            huntcraft.componentLogger.error("Error sending death message to webhook. {}", ex.message);
-        }
+        WebhookManager.sendDeathMessage("${e.deathMessage()}");
+        RequestManager(huntcraft).updatePlayerDeath(e.player.uniqueId, dateOfDeath.toEpochMilli());
     }
 
     @EventHandler
@@ -83,9 +82,6 @@ class DeathTimerEventListener(val huntcraft: Huntcraft) : Listener {
             .append(Component.text("Read more about the rules in our discord"))
             .append(Component.text());
         e.player.kick(message);
-
-        //TODO: Webhook Message an Discord das Spieler gestorben ist
-        //TODO: Request Message das Spieler gestorben ist
     }
 
     @EventHandler

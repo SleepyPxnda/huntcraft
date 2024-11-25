@@ -8,6 +8,7 @@ import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
+import java.util.*
 
 class RequestManager(val huntcraft: Huntcraft) {
 
@@ -19,12 +20,20 @@ class RequestManager(val huntcraft: Huntcraft) {
         return response.statusCode() == 200
     }
 
-    fun updatePlayerChallenge(updatePlayerChallengeDto: UpdatePlayerChallengeDto): Boolean {
+    fun updatePlayerChallenge(playerID: UUID, points: Int) {
+        val updatePlayerChallengeDto = UpdatePlayerChallengeDto(playerID, points)
+
         val response = sendPutRequest("$baseUrl/api/player/challenge", updatePlayerChallengeDto.toString())
-        return response.statusCode() == 200
+
+        if (response.statusCode() == 200) {
+            println("Updated $playerID with $points points")
+        } else {
+            println("Failed to update $playerID with $points points cause of ${response.body()}")
+        }
     }
 
-    fun updatePlayerDeath(updatePlayerDeathDto: UpdatePlayerDeathDto): Boolean {
+    fun updatePlayerDeath(playerID: UUID, deathTimestamp: Long): Boolean {
+        val updatePlayerDeathDto = UpdatePlayerDeathDto(playerID, deathTimestamp)
         val response = sendPutRequest("$baseUrl/api/player/challenge", updatePlayerDeathDto.toString())
         return response.statusCode() == 200
     }
