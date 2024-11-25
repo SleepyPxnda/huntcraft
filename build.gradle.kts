@@ -2,14 +2,23 @@ buildscript {
     repositories {
         gradlePluginPortal()
     }
+    dependencies {
+        classpath("com.github.johnrengelman:shadow:8.1.1")
+    }
 }
 
 plugins {
     java
     kotlin("jvm")
+
+    id("com.github.johnrengelman.shadow") version "8.1.1"
+
     // Apply the plugin
     id("xyz.jpenilla.run-paper") version "2.3.1"
 }
+
+group = "de.cloudypanda"
+version = '2'
 
 repositories {
     mavenCentral()
@@ -44,7 +53,13 @@ tasks.jar {
         attributes["paperweight-mappings-namespace"] = "mojang"
     }
     archiveBaseName.set("huntcraft")
-    group = "de.cloudypanda"
+}
+// if you have shadowJar configured
+tasks.shadowJar {
+    manifest {
+        attributes["paperweight-mappings-namespace"] = "mojang"
+    }
+    archiveBaseName.set("huntcraft")
 }
 
 tasks.runServer {
@@ -54,4 +69,6 @@ tasks.runServer {
     minecraftVersion("1.21.1")
 }
 
+
+apply(plugin = "com.github.johnrengelman.shadow")
 apply(plugin = "java")
