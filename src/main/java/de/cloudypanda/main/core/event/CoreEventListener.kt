@@ -2,6 +2,7 @@ package de.cloudypanda.main.core.event
 
 import de.cloudypanda.main.Huntcraft
 import de.cloudypanda.main.core.integrations.rest.RequestManager
+import de.cloudypanda.main.util.TextUtil
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor.color
 import org.bukkit.event.EventHandler
@@ -9,6 +10,7 @@ import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
+import org.w3c.dom.Text
 import java.util.HashMap
 import java.util.UUID
 import kotlin.time.Duration
@@ -21,11 +23,8 @@ class CoreEventListener() : Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     fun onPlayerJoinEvent(e: PlayerJoinEvent) {
 
-        e.joinMessage(Component.text("[").color(color(128,128,128))
-            .append(Component.text("☁").color(color(0,100,0)))
-            .append(Component.text("] ").color(color(128,128,128)))
-            .append(Component.text(e.player.name).color(color(255, 255, 255)))
-        )
+        e.joinMessage(TextUtil.getJoinIndicator(e.player.name))
+        e.player.sendMessage(TextUtil.getJoinMessage())
 
         if (e.player.firstPlayed == 0L) {
             RequestManager().createPlayer(e.player.uniqueId, e.player.name)
@@ -47,11 +46,6 @@ class CoreEventListener() : Listener {
             "%02d:%02d:%02d".format(hours, minutes, seconds)
         }
 
-        e.quitMessage(Component.text("[").color(color(128,128,128))
-            .append(Component.text("☁").color(color(139,0,0)))
-            .append(Component.text("] ").color(color(128,128,128)))
-            .append(Component.text(e.player.name).color(color(255, 255, 255)))
-            .append(Component.text(" (played for $sessionDurationString)"))
-        )
+        e.quitMessage(TextUtil.getQuitIndicator(e.player.name, sessionDurationString))
     }
 }

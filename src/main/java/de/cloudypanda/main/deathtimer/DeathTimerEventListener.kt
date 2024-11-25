@@ -1,21 +1,17 @@
 package de.cloudypanda.main.deathtimer;
 
-import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
-import de.cloudypanda.main.Huntcraft;
+import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent
+import de.cloudypanda.main.Huntcraft
 import de.cloudypanda.main.core.integrations.discord.WebhookManager
 import de.cloudypanda.main.core.integrations.rest.RequestManager
-import de.cloudypanda.main.deathtimer.config.UserTimeoutConfig;
-import de.cloudypanda.main.util.DateUtil;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-
-import java.time.Instant;
-import java.time.LocalDate
+import de.cloudypanda.main.deathtimer.config.UserTimeoutConfig
+import de.cloudypanda.main.util.DateUtil
+import de.cloudypanda.main.util.TextUtil
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.entity.PlayerDeathEvent
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent
+import java.time.Instant
 
 class DeathTimerEventListener(val huntcraft: Huntcraft) : Listener {
 
@@ -57,30 +53,8 @@ class DeathTimerEventListener(val huntcraft: Huntcraft) : Listener {
             return;
         }
 
-        val dateOfDeath = Instant.ofEpochMilli(
-            model.currentDeathTimeOutetPlayers
-            .stream()
-            .filter { x -> x.playerUUID == e.player.uniqueId }
-            .findFirst()
-            .get().latestDeath);
-
-        val date = DateUtil.getFormattedStringForDateAfterMillis(dateOfDeath.toEpochMilli(), model.deathTimeout);
         val timeout = DateUtil.getFormattedDurationUntilJoin(0, model.deathTimeout);
-
-        huntcraft.componentLogger.info(
-            String.format(
-                "'%s' died. '%s' can join again after %s",
-                e.player.name,
-                e.player.name,
-                date
-            )
-        );
-
-        val message = Component.text("Due to the rules of 'Huntcraft' \n you were dispelled from the server for: \n\n")
-            .append(Component.text(timeout, TextColor.color(255, 0, 0)))
-            .append(Component.text("\n\n\n", TextColor.color(255, 255, 255)))
-            .append(Component.text("Read more about the rules in our discord"))
-            .append(Component.text());
+        val message = TextUtil.getDeathTimerKickMessage(timeout);
         e.player.kick(message);
     }
 
@@ -110,17 +84,7 @@ class DeathTimerEventListener(val huntcraft: Huntcraft) : Listener {
         }
 
         val date = DateUtil.getFormattedStringForDateAfterMillis(userConfig.latestDeath, model.deathTimeout);
-        val message = Component.text("You died. \n", TextColor.color(255, 0, 0))
-            .append(Component.text("You can't rejoin until $date. \n\n", TextColor.color(255, 255, 255)))
-            .append(Component.text("Time until rejoin is possible: \n", TextColor.color(255, 255, 255)))
-            .append(
-                Component.text(
-                    DateUtil.getFormattedDurationUntilJoin(
-                        Instant.now().toEpochMilli(), userConfig.latestDeath, model.deathTimeout
-                    ), TextColor.color(124, 252, 0)
-                )
-            );
-
+        val message = TextUtil.getDeathTimerTimeoutMessage(date, userConfig.latestDeath, model.deathTimeout);
         e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, message);
     }
 }

@@ -11,8 +11,8 @@ import java.net.http.HttpResponse
 import java.util.*
 
 class RequestManager() {
-    private val baseUrl: String = Huntcraft.instance.coreConfigModel.requestConfig.url
-    private val isRequestEnabled: Boolean = Huntcraft.instance.coreConfigModel.requestConfig.enabled
+    private val baseUrl: String = Huntcraft.instance.coreConfigModel.requests.url
+    private val isRequestEnabled: Boolean = Huntcraft.instance.coreConfigModel.requests.enabled
 
     fun createPlayer(playerID: UUID, playerName: String) {
         val createPlayerDto = CreatePlayerDto(playerID, playerName)

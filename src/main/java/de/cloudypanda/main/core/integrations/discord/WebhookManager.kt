@@ -1,5 +1,6 @@
 package de.cloudypanda.main.core.integrations.discord;
 
+import de.cloudypanda.main.Huntcraft
 import java.io.IOException
 import java.net.URL
 import javax.net.ssl.HttpsURLConnection
@@ -10,6 +11,8 @@ class WebhookManager {
         private val webhookUrl: String = "[WebHook]";
 
         fun sendDeathMessage(deathMessage: String) {
+            if(!Huntcraft.instance.coreConfigModel.webhook.enabled) return;
+
             val requestContent = String.format(
                 """
                         {
@@ -39,6 +42,8 @@ class WebhookManager {
         }
 
         fun sendAchievementMessage(message: String) {
+            if(!Huntcraft.instance.coreConfigModel.webhook.enabled) return;
+
             val requestContent = String.format(
                 """
                         {

@@ -6,6 +6,7 @@ import de.cloudypanda.main.adventcalendar.config.AdventCalendarDayConfig
 import de.cloudypanda.main.adventcalendar.config.AdventCalendarSubmitItemConfig
 import de.cloudypanda.main.core.integrations.discord.WebhookManager
 import de.cloudypanda.main.core.integrations.rest.RequestManager
+import de.cloudypanda.main.util.TextUtil
 import io.papermc.paper.command.brigadier.BasicCommand
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import org.bukkit.entity.EntityType
@@ -27,13 +28,22 @@ class AdventCalendarSubmitCommand() : BasicCommand {
         val adventCalendarConfigModel = Huntcraft.instance.adventCalendarConfig;
 
         if (adventCalendarConfigModel.getConfigForDay(LocalDate.now()) == null) {
-            player.sendMessage("There is no challenge for today")
+            player.sendMessage(TextUtil.getNoChallengeTodayMessage())
             return
         }
 
         if (adventCalendarConfigModel.hasPlayerAlreadyCompletedDay(player.uniqueId, LocalDate.now())) {
-            player.sendMessage("You have already completed the challenge for today")
+            player.sendMessage(TextUtil.getChallengeAlreadyCompletedMessage())
             return
+        }
+
+        if(args.isEmpty()){
+            player.sendMessage(TextUtil.getSubmitConfirmationMessage())
+            return;
+        }
+
+        if(args.size != 1 || args[0] != "force"){
+            return;
         }
 
         val dayConfig = adventCalendarConfigModel.getConfigForDay(LocalDate.now())
@@ -42,12 +52,12 @@ class AdventCalendarSubmitCommand() : BasicCommand {
         val wasItemSubmitted = AtomicBoolean(false)
 
         player.inventory.forEach { item ->
-            if (item == null) {
-                return
+            if (item == null){
+                return@forEach
             }
 
             if (validateItemSubmition(item, itemConfig!!)) {
-                player.sendMessage("You have successfully submitted the item")
+                player.sendMessage(TextUtil.getChallengeCompletedMessage())
 
                 if (itemConfig.amount != 1) {
                     player.inventory
@@ -58,11 +68,12 @@ class AdventCalendarSubmitCommand() : BasicCommand {
 
                 completeSuccessfulSubmit(player, adventCalendarConfigModel, dayConfig)
                 wasItemSubmitted.set(true)
+                return@forEach
             }
         }
 
         if (!wasItemSubmitted.get()) {
-            player.sendMessage("No matching item found in your inventory")
+            player.sendMessage(TextUtil.getChallengeItemNotFoundMessage())
         }
     }
 
@@ -74,9 +85,9 @@ class AdventCalendarSubmitCommand() : BasicCommand {
         adventCalendarConfigModel.setCompletedForPlayer(
             player.uniqueId,
             LocalDate.now(),
-            dayConfig.points
         )
 
+        Huntcraft.instance.adventCalendarConfigManager.saveToFile(adventCalendarConfigModel)
         Huntcraft.instance.tablistManager.updatePlayerTablist(player)
         WebhookManager.sendAchievementMessage("${player.displayName()} has completed today's challenge and earned %d points")
         RequestManager().updatePlayerChallenge(player.uniqueId, dayConfig.points)

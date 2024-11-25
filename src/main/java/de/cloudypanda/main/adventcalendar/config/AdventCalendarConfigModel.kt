@@ -6,7 +6,7 @@ import java.util.*
 
 data class AdventCalendarConfigModel(
     val challenges: MutableList<AdventCalendarDayConfig> = ArrayList(),
-    val leaderboard: MutableList<AdventCalendarLeaderboardConfig> = ArrayList()
+    val history: MutableList<AdventCalendarHistoryConfig> = ArrayList()
 ) {
 
     @JsonIgnore
@@ -16,21 +16,20 @@ data class AdventCalendarConfigModel(
 
     @JsonIgnore
     fun hasPlayerAlreadyCompletedDay(playerID: UUID, day: LocalDate): Boolean {
-        val player = leaderboard.firstOrNull() { it.playerID == playerID }
+        val player = history.firstOrNull() { it.playerID == playerID }
 
         return player != null && player.completedDays.contains(day.toString());
     }
 
     @JsonIgnore
-    fun setCompletedForPlayer(playerID: UUID, day: LocalDate, points: Int): AdventCalendarLeaderboardConfig {
-        var player = leaderboard.firstOrNull() { it.playerID == playerID }
+    fun setCompletedForPlayer(playerID: UUID, day: LocalDate): AdventCalendarHistoryConfig {
+        var player = history.firstOrNull() { it.playerID == playerID }
 
         if (player == null) {
-            player = AdventCalendarLeaderboardConfig(playerID, points, mutableListOf(day.toString()));
-            leaderboard.add(player);
+            player = AdventCalendarHistoryConfig(playerID, mutableListOf(day.toString()));
+            history.add(player);
         } else {
             player.completedDays.add(day.toString());
-            player.points += points;
         }
 
         return player;

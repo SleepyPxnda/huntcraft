@@ -2,9 +2,9 @@ package de.cloudypanda.main.adventcalendar.config;
 
 import java.util.*
 
-data class AdventCalendarLeaderboardConfig(
-    val playerID: UUID,
-    var points: Int,
+data class AdventCalendarHistoryConfig(
+    val playerID: UUID?,
     val completedDays: MutableList<String> = ArrayList()
 ) {
+    constructor() : this(null, ArrayList())
 }
