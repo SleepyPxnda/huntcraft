@@ -24,7 +24,7 @@ class AdventCalendarSubmitCommand() : BasicCommand {
 
         val player = commandSourceStack.executor as Player
 
-        val adventCalendarConfigModel = Huntcraft.adventCalendarConfig;
+        val adventCalendarConfigModel = Huntcraft.instance.adventCalendarConfig;
 
         if (adventCalendarConfigModel.getConfigForDay(LocalDate.now()) == null) {
             player.sendMessage("There is no challenge for today")
@@ -77,6 +77,7 @@ class AdventCalendarSubmitCommand() : BasicCommand {
             dayConfig.points
         )
 
+        Huntcraft.instance.tablistManager.updatePlayerTablist(player)
         WebhookManager.sendAchievementMessage("${player.displayName()} has completed today's challenge and earned %d points")
         RequestManager().updatePlayerChallenge(player.uniqueId, dayConfig.points)
     }
@@ -111,16 +112,19 @@ class AdventCalendarSubmitCommand() : BasicCommand {
         }
 
         //Only if enchants are configured
-        if (itemConfig.enchants.isNotEmpty()) {
-            itemConfig.enchants.forEach { ench ->
-                if (!item.enchantments
-                        .containsKey(ench.enchant) || item.getEnchantmentLevel(ench.enchant) != ench.level
-                ) {
-                    validSubmission.set(false)
-                }
+        if(itemConfig.enchants != null) {
+            if (itemConfig.enchants.isNotEmpty()) {
+                itemConfig.enchants.forEach { ench ->
+                    if (!item.enchantments
+                            .containsKey(ench.enchant) || item.getEnchantmentLevel(ench.enchant) != ench.level
+                    ) {
+                        validSubmission.set(false)
+                    }
 
+                }
             }
         }
+
 
         return validSubmission.get()
     }

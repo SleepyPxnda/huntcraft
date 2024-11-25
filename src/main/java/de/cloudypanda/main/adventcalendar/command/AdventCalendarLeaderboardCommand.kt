@@ -14,7 +14,7 @@ class AdventCalendarLeaderboardCommand() : BasicCommand {
             return;
         }
 
-        val adventCalendarConfigModel = Huntcraft.adventCalendarConfig;
+        val adventCalendarConfigModel = Huntcraft.instance.adventCalendarConfig;
 
         val player = commandSourceStack.getExecutor() as Player;
 

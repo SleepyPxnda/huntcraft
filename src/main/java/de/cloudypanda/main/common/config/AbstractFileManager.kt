@@ -10,7 +10,7 @@ import java.nio.file.Path
  * Abstract class for handling file management based on given config model
  * @param <T> Config model class
  */
-abstract class AbstractFileManager<T>(fileName: String, val huntcraft: Huntcraft, private val clazz: Class<T>) {
+abstract class AbstractFileManager<T>(private val fileName: String, val huntcraft: Huntcraft, private val clazz: Class<T>) {
 
     private val filePath: Path = Path.of("$fileName.json")
 
@@ -24,7 +24,7 @@ abstract class AbstractFileManager<T>(fileName: String, val huntcraft: Huntcraft
             this.saveToFile(newClazzInstance());
             afterInit();
         } else {
-            huntcraft.componentLogger.info("File already exists, continuing");
+            huntcraft.componentLogger.info("File $fileName already exists");
         }
     }
 

@@ -123,25 +123,4 @@ class DeathTimerEventListener(val huntcraft: Huntcraft) : Listener {
 
         e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, message);
     }
-
-    @EventHandler
-    fun onPlayerJoin(e: PlayerJoinEvent) {
-        e.player.sendMessage(Component.text("Welcome to the server! Todays Challenge is as follows:"));
-
-        val adventCalendarConfigModel = Huntcraft.adventCalendarConfig;
-
-        if (adventCalendarConfigModel.challenges.isEmpty()) {
-            e.player.sendMessage(Component.text("No challenges available"));
-            return;
-        }
-
-        val dayConfig = adventCalendarConfigModel.getConfigForDay(LocalDate.now());
-
-        if (dayConfig == null) {
-            e.player.sendMessage(Component.text("No challenges available"));
-            return;
-        }
-
-        e.player.sendMessage(Component.text(dayConfig.message));
-    }
 }

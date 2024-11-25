@@ -2,17 +2,56 @@ package de.cloudypanda.main.core.event
 
 import de.cloudypanda.main.Huntcraft
 import de.cloudypanda.main.core.integrations.rest.RequestManager
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.TextColor.color
 import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
+import org.bukkit.event.player.PlayerQuitEvent
+import java.util.HashMap
+import java.util.UUID
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 
 class CoreEventListener() : Listener {
+    private val playDuration: MutableMap<UUID, Long> = HashMap<UUID, Long>()
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     fun onPlayerJoinEvent(e: PlayerJoinEvent) {
+
+        e.joinMessage(Component.text("[").color(color(128,128,128))
+            .append(Component.text("☁").color(color(0,100,0)))
+            .append(Component.text("] ").color(color(128,128,128)))
+            .append(Component.text(e.player.name).color(color(255, 255, 255)))
+        )
+
         if (e.player.firstPlayed == 0L) {
             RequestManager().createPlayer(e.player.uniqueId, e.player.name)
         }
+
+        playDuration[e.player.uniqueId] = System.currentTimeMillis()
+
+        Huntcraft.instance.tablistManager.updatePlayerTablist(e.player)
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    fun onPlayerQuitEvent(e: PlayerQuitEvent) {
+
+        val sessionStartMillis = playDuration[e.player.uniqueId] ?: 0;
+
+        val sessionDurationMillis = System.currentTimeMillis() - sessionStartMillis
+
+        val sessionDurationString = sessionDurationMillis.milliseconds.toComponents { hours, minutes, seconds, _ ->
+            "%02d:%02d:%02d".format(hours, minutes, seconds)
+        }
+
+        e.quitMessage(Component.text("[").color(color(128,128,128))
+            .append(Component.text("☁").color(color(139,0,0)))
+            .append(Component.text("] ").color(color(128,128,128)))
+            .append(Component.text(e.player.name).color(color(255, 255, 255)))
+            .append(Component.text(" (played for $sessionDurationString)"))
+        )
     }
 }
