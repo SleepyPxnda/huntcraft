@@ -7,14 +7,14 @@ import org.bukkit.Bukkit
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 
-class AdventCalendarLeaderboardCommand(val huntcraft: Huntcraft) : BasicCommand {
+class AdventCalendarLeaderboardCommand() : BasicCommand {
 
     override fun execute(commandSourceStack: CommandSourceStack, args: Array<out String>) {
         if (EntityType.PLAYER != (commandSourceStack.getExecutor()?.type ?: EntityType.UNKNOWN)) {
             return;
         }
 
-        val adventCalendarConfigModel = huntcraft.adventCalendarConfigManager.readFromFile();
+        val adventCalendarConfigModel = Huntcraft.adventCalendarConfig;
 
         val player = commandSourceStack.getExecutor() as Player;
 

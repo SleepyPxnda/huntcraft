@@ -15,7 +15,7 @@ import org.bukkit.inventory.meta.Damageable
 import java.time.LocalDate
 import java.util.concurrent.atomic.AtomicBoolean
 
-class AdventCalendarSubmitCommand(val huntcraft: Huntcraft) : BasicCommand {
+class AdventCalendarSubmitCommand() : BasicCommand {
 
     override fun execute(commandSourceStack: CommandSourceStack, args: Array<out String>) {
         if (EntityType.PLAYER != commandSourceStack.executor.type) {
@@ -24,7 +24,7 @@ class AdventCalendarSubmitCommand(val huntcraft: Huntcraft) : BasicCommand {
 
         val player = commandSourceStack.executor as Player
 
-        val adventCalendarConfigModel = huntcraft.adventCalendarConfigManager.readFromFile()
+        val adventCalendarConfigModel = Huntcraft.adventCalendarConfig;
 
         if (adventCalendarConfigModel.getConfigForDay(LocalDate.now()) == null) {
             player.sendMessage("There is no challenge for today")
@@ -77,10 +77,8 @@ class AdventCalendarSubmitCommand(val huntcraft: Huntcraft) : BasicCommand {
             dayConfig.points
         )
 
-        huntcraft.adventCalendarConfigManager.saveToFile(adventCalendarConfigModel)
-
         WebhookManager.sendAchievementMessage("${player.displayName()} has completed today's challenge and earned %d points")
-        RequestManager(huntcraft).updatePlayerChallenge(player.uniqueId, dayConfig.points)
+        RequestManager().updatePlayerChallenge(player.uniqueId, dayConfig.points)
     }
 
     private fun validateItemSubmition(item: ItemStack, itemConfig: AdventCalendarSubmitItemConfig): Boolean {

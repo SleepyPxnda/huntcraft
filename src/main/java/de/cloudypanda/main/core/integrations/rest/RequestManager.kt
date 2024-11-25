@@ -10,11 +10,11 @@ import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.util.*
 
-class RequestManager(val huntcraft: Huntcraft) {
+class RequestManager() {
+    private val baseUrl: String = Huntcraft.coreConfigModel.requestConfig.url
 
-    private val baseUrl: String = huntcraft.coreConfigManager.readFromFile().huntCraftBackendApiKey
-
-    fun createPlayer(createPlayerDto: CreatePlayerDto): Boolean {
+    fun createPlayer(playerID: UUID, playerName: String): Boolean {
+        val createPlayerDto = CreatePlayerDto(playerID, playerName)
         val response = sendPostRequest("$baseUrl/api/players", createPlayerDto.toString())
 
         return response.statusCode() == 200

@@ -6,13 +6,13 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 
-class AdventCalendarEventListener(val huntcraft: Huntcraft) : Listener {
+class AdventCalendarEventListener() : Listener {
 
     @EventHandler
     fun onPlayerJoin(e: PlayerJoinEvent) {
         e.player.sendMessage(Component.text("Welcome to the server! Todays Challenge is as follows:"));
 
-        val adventCalendarConfigModel = huntcraft.adventCalendarConfigManager.readFromFile();
+        val adventCalendarConfigModel = Huntcraft.adventCalendarConfig;
 
         if (adventCalendarConfigModel.challenges.isEmpty()) {
             e.player.sendMessage(Component.text("No challenges available"));

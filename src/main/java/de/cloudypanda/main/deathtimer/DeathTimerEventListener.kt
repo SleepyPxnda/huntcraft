@@ -41,7 +41,7 @@ class DeathTimerEventListener(val huntcraft: Huntcraft) : Listener {
         huntcraft.deathTimerConfigManager.saveToFile(model);
 
         WebhookManager.sendDeathMessage("${e.deathMessage()}");
-        RequestManager(huntcraft).updatePlayerDeath(e.player.uniqueId, dateOfDeath.toEpochMilli());
+        RequestManager().updatePlayerDeath(e.player.uniqueId, dateOfDeath.toEpochMilli());
     }
 
     @EventHandler
@@ -128,7 +128,7 @@ class DeathTimerEventListener(val huntcraft: Huntcraft) : Listener {
     fun onPlayerJoin(e: PlayerJoinEvent) {
         e.player.sendMessage(Component.text("Welcome to the server! Todays Challenge is as follows:"));
 
-        val adventCalendarConfigModel = huntcraft.adventCalendarConfigManager.readFromFile();
+        val adventCalendarConfigModel = Huntcraft.adventCalendarConfig;
 
         if (adventCalendarConfigModel.challenges.isEmpty()) {
             e.player.sendMessage(Component.text("No challenges available"));
