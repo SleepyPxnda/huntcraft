@@ -52,11 +52,7 @@ class AdventCalendarSubmitCommand() : BasicCommand {
         val wasItemSubmitted = AtomicBoolean(false)
 
         player.inventory.forEach { item ->
-            if (item == null){
-                return@forEach
-            }
-
-            if (validateItemSubmition(item, itemConfig!!)) {
+            if (item !=null && validateItemSubmition(item, itemConfig!!)) {
                 player.sendMessage(TextUtil.getChallengeCompletedMessage())
 
                 if (itemConfig.amount != 1) {
