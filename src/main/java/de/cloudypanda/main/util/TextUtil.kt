@@ -4,9 +4,7 @@ import de.cloudypanda.main.Huntcraft
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.event.ClickEvent
-import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.format.TextColor.color
-import org.bukkit.Color
 import java.time.Instant
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -118,17 +116,18 @@ class TextUtil {
                 .append(Component.text("X-MAS ").color(color(255, 0, 0)))
                 .append(Component.text("Event").color(color(128, 128, 128)))
                 .append(Component.newline())
-                .append(Component.newline())
         }
 
-        fun getTablistFooter(challengeMessage: String?, challengeCompleted: Boolean): TextComponent {
+        fun getTablistFooter(challengeMessage: String?, challengePoints: Int?, challengeCompleted: Boolean): TextComponent {
             val challengeStatusText = if (challengeCompleted) "✅ Completed" else "❌ Not completed"
             val challengeStatusColor = if (challengeCompleted) color(0, 255, 0) else color(255, 0, 0)
 
-            return Component.newline()
-                .append(Component.text("📅 Today's challenge").color(color(255, 153, 0)))
+            return Component.text("\uD83D\uDCC5 Today's challenge \uD83D\uDCC5").color(color(255, 153, 0))
                 .append(Component.newline())
-                .append(Component.text(challengeMessage ?: "❌ No challenge today!").color(color(255, 165, 0)))
+                .append(Component.text("($challengePoints Points)").color(color(200, 103, 0)))
+                .append(Component.newline())
+                .append(Component.newline())
+                .append(Component.text(challengeMessage ?: "❌ No challenge today!").color(color(0, 204, 255)))
                 .append(Component.newline())
                 .append(Component.newline())
                 .append(Component.text("Status: ").color(color(255, 255, 255)))

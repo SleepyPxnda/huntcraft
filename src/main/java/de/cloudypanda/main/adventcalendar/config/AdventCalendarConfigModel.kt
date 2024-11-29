@@ -22,16 +22,23 @@ data class AdventCalendarConfigModel(
     }
 
     @JsonIgnore
-    fun setCompletedForPlayer(playerID: UUID, day: LocalDate): AdventCalendarHistoryConfig {
+    fun setCompletedForPlayer(playerID: UUID, points: Int, day: LocalDate): AdventCalendarHistoryConfig {
         var player = history.firstOrNull() { it.playerID == playerID }
 
         if (player == null) {
-            player = AdventCalendarHistoryConfig(playerID, mutableListOf(day.toString()));
+            player = AdventCalendarHistoryConfig(playerID, points, mutableListOf(day.toString()));
             history.add(player);
         } else {
             player.completedDays.add(day.toString());
+            player.points += points;
         }
 
         return player;
+    }
+
+    @JsonIgnore
+    fun getPointsForPlayer(playerID: UUID): Int {
+        val player = history.firstOrNull() { it.playerID == playerID }
+        return player?.points ?: 0;
     }
 }

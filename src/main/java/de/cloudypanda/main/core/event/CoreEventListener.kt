@@ -32,7 +32,7 @@ class CoreEventListener() : Listener {
 
         playDuration[e.player.uniqueId] = System.currentTimeMillis()
 
-        Huntcraft.instance.tablistManager.updatePlayerTablist(e.player)
+        Huntcraft.instance.tablistManager.updateAllPlayerTablist()
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

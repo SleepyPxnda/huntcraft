@@ -80,11 +80,12 @@ class AdventCalendarSubmitCommand() : BasicCommand {
     ) {
         adventCalendarConfigModel.setCompletedForPlayer(
             player.uniqueId,
+            dayConfig.points,
             LocalDate.now(),
         )
 
         Huntcraft.instance.adventCalendarConfigManager.saveToFile(adventCalendarConfigModel)
-        Huntcraft.instance.tablistManager.updatePlayerTablist(player)
+        Huntcraft.instance.tablistManager.updateAllPlayerTablist()
         WebhookManager.sendAchievementMessage("${player.name} has completed today's challenge and earned %d points")
         RequestManager().updatePlayerChallenge(player.uniqueId, dayConfig.points)
     }
