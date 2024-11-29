@@ -35,6 +35,8 @@ repositories {
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.3-R0.1-SNAPSHOT")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.18.1")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
 
     compileOnly("org.projectlombok:lombok:1.18.36")
     annotationProcessor("org.projectlombok:lombok:1.18.36")

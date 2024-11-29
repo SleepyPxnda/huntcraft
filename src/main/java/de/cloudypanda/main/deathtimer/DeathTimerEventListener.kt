@@ -7,6 +7,7 @@ import de.cloudypanda.main.core.integrations.rest.RequestManager
 import de.cloudypanda.main.deathtimer.config.UserTimeoutConfig
 import de.cloudypanda.main.util.DateUtil
 import de.cloudypanda.main.util.TextUtil
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.PlayerDeathEvent
@@ -36,7 +37,8 @@ class DeathTimerEventListener(val huntcraft: Huntcraft) : Listener {
 
         huntcraft.deathTimerConfigManager.saveToFile(model);
 
-        WebhookManager.sendDeathMessage("${e.deathMessage()}");
+        val deathMessage = PlainTextComponentSerializer.plainText().serialize(e.deathMessage()!!);
+        WebhookManager.sendDeathMessage(deathMessage);
         RequestManager().updatePlayerDeath(e.player.uniqueId, dateOfDeath.toEpochMilli());
     }
 
@@ -56,6 +58,10 @@ class DeathTimerEventListener(val huntcraft: Huntcraft) : Listener {
         val timeout = DateUtil.getFormattedDurationUntilJoin(0, model.deathTimeout);
         val message = TextUtil.getDeathTimerKickMessage(timeout);
         e.player.kick(message);
+
+        val date = DateUtil.getFormattedStringForDateAfterMillis(presentPlayer.get().latestDeath, model.deathTimeout);
+        Huntcraft.instance.server.sendMessage(TextUtil.getPlayerDeathAnnounceMessage(e.player.name, date));
+        println(TextUtil.getPlayerDeathAnnounceMessage(e.player.name, date))
     }
 
     @EventHandler
@@ -85,6 +91,6 @@ class DeathTimerEventListener(val huntcraft: Huntcraft) : Listener {
 
         val date = DateUtil.getFormattedStringForDateAfterMillis(userConfig.latestDeath, model.deathTimeout);
         val message = TextUtil.getDeathTimerTimeoutMessage(date, userConfig.latestDeath, model.deathTimeout);
-        e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, message);
+        e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, message);
     }
 }

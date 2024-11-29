@@ -169,5 +169,9 @@ class TextUtil {
                         .color(color(124, 252, 0))
                 )
         }
+
+        fun getPlayerDeathAnnounceMessage(playerName: String, formattedJoinDate: String): Component {
+            return Component.text("🔥 $playerName has died and was dispelled from the server until $formattedJoinDate 🔥").color(color(255, 0, 0))
+        }
     }
 }

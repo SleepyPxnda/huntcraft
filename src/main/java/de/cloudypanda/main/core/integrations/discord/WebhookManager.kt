@@ -1,14 +1,16 @@
 package de.cloudypanda.main.core.integrations.discord;
 
 import de.cloudypanda.main.Huntcraft
-import java.io.IOException
-import java.net.URL
-import javax.net.ssl.HttpsURLConnection
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+
 
 class WebhookManager {
 
     companion object {
-        private val webhookUrl: String = "[WebHook]";
+        private val webhookUrl: String = Huntcraft.instance.coreConfigModel.webhook.webhookUrl;
+        private var client: OkHttpClient = OkHttpClient()
 
         fun sendDeathMessage(deathMessage: String) {
             if(!Huntcraft.instance.coreConfigModel.webhook.enabled) return;
@@ -22,22 +24,14 @@ class WebhookManager {
                         }
                 """, deathMessage
             );
-            try {
-                val url = URL(webhookUrl);
-                val connection = url.openConnection() as HttpsURLConnection;
-                connection.addRequestProperty("Content-Type", "application/json");
-                connection.setDoOutput(true);
-                connection.setRequestMethod("POST");
+            val request = Request.Builder()
+                .url(webhookUrl)
+                .post(requestContent.toRequestBody())
+                .header("Content-Type", "application/json")
+                .build();
 
-                val stream = connection.outputStream;
-                stream.write(requestContent.encodeToByteArray());
-                stream.flush();
-                stream.close();
-
-                connection.inputStream.close(); //I'm not sure why but it doesn't work without getting the InputStream
-                connection.disconnect();
-            } catch (e: IOException) {
-                throw RuntimeException(e);
+            client.newCall(request).execute().use { response ->
+                println(response.body!!.string())
             }
         }
 
@@ -53,22 +47,13 @@ class WebhookManager {
                         }
                 """, message
             );
-            try {
-                val url = URL(webhookUrl);
-                val connection = url.openConnection() as HttpsURLConnection;
-                connection.addRequestProperty("Content-Type", "application/json");
-                connection.setDoOutput(true);
-                connection.setRequestMethod("POST");
+            val request = Request.Builder()
+                .url(webhookUrl)
+                .post(requestContent.toRequestBody())
+                .build();
 
-                val stream = connection.outputStream;
-                stream.write(requestContent.encodeToByteArray());
-                stream.flush();
-                stream.close();
-
-                connection.inputStream.close(); //I'm not sure why but it doesn't work without getting the InputStream
-                connection.disconnect();
-            } catch (e: IOException) {
-                throw RuntimeException(e);
+            client.newCall(request).execute().use { response ->
+                println(response.body!!.string())
             }
         }
     }
