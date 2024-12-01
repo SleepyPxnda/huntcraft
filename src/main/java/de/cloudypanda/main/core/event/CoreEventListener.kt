@@ -5,18 +5,12 @@ import de.cloudypanda.main.core.integrations.rest.RequestManager
 import de.cloudypanda.main.util.TextUtil
 import io.papermc.paper.event.player.AsyncChatEvent
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.TextColor.color
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
-import org.bukkit.event.player.AsyncPlayerChatEvent
-import org.bukkit.event.player.PlayerChatEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
-import org.w3c.dom.Text
-import java.util.HashMap
-import java.util.UUID
-import kotlin.time.Duration
+import java.util.*
 import kotlin.time.Duration.Companion.milliseconds
 
 
