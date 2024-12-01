@@ -26,6 +26,10 @@ class TablistDisplay {
                 Component.text(player.name)
                     .append(Component.text(" ($playerPoints)").color(color(200, 103, 0))
                     .append(Component.text(" $playerCompletedIndicator").color(playerCompletedIndicatorColor))))
+
+            player.playerListName(Component.text(player.name)
+                .append(Component.text(" ($playerPoints)").color(color(200, 103, 0))
+                    .append(Component.text(" $playerCompletedIndicator").color(playerCompletedIndicatorColor))))
         }
 
         player.sendPlayerListHeaderAndFooter(TextUtil.getTablistHeader(), challengeline)

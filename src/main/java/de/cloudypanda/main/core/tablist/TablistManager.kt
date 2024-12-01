@@ -1,9 +1,10 @@
 package de.cloudypanda.main.core.tablist
 
+import de.cloudypanda.main.adventcalendar.config.AdventCalendarConfigModel
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 
-class TablistManager {
+class TablistManager() {
     private val tablistDisplay: TablistDisplay = TablistDisplay()
 
     fun updatePlayerTablist(player: Player){
