@@ -22,12 +22,13 @@ class CoreEventListener() : Listener {
         val coreConfig = Huntcraft.instance.coreConfigManager.readFromFile()
 
         e.joinMessage(TextUtil.getJoinIndicator(e.player.name))
-        e.player.sendMessage(TextUtil.getJoinMessage(deathTimeoutConfig.deathTimeout,
+        e.player.sendMessage(TextUtil.getJoinMessage(
             coreConfig.infos.rulesLink,
             coreConfig.infos.discordLink,
             coreConfig.infos.websiteLink,
             coreConfig.deathTimer.enabled,
-            coreConfig.adventCalendar.enabled))
+            coreConfig.adventCalendar.enabled,
+            deathTimeoutConfig.deathTimeout))
 
         playDuration[e.player.uniqueId] = System.currentTimeMillis()
 

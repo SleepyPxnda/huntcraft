@@ -18,17 +18,13 @@ class TextUtil {
         }
 
         fun getJoinMessage(
-            deathTimeout: Long,
             rulesLink: String,
             discordLink: String,
             websiteLink: String,
             isDeathTimeoutActivated: Boolean,
-            isAdventCalendarActivated: Boolean
+            isAdventCalendarActivated: Boolean,
+            deathTimeout: Long? = null
         ): Component {
-            val formattedDeathTimeout = deathTimeout.milliseconds.toComponents { hours, minutes, seconds, _ ->
-                "%02d:%02d:%02d".format(hours, minutes, seconds)
-            }
-
             var text = Component.text("🌟 This Server uses the Huntcraft Plugin 🌟").color(color(128, 128, 128))
                 .append(Component.newline())
                 .append(Component.newline())
@@ -43,7 +39,11 @@ class TextUtil {
                 .append(Component.newline())
                 .append(Component.newline())
 
-            if (isDeathTimeoutActivated) {
+            if (isDeathTimeoutActivated && deathTimeout != null) {
+                val formattedDeathTimeout = deathTimeout.milliseconds.toComponents { hours, minutes, seconds, _ ->
+                    "%02d:%02d:%02d".format(hours, minutes, seconds)
+                }
+
                 text = text.append(Component.text("⏳ Current Deathtimeout: ").color(color(128, 128, 128)))
                     .append(Component.text(formattedDeathTimeout).color(color(255, 153, 0)))
                     .append(Component.newline())
