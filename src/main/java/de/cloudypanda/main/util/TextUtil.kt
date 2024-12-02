@@ -70,12 +70,12 @@ class TextUtil {
 
         fun getSubmitConfirmationMessage(): Component {
             return Component.newline()
-                .append(Component.text("❓ Do you really want to submit the item ❓"))
+                .append(Component.text("❓ Do you really want to submit the item ❓")).color(color(255, 153, 0))
                 .append(Component.newline())
                 .append(Component.text("⚠ Continuing WILL destroy the item! ⚠").color(color(255, 0, 0)))
                 .append(Component.newline())
                 .append(
-                    Component.text("[✅ Yes]")
+                    Component.text("[✅ Click here to submit]")
                         .color(color(102, 255, 51))
                         .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/huntcraft-submit force"))
                 )
@@ -92,7 +92,7 @@ class TextUtil {
         }
 
         fun getChallengeCompletedMessage(): Component {
-            return Component.text("🎉 You have successfully completed the challenge for today! 🎉")
+            return Component.text("🎉 You have completed the challenge for today! 🎉")
                 .color(color(0, 255, 0))
         }
 
@@ -104,7 +104,7 @@ class TextUtil {
                 ""
             }
 
-            return Component.text("🎁 You successfully submitted $amount x ${item.lowercase()
+            return Component.text("🎁 You submitted $amount x ${item.lowercase()
                                                                                         .replaceFirstChar { it.uppercase() }
                                                                                         .replace("_", " ")}$enchantText 🎁")
                 .color(color(0, 204, 255))
