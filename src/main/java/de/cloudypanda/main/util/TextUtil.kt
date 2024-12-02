@@ -1,5 +1,6 @@
 package de.cloudypanda.main.util
 
+import de.cloudypanda.main.adventcalendar.config.AdventCalendarSubmitItemEnchantConfig
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.event.ClickEvent
@@ -93,6 +94,20 @@ class TextUtil {
         fun getChallengeCompletedMessage(): Component {
             return Component.text("🎉 You have successfully completed the challenge for today! 🎉")
                 .color(color(0, 255, 0))
+        }
+
+        fun getChallengeItemDescriptionMessage(item: String, amount: Int, enchants: List<AdventCalendarSubmitItemEnchantConfig>): Component {
+            val enchantText = if (enchants.isNotEmpty()) {
+                val enchantTexts = enchants.map { "${it.enchant.key.key.replaceFirstChar { c -> c.uppercase() }} ${it.level} \n" }
+                " with ${enchantTexts.joinToString(", ")}"
+            } else {
+                ""
+            }
+
+            return Component.text("🎁 You successfully submitted $amount x ${item.lowercase()
+                                                                                        .replaceFirstChar { it.uppercase() }
+                                                                                        .replace("_", " ")}$enchantText 🎁")
+                .color(color(0, 204, 255))
         }
 
         fun getChallengeItemNotFoundMessage(): Component {
