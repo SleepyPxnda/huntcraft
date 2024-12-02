@@ -52,7 +52,6 @@ class AdventCalendarSubmitCommand() : BasicCommand {
 
         player.inventory.forEach { item ->
             if (item !=null && validateItemSubmition(item, itemConfig!!)) {
-                player.sendMessage(TextUtil.getChallengeCompletedMessage())
 
                 item.amount -= itemConfig.amount
 
@@ -85,6 +84,8 @@ class AdventCalendarSubmitCommand() : BasicCommand {
                 dayConfig.itemToSubmit.enchants
             )
         )
+
+        player.sendMessage(TextUtil.getChallengeCompletedMessage())
         Huntcraft.instance.adventCalendarConfigManager.saveToFile(adventCalendarConfigModel)
         Huntcraft.instance.tablistManager.updateAllPlayerTablist()
         WebhookManager.sendAchievementMessage("${player.name} has completed today's challenge and earned %d points")
