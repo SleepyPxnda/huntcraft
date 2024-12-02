@@ -55,12 +55,7 @@ class AdventCalendarSubmitCommand() : BasicCommand {
             if (item !=null && validateItemSubmition(item, itemConfig!!)) {
                 player.sendMessage(TextUtil.getChallengeCompletedMessage())
 
-                if (itemConfig.amount != 1) {
-                    player.inventory
-                        .removeItem(ItemStack(itemConfig.material, itemConfig.amount))
-                } else {
-                    player.inventory.remove(item)
-                }
+                item.amount -= itemConfig.amount
 
                 completeSuccessfulSubmit(player, adventCalendarConfigModel, dayConfig)
                 wasItemSubmitted.set(true)
@@ -104,7 +99,6 @@ class AdventCalendarSubmitCommand() : BasicCommand {
         //Only check durability if its configured
         if (itemConfig.durability != null) {
             if (item.itemMeta is Damageable) {
-
                 val damageable = item.itemMeta as Damageable
                 if ((item.type.maxDurability - damageable.damage) != itemConfig.durability) {
                     validSubmission.set(false)
