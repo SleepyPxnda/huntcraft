@@ -17,7 +17,14 @@ class TextUtil {
                 .append(Component.text(playerName).color(color(255, 255, 255)))
         }
 
-        fun getJoinMessage(deathTimeout: Long, rulesLink: String, discordLink: String, websiteLink: String, isDeathTimeoutActivated: Boolean, isAdventCalendarActivated: Boolean): Component {
+        fun getJoinMessage(
+            deathTimeout: Long,
+            rulesLink: String,
+            discordLink: String,
+            websiteLink: String,
+            isDeathTimeoutActivated: Boolean,
+            isAdventCalendarActivated: Boolean
+        ): Component {
             val formattedDeathTimeout = deathTimeout.milliseconds.toComponents { hours, minutes, seconds, _ ->
                 "%02d:%02d:%02d".format(hours, minutes, seconds)
             }
@@ -53,8 +60,10 @@ class TextUtil {
                     .append(Component.newline())
             }
 
-            text = text.append(Component.text("🎉 Have fun! 🎉")
-                .color(color(128, 128, 128)))
+            text = text.append(
+                Component.text("🎉 Have fun! 🎉")
+                    .color(color(128, 128, 128))
+            )
                 .append(Component.newline())
 
             return text
@@ -71,6 +80,7 @@ class TextUtil {
         fun getSubmitConfirmationMessage(): Component {
             return Component.newline()
                 .append(Component.text("❓ Do you really want to submit the item ❓")).color(color(255, 153, 0))
+                .append(Component.newline())
                 .append(Component.newline())
                 .append(Component.text("⚠ Continuing WILL destroy the item! ⚠").color(color(255, 0, 0)))
                 .append(Component.newline())
@@ -96,23 +106,34 @@ class TextUtil {
                 .color(color(0, 255, 0))
         }
 
-        fun getChallengeItemDescriptionMessage(item: String, amount: Int, enchants: List<AdventCalendarSubmitItemEnchantConfig>): Component {
+        fun getChallengeItemDescriptionMessage(
+            item: String,
+            amount: Int,
+            enchants: List<AdventCalendarSubmitItemEnchantConfig>
+        ): Component {
             val enchantText = if (enchants.isNotEmpty()) {
-                val enchantTexts = enchants.map { "${it.enchant.key.key.replaceFirstChar { c -> c.uppercase() }} ${it.level} \n" }
+                val enchantTexts =
+                    enchants.map { "${it.enchant.key.key.replaceFirstChar { c -> c.uppercase() }} ${it.level} \n" }
                 " with ${enchantTexts.joinToString(", ")}"
             } else {
                 ""
             }
 
-            return Component.text("🎁 You submitted $amount x ${item.lowercase()
-                                                                                        .replaceFirstChar { it.uppercase() }
-                                                                                        .replace("_", " ")}$enchantText 🎁")
+            return Component.newline().append(
+                Component.text(
+                "🎁 You submitted $amount x ${
+                item.lowercase()
+                    .replaceFirstChar { it.uppercase() }
+                    .replace("_", " ")
+            }$enchantText 🎁"))
                 .color(color(0, 204, 255))
         }
 
         fun getChallengeItemNotFoundMessage(): Component {
-            return Component.text("🔍 You do not have the required item in your inventory 🔍")
-                .color(color(255, 165, 0))
+            return Component.newline().append(
+                Component.text("🔍 You do not have the required item in your inventory 🔍")
+                    .color(color(255, 165, 0))
+            )
         }
 
         fun getTablistHeader(): Component {
@@ -124,7 +145,11 @@ class TextUtil {
                 .append(Component.newline())
         }
 
-        fun getTablistFooter(challengeMessage: String?, challengePoints: Int?, challengeCompleted: Boolean): TextComponent {
+        fun getTablistFooter(
+            challengeMessage: String?,
+            challengePoints: Int?,
+            challengeCompleted: Boolean
+        ): TextComponent {
             val challengeStatusText = if (challengeCompleted) "✅ Completed" else "❌ Not completed"
             val challengeStatusColor = if (challengeCompleted) color(0, 255, 0) else color(255, 0, 0)
 
@@ -176,7 +201,8 @@ class TextUtil {
         }
 
         fun getPlayerDeathAnnounceMessage(playerName: String, formattedJoinDate: String): Component {
-            return Component.text("🔥 $playerName has died and was dispelled from the server until $formattedJoinDate 🔥").color(color(255, 0, 0))
+            return Component.text("🔥 $playerName has died and was dispelled from the server until $formattedJoinDate 🔥")
+                .color(color(255, 0, 0))
         }
     }
 }
