@@ -9,11 +9,11 @@ import okhttp3.RequestBody.Companion.toRequestBody
 class WebhookManager {
 
     companion object {
-        private val webhookUrl: String = Huntcraft.instance.coreConfigModel.webhook.webhookUrl;
         private var client: OkHttpClient = OkHttpClient()
 
         fun sendDeathMessage(deathMessage: String) {
-            if(!Huntcraft.instance.coreConfigModel.webhook.enabled) return;
+            val coreConfigModel = Huntcraft.instance.coreConfigManager.readFromFile();
+            if(!coreConfigModel.webhook.enabled) return;
 
             val requestContent = String.format(
                 """
@@ -25,7 +25,7 @@ class WebhookManager {
                 """, deathMessage
             );
             val request = Request.Builder()
-                .url(webhookUrl)
+                .url(coreConfigModel.webhook.webhookUrl)
                 .post(requestContent.toRequestBody())
                 .header("Content-Type", "application/json")
                 .build();
@@ -36,7 +36,8 @@ class WebhookManager {
         }
 
         fun sendAchievementMessage(message: String) {
-            if(!Huntcraft.instance.coreConfigModel.webhook.enabled) return;
+            val coreConfigModel = Huntcraft.instance.coreConfigManager.readFromFile();
+            if(!coreConfigModel.webhook.enabled) return;
 
             val requestContent = String.format(
                 """
@@ -48,8 +49,9 @@ class WebhookManager {
                 """, message
             );
             val request = Request.Builder()
-                .url(webhookUrl)
+                .url(coreConfigModel.webhook.webhookUrl)
                 .post(requestContent.toRequestBody())
+                .header("Content-Type", "application/json")
                 .build();
 
             client.newCall(request).execute().use { response ->

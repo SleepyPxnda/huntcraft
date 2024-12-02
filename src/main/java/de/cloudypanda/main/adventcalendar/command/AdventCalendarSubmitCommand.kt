@@ -5,7 +5,6 @@ import de.cloudypanda.main.adventcalendar.config.AdventCalendarConfigModel
 import de.cloudypanda.main.adventcalendar.config.AdventCalendarDayConfig
 import de.cloudypanda.main.adventcalendar.config.AdventCalendarSubmitItemConfig
 import de.cloudypanda.main.core.integrations.discord.WebhookManager
-import de.cloudypanda.main.core.integrations.rest.RequestManager
 import de.cloudypanda.main.util.TextUtil
 import io.papermc.paper.command.brigadier.BasicCommand
 import io.papermc.paper.command.brigadier.CommandSourceStack
@@ -25,14 +24,14 @@ class AdventCalendarSubmitCommand() : BasicCommand {
 
         val player = commandSourceStack.executor as Player
 
-        val adventCalendarConfigModel = Huntcraft.instance.adventCalendarConfig;
+        val adventCalendarConfig = Huntcraft.instance.adventCalendarConfigManager.readFromFile();
 
-        if (adventCalendarConfigModel.getConfigForDay(LocalDate.now()) == null) {
+        if (adventCalendarConfig.getConfigForDay(LocalDate.now()) == null) {
             player.sendMessage(TextUtil.getNoChallengeTodayMessage())
             return
         }
 
-        if (adventCalendarConfigModel.hasPlayerAlreadyCompletedDay(player.uniqueId, LocalDate.now())) {
+        if (adventCalendarConfig.hasPlayerAlreadyCompletedDay(player.uniqueId, LocalDate.now())) {
             player.sendMessage(TextUtil.getChallengeAlreadyCompletedMessage())
             return
         }
@@ -46,7 +45,7 @@ class AdventCalendarSubmitCommand() : BasicCommand {
             return;
         }
 
-        val dayConfig = adventCalendarConfigModel.getConfigForDay(LocalDate.now())
+        val dayConfig = adventCalendarConfig.getConfigForDay(LocalDate.now())
         val itemConfig = dayConfig?.itemToSubmit
 
         val wasItemSubmitted = AtomicBoolean(false)
@@ -57,7 +56,7 @@ class AdventCalendarSubmitCommand() : BasicCommand {
 
                 item.amount -= itemConfig.amount
 
-                completeSuccessfulSubmit(player, adventCalendarConfigModel, dayConfig)
+                completeSuccessfulSubmit(player, adventCalendarConfig, dayConfig)
                 wasItemSubmitted.set(true)
                 return@forEach
             }
@@ -82,7 +81,6 @@ class AdventCalendarSubmitCommand() : BasicCommand {
         Huntcraft.instance.adventCalendarConfigManager.saveToFile(adventCalendarConfigModel)
         Huntcraft.instance.tablistManager.updateAllPlayerTablist()
         WebhookManager.sendAchievementMessage("${player.name} has completed today's challenge and earned %d points")
-        RequestManager().updatePlayerChallenge(player.uniqueId, dayConfig.points)
     }
 
     private fun validateItemSubmition(item: ItemStack, itemConfig: AdventCalendarSubmitItemConfig): Boolean {

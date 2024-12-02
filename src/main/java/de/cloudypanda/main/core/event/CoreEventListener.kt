@@ -1,7 +1,6 @@
 package de.cloudypanda.main.core.event
 
 import de.cloudypanda.main.Huntcraft
-import de.cloudypanda.main.core.integrations.rest.RequestManager
 import de.cloudypanda.main.util.TextUtil
 import io.papermc.paper.event.player.AsyncChatEvent
 import net.kyori.adventure.text.Component
@@ -19,13 +18,16 @@ class CoreEventListener() : Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     fun onPlayerJoinEvent(e: PlayerJoinEvent) {
+        val deathTimeoutConfig = Huntcraft.instance.deathTimerConfigManager.readFromFile()
+        val coreConfig = Huntcraft.instance.coreConfigManager.readFromFile()
 
         e.joinMessage(TextUtil.getJoinIndicator(e.player.name))
-        e.player.sendMessage(TextUtil.getJoinMessage())
-
-        if (e.player.firstPlayed == 0L) {
-            RequestManager().createPlayer(e.player.uniqueId, e.player.name)
-        }
+        e.player.sendMessage(TextUtil.getJoinMessage(deathTimeoutConfig.deathTimeout,
+            coreConfig.infos.rulesLink,
+            coreConfig.infos.discordLink,
+            coreConfig.infos.websiteLink,
+            coreConfig.deathTimer.enabled,
+            coreConfig.adventCalendar.enabled))
 
         playDuration[e.player.uniqueId] = System.currentTimeMillis()
 

@@ -9,16 +9,16 @@ import java.time.LocalDate
 
 class TablistDisplay {
     fun updateTablist(player: Player) {
-        var challengeline = Component.empty();
+        var challengeLine = Component.empty();
+        val coreConfig = Huntcraft.instance.coreConfigManager.readFromFile();
 
-        if (Huntcraft.instance.coreConfigModel.adventCalendar.enabled) {
-            val challenge = Huntcraft.instance.adventCalendarConfig.getConfigForDay(LocalDate.now())
-            val hasPlayerCompleted = Huntcraft.instance.adventCalendarConfig.hasPlayerAlreadyCompletedDay(player.uniqueId, LocalDate.now())
-            challengeline = TextUtil.getTablistFooter(challenge?.message, challenge?.points, hasPlayerCompleted);
+        if (coreConfig.adventCalendar.enabled) {
+            val adventCalendarConfig = Huntcraft.instance.adventCalendarConfigManager.readFromFile();
+            val challenge = adventCalendarConfig.getConfigForDay(LocalDate.now())
+            val hasPlayerCompleted = adventCalendarConfig.hasPlayerAlreadyCompletedDay(player.uniqueId, LocalDate.now())
+            challengeLine = TextUtil.getTablistFooter(challenge?.message, challenge?.points, hasPlayerCompleted);
 
-            val calendarConfigModel = Huntcraft.instance.adventCalendarConfig;
-
-            val playerPoints = calendarConfigModel.getPointsForPlayer(player.uniqueId);
+            val playerPoints = adventCalendarConfig.getPointsForPlayer(player.uniqueId);
             val playerCompletedIndicator = if (hasPlayerCompleted) "✅" else "❌";
             val playerCompletedIndicatorColor = if (hasPlayerCompleted) color(0, 255, 0) else color(255, 0, 0)
 
@@ -32,6 +32,6 @@ class TablistDisplay {
                     .append(Component.text(" $playerCompletedIndicator").color(playerCompletedIndicatorColor))))
         }
 
-        player.sendPlayerListHeaderAndFooter(TextUtil.getTablistHeader(), challengeline)
+        player.sendPlayerListHeaderAndFooter(TextUtil.getTablistHeader(), challengeLine)
     }
 }

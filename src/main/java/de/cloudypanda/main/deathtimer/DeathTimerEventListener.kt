@@ -3,7 +3,6 @@ package de.cloudypanda.main.deathtimer;
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent
 import de.cloudypanda.main.Huntcraft
 import de.cloudypanda.main.core.integrations.discord.WebhookManager
-import de.cloudypanda.main.core.integrations.rest.RequestManager
 import de.cloudypanda.main.deathtimer.config.UserTimeoutConfig
 import de.cloudypanda.main.util.DateUtil
 import de.cloudypanda.main.util.TextUtil
@@ -18,16 +17,16 @@ class DeathTimerEventListener(val huntcraft: Huntcraft) : Listener {
 
     @EventHandler
     fun onDeathEvent(e: PlayerDeathEvent) {
-        val model = huntcraft.deathTimerConfigManager.readFromFile();
+        val deathTimerConfig = huntcraft.deathTimerConfigManager.readFromFile();
         val dateOfDeath = Instant.now();
-        val isPlayerInList = model.currentDeathTimeOutetPlayers.stream()
+        val isPlayerInList = deathTimerConfig.currentDeathTimeOutetPlayers.stream()
             .anyMatch { x -> x.playerUUID == e.player.uniqueId };
 
         if (isPlayerInList) {
-            model.currentDeathTimeOutetPlayers.removeIf({ x -> x.playerUUID == e.player.uniqueId });
+            deathTimerConfig.currentDeathTimeOutetPlayers.removeIf({ x -> x.playerUUID == e.player.uniqueId });
         }
 
-        model.currentDeathTimeOutetPlayers.add(
+        deathTimerConfig.currentDeathTimeOutetPlayers.add(
             UserTimeoutConfig(
                 e.player.uniqueId,
                 dateOfDeath.toEpochMilli(),
@@ -35,11 +34,10 @@ class DeathTimerEventListener(val huntcraft: Huntcraft) : Listener {
             )
         );
 
-        huntcraft.deathTimerConfigManager.saveToFile(model);
+        huntcraft.deathTimerConfigManager.saveToFile(deathTimerConfig);
 
         val deathMessage = PlainTextComponentSerializer.plainText().serialize(e.deathMessage()!!);
         WebhookManager.sendDeathMessage(deathMessage);
-        RequestManager().updatePlayerDeath(e.player.uniqueId, dateOfDeath.toEpochMilli());
     }
 
     @EventHandler

@@ -3,7 +3,6 @@ package de.cloudypanda.main.adventcalendar.config;
 import de.cloudypanda.main.Huntcraft;
 import de.cloudypanda.main.common.config.AbstractFileManager;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import java.time.LocalDate
 
 class AdventCalendarConfigManager(fileName: String, huntcraft: Huntcraft) :
@@ -16,7 +15,7 @@ class AdventCalendarConfigManager(fileName: String, huntcraft: Huntcraft) :
     private fun setupAdventCalendar() {
         val adventCalendarConfigModel = AdventCalendarConfigModel();
 
-        val day1Config = AdventCalendarDayConfig(
+        val templateConfig = AdventCalendarDayConfig(
             LocalDate.now().toString(),
             "Submit a Diamond Sword",
             10,
@@ -30,7 +29,7 @@ class AdventCalendarConfigManager(fileName: String, huntcraft: Huntcraft) :
             )
         );
 
-        adventCalendarConfigModel.challenges.add(day1Config);
+        adventCalendarConfigModel.challenges.add(templateConfig);
         this.saveToFile(adventCalendarConfigModel);
     }
 }

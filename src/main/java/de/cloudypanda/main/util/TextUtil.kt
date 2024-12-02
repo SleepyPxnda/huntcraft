@@ -1,6 +1,5 @@
 package de.cloudypanda.main.util
 
-import de.cloudypanda.main.Huntcraft
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.event.ClickEvent
@@ -10,14 +9,6 @@ import kotlin.time.Duration.Companion.milliseconds
 
 class TextUtil {
     companion object {
-        private val discordLink: String = Huntcraft.instance.coreConfigModel.infos.discordLink
-        private val websiteLink: String = Huntcraft.instance.coreConfigModel.infos.websiteLink
-        private val rulesLink: String = Huntcraft.instance.coreConfigModel.infos.rulesLink
-        private val deathTimeout: Long = Huntcraft.instance.deathTimerConfigModel.deathTimeout;
-
-        private val isDeathTimeoutActivated = Huntcraft.instance.coreConfigModel.deathTimer.enabled;
-        private val isAdventCalendarActivated = Huntcraft.instance.coreConfigModel.adventCalendar.enabled;
-
         fun getJoinIndicator(playerName: String): Component {
             return Component.text("[").color(color(128, 128, 128))
                 .append(Component.text("☁").color(color(0, 100, 0)))
@@ -25,7 +16,7 @@ class TextUtil {
                 .append(Component.text(playerName).color(color(255, 255, 255)))
         }
 
-        fun getJoinMessage(): Component {
+        fun getJoinMessage(deathTimeout: Long, rulesLink: String, discordLink: String, websiteLink: String, isDeathTimeoutActivated: Boolean, isAdventCalendarActivated: Boolean): Component {
             val formattedDeathTimeout = deathTimeout.milliseconds.toComponents { hours, minutes, seconds, _ ->
                 "%02d:%02d:%02d".format(hours, minutes, seconds)
             }

@@ -18,7 +18,7 @@ abstract class AbstractFileManager<T>(private val fileName: String, val huntcraf
      * Create and initialize the config file if it does not exist
      * Also allows to overwrite the {@link AbstractFileManager#afterInit()} method to add custom logic after the file has been created
      */
-    fun createFileIfNotExists() {
+    fun createFileIfNotExists(): T {
         if (!checkIfFileExists()) {
             createFile();
             this.saveToFile(newClazzInstance());
@@ -26,6 +26,8 @@ abstract class AbstractFileManager<T>(private val fileName: String, val huntcraf
         } else {
             huntcraft.componentLogger.info("File $fileName already exists");
         }
+
+        return readFromFile();
     }
 
     /**

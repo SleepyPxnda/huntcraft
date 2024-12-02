@@ -1,35 +1,24 @@
 package de.cloudypanda.main;
 
+import de.cloudypanda.main.adventcalendar.command.AdventCalendarLeaderboardCommand
 import de.cloudypanda.main.adventcalendar.command.AdventCalendarSubmitCommand
 import de.cloudypanda.main.adventcalendar.config.AdventCalendarConfigManager
-import de.cloudypanda.main.adventcalendar.config.AdventCalendarConfigModel
 import de.cloudypanda.main.core.config.CoreConfigManager
-import de.cloudypanda.main.core.config.CoreConfigModel
 import de.cloudypanda.main.core.event.CoreEventListener
 import de.cloudypanda.main.core.tablist.TablistManager
 import de.cloudypanda.main.deathtimer.DeathTimerEventListener
 import de.cloudypanda.main.deathtimer.config.DeathTimerConfigManager
-import de.cloudypanda.main.deathtimer.config.DeathTimerConfigModel
 import io.papermc.paper.command.brigadier.Commands
 import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents
-import net.kyori.adventure.audience.Audience
-import net.kyori.adventure.text.Component
-import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
-import org.bukkit.scheduler.BukkitRunnable
 
 class Huntcraft : JavaPlugin() {
 
     val adventCalendarConfigManager = AdventCalendarConfigManager("hc_adventcalendar", this);
     val deathTimerConfigManager = DeathTimerConfigManager("hc_deathtimer", this);
-
-    private val coreConfigManager = CoreConfigManager("hc_core", this);
-
-    var adventCalendarConfig = AdventCalendarConfigModel();
-    var coreConfigModel = CoreConfigModel();
-    var deathTimerConfigModel = DeathTimerConfigModel();
+    val coreConfigManager = CoreConfigManager("hc_core", this);
 
     val tablistManager = TablistManager();
 
@@ -40,17 +29,16 @@ class Huntcraft : JavaPlugin() {
     override fun onEnable() {
         instance = this;
         //Create main Config file
-        coreConfigManager.createFileIfNotExists();
-        coreConfigModel = coreConfigManager.readFromFile();
+        val coreConfig = coreConfigManager.createFileIfNotExists();
 
         //Register Core Events
         server.pluginManager.registerEvents(CoreEventListener(), this);
 
-        if (coreConfigModel.adventCalendar.enabled) {
+        if (coreConfig.adventCalendar.enabled) {
             registerAdventCalendarModule()
         }
 
-        if (coreConfigModel.deathTimer.enabled) {
+        if (coreConfig.deathTimer.enabled) {
             registerDeathTimerModule()
         }
     }
@@ -58,7 +46,6 @@ class Huntcraft : JavaPlugin() {
     private fun registerDeathTimerModule() {
         //Create config file
         deathTimerConfigManager.createFileIfNotExists();
-        deathTimerConfigModel = deathTimerConfigManager.readFromFile();
 
         //Register Event Listener
         server.pluginManager.registerEvents(DeathTimerEventListener(this), this);
@@ -70,7 +57,6 @@ class Huntcraft : JavaPlugin() {
 
         // Create config file
         adventCalendarConfigManager.createFileIfNotExists();
-        adventCalendarConfig = adventCalendarConfigManager.readFromFile();
 
         manager.registerEventHandler(LifecycleEvents.COMMANDS) { event ->
             val commands: Commands = event.registrar();
@@ -79,6 +65,12 @@ class Huntcraft : JavaPlugin() {
                 "Submit command for the advent calendar",
                 listOf("hcs", "submit"),
                 AdventCalendarSubmitCommand()
+            );
+            commands.register(
+                "huntcraft-leaderboard",
+                "Advent calendar command",
+                listOf("hcl"),
+                AdventCalendarLeaderboardCommand()
             );
         }
 
