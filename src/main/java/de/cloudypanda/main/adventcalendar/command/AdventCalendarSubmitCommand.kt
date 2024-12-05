@@ -51,6 +51,10 @@ class AdventCalendarSubmitCommand() : BasicCommand {
         val wasItemSubmitted = AtomicBoolean(false)
 
         player.inventory.forEach { item ->
+            if(wasItemSubmitted.get()){
+                return@forEach
+            }
+
             if (item !=null && validateItemSubmition(item, itemConfig!!)) {
 
                 item.amount -= itemConfig.amount
