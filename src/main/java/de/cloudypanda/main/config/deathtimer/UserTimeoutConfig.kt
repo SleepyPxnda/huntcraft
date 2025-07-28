@@ -1,4 +1,4 @@
-package de.cloudypanda.main.deathtimer.config;
+package de.cloudypanda.main.config.deathtimer
 
 import java.time.Instant
 import java.util.*

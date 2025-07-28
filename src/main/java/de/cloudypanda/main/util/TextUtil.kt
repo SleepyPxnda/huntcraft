@@ -1,6 +1,6 @@
 package de.cloudypanda.main.util
 
-import de.cloudypanda.main.adventcalendar.config.AdventCalendarSubmitItemEnchantConfig
+import de.cloudypanda.main.config.adventcalendar.AdventCalendarSubmitItemEnchantConfig
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.event.ClickEvent

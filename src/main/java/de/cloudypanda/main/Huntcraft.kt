@@ -2,17 +2,18 @@ package de.cloudypanda.main;
 
 import de.cloudypanda.main.adventcalendar.command.AdventCalendarLeaderboardCommand
 import de.cloudypanda.main.adventcalendar.command.AdventCalendarSubmitCommand
-import de.cloudypanda.main.adventcalendar.config.AdventCalendarConfigManager
-import de.cloudypanda.main.core.config.CoreConfigManager
+import de.cloudypanda.main.config.manager.AdventCalendarConfigManager
+import de.cloudypanda.main.config.manager.CoreConfigManager
 import de.cloudypanda.main.core.event.CoreEventListener
 import de.cloudypanda.main.core.tablist.TablistManager
 import de.cloudypanda.main.deathtimer.DeathTimerEventListener
-import de.cloudypanda.main.deathtimer.config.DeathTimerConfigManager
+import de.cloudypanda.main.config.manager.DeathTimerConfigManager
 import io.papermc.paper.command.brigadier.Commands
 import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
+
 
 class Huntcraft : JavaPlugin() {
 
@@ -27,6 +28,10 @@ class Huntcraft : JavaPlugin() {
     }
 
     override fun onEnable() {
+        saveDefaultConfig()
+
+        val config = getConfig()
+
         instance = this;
         //Create main Config file
         val coreConfig = coreConfigManager.createFileIfNotExists();
@@ -41,6 +46,10 @@ class Huntcraft : JavaPlugin() {
         if (coreConfig.deathTimer.enabled) {
             registerDeathTimerModule()
         }
+    }
+
+    private fun loadConfigs() {
+
     }
 
     private fun registerDeathTimerModule() {

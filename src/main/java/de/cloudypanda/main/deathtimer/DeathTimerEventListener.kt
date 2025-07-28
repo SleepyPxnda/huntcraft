@@ -3,7 +3,7 @@ package de.cloudypanda.main.deathtimer;
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent
 import de.cloudypanda.main.Huntcraft
 import de.cloudypanda.main.core.integrations.discord.WebhookManager
-import de.cloudypanda.main.deathtimer.config.UserTimeoutConfig
+import de.cloudypanda.main.config.deathtimer.UserTimeoutConfig
 import de.cloudypanda.main.util.DateUtil
 import de.cloudypanda.main.util.TextUtil
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer

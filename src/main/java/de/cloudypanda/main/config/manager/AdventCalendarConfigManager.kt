@@ -1,15 +1,18 @@
-package de.cloudypanda.main.adventcalendar.config;
+package de.cloudypanda.main.config.manager
 
-import de.cloudypanda.main.Huntcraft;
-import de.cloudypanda.main.common.config.AbstractFileManager;
-import org.bukkit.Material;
+import de.cloudypanda.main.Huntcraft
+import de.cloudypanda.main.config.manager.AbstractFileManager
+import de.cloudypanda.main.config.adventcalendar.AdventCalendarConfigModel
+import de.cloudypanda.main.config.adventcalendar.AdventCalendarDayConfig
+import de.cloudypanda.main.config.adventcalendar.AdventCalendarSubmitItemConfig
+import org.bukkit.Material
 import java.time.LocalDate
 
 class AdventCalendarConfigManager(fileName: String, huntcraft: Huntcraft) :
     AbstractFileManager<AdventCalendarConfigModel>(fileName, huntcraft, AdventCalendarConfigModel::class.java) {
 
     override fun afterInit() {
-        setupAdventCalendar();
+        setupAdventCalendar()
     }
 
     private fun setupAdventCalendar() {

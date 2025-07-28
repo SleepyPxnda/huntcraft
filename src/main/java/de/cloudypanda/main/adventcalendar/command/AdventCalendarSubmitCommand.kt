@@ -1,9 +1,9 @@
 package de.cloudypanda.main.adventcalendar.command
 
 import de.cloudypanda.main.Huntcraft
-import de.cloudypanda.main.adventcalendar.config.AdventCalendarConfigModel
-import de.cloudypanda.main.adventcalendar.config.AdventCalendarDayConfig
-import de.cloudypanda.main.adventcalendar.config.AdventCalendarSubmitItemConfig
+import de.cloudypanda.main.config.adventcalendar.AdventCalendarConfigModel
+import de.cloudypanda.main.config.adventcalendar.AdventCalendarDayConfig
+import de.cloudypanda.main.config.adventcalendar.AdventCalendarSubmitItemConfig
 import de.cloudypanda.main.core.integrations.discord.WebhookManager
 import de.cloudypanda.main.util.TextUtil
 import io.papermc.paper.command.brigadier.BasicCommand

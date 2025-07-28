@@ -1,4 +1,4 @@
-package de.cloudypanda.main.core.config;
+package de.cloudypanda.main.config.core
 
 data class CoreConfigModel(
     val deathTimer: CoreModuleConfig = CoreModuleConfig(),

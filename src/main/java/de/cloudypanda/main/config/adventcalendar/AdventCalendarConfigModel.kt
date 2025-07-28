@@ -1,4 +1,4 @@
-package de.cloudypanda.main.adventcalendar.config;
+package de.cloudypanda.main.config.adventcalendar
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import java.time.LocalDate
