@@ -28,10 +28,6 @@ class Huntcraft : JavaPlugin() {
     }
 
     override fun onEnable() {
-        saveDefaultConfig()
-
-        val config = getConfig()
-
         instance = this;
         //Create main Config file
         val coreConfig = coreConfigManager.createFileIfNotExists();
