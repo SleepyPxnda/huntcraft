@@ -44,10 +44,6 @@ class Huntcraft : JavaPlugin() {
         }
     }
 
-    private fun loadConfigs() {
-
-    }
-
     private fun registerDeathTimerModule() {
         //Create config file
         deathTimerConfigManager.createFileIfNotExists();
@@ -66,16 +62,10 @@ class Huntcraft : JavaPlugin() {
         manager.registerEventHandler(LifecycleEvents.COMMANDS) { event ->
             val commands: Commands = event.registrar();
             commands.register(
-                "huntcraft-submit",
-                "Submit command for the advent calendar",
-                listOf("hcs", "submit"),
-                AdventCalendarSubmitCommand()
+                "huntcraft-submit", "Submit command for the advent calendar", listOf("hcs", "submit"), AdventCalendarSubmitCommand()
             );
             commands.register(
-                "huntcraft-leaderboard",
-                "Advent calendar command",
-                listOf("hcl"),
-                AdventCalendarLeaderboardCommand()
+                "huntcraft-leaderboard", "Advent calendar command", listOf("hcl"), AdventCalendarLeaderboardCommand()
             );
         }
 
