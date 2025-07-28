@@ -2,8 +2,8 @@ package de.cloudypanda.main.deathtimer
 
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent
 import de.cloudypanda.main.Huntcraft
-import de.cloudypanda.main.core.integrations.discord.WebhookManager
 import de.cloudypanda.main.config.deathtimer.UserTimeoutConfig
+import de.cloudypanda.main.core.integrations.discord.WebhookNotificationManager
 import de.cloudypanda.main.util.DateUtil
 import de.cloudypanda.main.util.TextUtil
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
@@ -37,19 +37,19 @@ class DeathTimerEventListener(val huntcraft: Huntcraft) : Listener {
         huntcraft.deathTimerConfigManager.saveToFile(deathTimerConfig)
 
         val deathMessage = PlainTextComponentSerializer.plainText().serialize(e.deathMessage()!!)
-        WebhookManager.sendDeathMessage(deathMessage)
+        WebhookNotificationManager().sendDeathMessage(deathMessage)
     }
 
     @EventHandler
     fun onPostRespawnEvent(e: PlayerPostRespawnEvent) {
         val model = huntcraft.deathTimerConfigManager.readFromFile()
 
-        val presentPlayer = model.currentDeathTimeOutetPlayers
+        val optionalPlayer = model.currentDeathTimeOutetPlayers
             .stream()
             .filter { x -> x.playerUUID == e.player.uniqueId }
             .findFirst()
 
-        if (presentPlayer.isPresent && presentPlayer.get().isAllowedToJoin(model.deathTimeout)) {
+        if (optionalPlayer.isPresent && optionalPlayer.get().isAllowedToJoin(model.deathTimeout)) {
             return
         }
 
@@ -57,7 +57,7 @@ class DeathTimerEventListener(val huntcraft: Huntcraft) : Listener {
         val message = TextUtil.getDeathTimerKickMessage(timeout)
         e.player.kick(message)
 
-        val date = DateUtil.getFormattedStringForDateAfterMillis(presentPlayer.get().latestDeath, model.deathTimeout)
+        val date = DateUtil.getFormattedStringForDateAfterMillis(optionalPlayer.get().latestDeath, model.deathTimeout)
         Huntcraft.instance.server.sendMessage(TextUtil.getPlayerDeathAnnounceMessage(e.player.name, date))
         println(TextUtil.getPlayerDeathAnnounceMessage(e.player.name, date))
     }

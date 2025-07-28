@@ -35,6 +35,13 @@ class ComponentBuilder {
         return this
     }
 
+    fun newLine(count: Int): ComponentBuilder {
+        repeat(count) {
+            component.append(Component.newline())
+        }
+        return this
+    }
+
     fun build(): Component {
         return component
     }

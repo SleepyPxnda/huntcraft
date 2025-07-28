@@ -1,6 +1,7 @@
 package de.cloudypanda.main.core.event
 
 import de.cloudypanda.main.Huntcraft
+import de.cloudypanda.main.core.tablist.TabListManager
 import de.cloudypanda.main.util.TextUtil
 import io.papermc.paper.event.player.AsyncChatEvent
 import net.kyori.adventure.text.Component
@@ -27,12 +28,11 @@ class CoreEventListener() : Listener {
             coreConfig.infos.discordLink,
             coreConfig.infos.websiteLink,
             coreConfig.deathTimer.enabled,
-            coreConfig.adventCalendar.enabled,
             deathTimeoutConfig.deathTimeout))
 
         playDuration[e.player.uniqueId] = System.currentTimeMillis()
 
-        Huntcraft.instance.tablistManager.updateAllPlayerTablist()
+        TabListManager.updateAllPlayerTabList()
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

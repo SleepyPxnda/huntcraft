@@ -3,7 +3,7 @@ package de.cloudypanda.main
 import de.cloudypanda.main.config.manager.CoreConfigManager
 import de.cloudypanda.main.config.manager.DeathTimerConfigManager
 import de.cloudypanda.main.core.event.CoreEventListener
-import de.cloudypanda.main.core.tablist.TablistManager
+import de.cloudypanda.main.core.tablist.TabListManager
 import de.cloudypanda.main.deathtimer.DeathTimerEventListener
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -13,7 +13,7 @@ class Huntcraft : JavaPlugin() {
     val deathTimerConfigManager = DeathTimerConfigManager("hc_deathtimer", this)
     val coreConfigManager = CoreConfigManager("hc_core", this)
 
-    val tablistManager = TablistManager()
+    val tablistManager = TabListManager()
 
     companion object {
         lateinit var instance: Huntcraft
