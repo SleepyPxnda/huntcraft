@@ -20,14 +20,14 @@ abstract class AbstractFileManager<T>(private val fileName: String, val huntcraf
      */
     fun createFileIfNotExists(): T {
         if (!checkIfFileExists()) {
-            createFile();
-            this.saveToFile(newClazzInstance());
-            afterInit();
+            createFile()
+            this.saveToFile(newClazzInstance())
+            afterInit()
         } else {
-            huntcraft.componentLogger.info("File $fileName already exists");
+            huntcraft.componentLogger.info("File $fileName already exists")
         }
 
-        return readFromFile();
+        return readFromFile()
     }
 
     /**
@@ -35,19 +35,19 @@ abstract class AbstractFileManager<T>(private val fileName: String, val huntcraf
      */
     open fun afterInit() {
         // Override this method to add custom logic after the file has been created
-    };
+    }
 
     /**
      * Save the config model to the file
      * @param config Config model to save
      */
     fun saveToFile(config: T) {
-        val mapper = ObjectMapper();
+        val mapper = ObjectMapper()
 
         try {
-            mapper.writeValue(filePath.toFile(), config);
+            mapper.writeValue(filePath.toFile(), config)
         } catch (e: IOException) {
-            huntcraft.componentLogger.error("Something went wrong writing to file. " + e.message);
+            huntcraft.componentLogger.error("Something went wrong writing to file. " + e.message)
         }
     }
 
@@ -56,13 +56,13 @@ abstract class AbstractFileManager<T>(private val fileName: String, val huntcraf
      * @return Config model
      */
     fun readFromFile(): T {
-        val mapper = ObjectMapper();
+        val mapper = ObjectMapper()
         try {
-            return mapper.readValue(filePath.toFile(), clazz);
+            return mapper.readValue(filePath.toFile(), clazz)
         } catch (e: IOException) {
-            huntcraft.componentLogger.error("Something went wrong reading from file. {}", e.message);
+            huntcraft.componentLogger.error("Something went wrong reading from file. {}", e.message)
         }
-        return newClazzInstance();
+        return newClazzInstance()
     }
 
     /**
@@ -70,9 +70,9 @@ abstract class AbstractFileManager<T>(private val fileName: String, val huntcraf
      */
     private fun createFile() {
         try {
-            Files.createFile(filePath);
+            Files.createFile(filePath)
         } catch (e: IOException) {
-            throw RuntimeException(e);
+            throw RuntimeException(e)
         }
     }
 
@@ -81,7 +81,7 @@ abstract class AbstractFileManager<T>(private val fileName: String, val huntcraf
      * @return True if the file exists, false otherwise
      */
     private fun checkIfFileExists(): Boolean {
-        return Files.exists(filePath);
+        return Files.exists(filePath)
     }
 
     /**
@@ -90,10 +90,10 @@ abstract class AbstractFileManager<T>(private val fileName: String, val huntcraf
      */
     private fun newClazzInstance(): T {
         try {
-            val constructor = clazz.getDeclaredConstructor();
-            return constructor.newInstance();
+            val constructor = clazz.getDeclaredConstructor()
+            return constructor.newInstance()
         } catch (e: Exception) {
-            throw RuntimeException(e);
+            throw RuntimeException(e)
         }
     }
 }

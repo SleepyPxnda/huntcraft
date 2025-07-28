@@ -38,7 +38,7 @@ class CoreEventListener() : Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     fun onPlayerQuitEvent(e: PlayerQuitEvent) {
 
-        val sessionStartMillis = playDuration[e.player.uniqueId] ?: 0;
+        val sessionStartMillis = playDuration[e.player.uniqueId] ?: 0
 
         val sessionDurationMillis = System.currentTimeMillis() - sessionStartMillis
 

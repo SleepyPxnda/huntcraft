@@ -5,5 +5,4 @@ import de.cloudypanda.main.config.manager.AbstractFileManager
 import de.cloudypanda.main.config.core.CoreConfigModel
 
 class CoreConfigManager(fileName: String, huntcraft: Huntcraft) :
-    AbstractFileManager<CoreConfigModel>(fileName, huntcraft, CoreConfigModel::class.java) {
-}
+    AbstractFileManager<CoreConfigModel>(fileName, huntcraft, CoreConfigModel::class.java)

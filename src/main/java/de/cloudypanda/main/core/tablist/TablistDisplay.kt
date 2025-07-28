@@ -9,17 +9,17 @@ import java.time.LocalDate
 
 class TablistDisplay {
     fun updateTablist(player: Player) {
-        var challengeLine = Component.empty();
-        val coreConfig = Huntcraft.instance.coreConfigManager.readFromFile();
+        var challengeLine = Component.empty()
+        val coreConfig = Huntcraft.instance.coreConfigManager.readFromFile()
 
         if (coreConfig.adventCalendar.enabled) {
-            val adventCalendarConfig = Huntcraft.instance.adventCalendarConfigManager.readFromFile();
+            val adventCalendarConfig = Huntcraft.instance.adventCalendarConfigManager.readFromFile()
             val challenge = adventCalendarConfig.getConfigForDay(LocalDate.now())
             val hasPlayerCompleted = adventCalendarConfig.hasPlayerAlreadyCompletedDay(player.uniqueId, LocalDate.now())
-            challengeLine = TextUtil.getTablistFooter(challenge?.message, challenge?.points, hasPlayerCompleted);
+            challengeLine = TextUtil.getTablistFooter(challenge?.message, challenge?.points, hasPlayerCompleted)
 
-            val playerPoints = adventCalendarConfig.getPointsForPlayer(player.uniqueId);
-            val playerCompletedIndicator = if (hasPlayerCompleted) "✅" else "❌";
+            val playerPoints = adventCalendarConfig.getPointsForPlayer(player.uniqueId)
+            val playerCompletedIndicator = if (hasPlayerCompleted) "✅" else "❌"
             val playerCompletedIndicatorColor = if (hasPlayerCompleted) color(0, 255, 0) else color(255, 0, 0)
 
             player.displayName(

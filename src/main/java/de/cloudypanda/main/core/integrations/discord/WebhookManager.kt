@@ -1,4 +1,4 @@
-package de.cloudypanda.main.core.integrations.discord;
+package de.cloudypanda.main.core.integrations.discord
 
 import de.cloudypanda.main.Huntcraft
 import okhttp3.OkHttpClient
@@ -12,8 +12,8 @@ class WebhookManager {
         private var client: OkHttpClient = OkHttpClient()
 
         fun sendDeathMessage(deathMessage: String) {
-            val coreConfigModel = Huntcraft.instance.coreConfigManager.readFromFile();
-            if(!coreConfigModel.webhook.enabled) return;
+            val coreConfigModel = Huntcraft.instance.coreConfigManager.readFromFile()
+            if(!coreConfigModel.webhook.enabled) return
 
             val requestContent = String.format(
                 """
@@ -23,12 +23,12 @@ class WebhookManager {
                             "content": "@here %s"
                         }
                 """, deathMessage
-            );
+            )
             val request = Request.Builder()
                 .url(coreConfigModel.webhook.webhookUrl)
                 .post(requestContent.toRequestBody())
                 .header("Content-Type", "application/json")
-                .build();
+                .build()
 
             client.newCall(request).execute().use { response ->
                 println(response.body!!.string())
@@ -36,8 +36,8 @@ class WebhookManager {
         }
 
         fun sendAchievementMessage(message: String) {
-            val coreConfigModel = Huntcraft.instance.coreConfigManager.readFromFile();
-            if(!coreConfigModel.webhook.enabled) return;
+            val coreConfigModel = Huntcraft.instance.coreConfigManager.readFromFile()
+            if(!coreConfigModel.webhook.enabled) return
 
             val requestContent = String.format(
                 """
@@ -47,12 +47,12 @@ class WebhookManager {
                             "content": "@here %s"
                         }
                 """, message
-            );
+            )
             val request = Request.Builder()
                 .url(coreConfigModel.webhook.webhookUrl)
                 .post(requestContent.toRequestBody())
                 .header("Content-Type", "application/json")
-                .build();
+                .build()
 
             client.newCall(request).execute().use { response ->
                 println(response.body!!.string())
