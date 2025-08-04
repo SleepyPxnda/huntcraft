@@ -1,5 +1,6 @@
-package de.cloudypanda.main.core.integrations.discord
+package de.cloudypanda.main.discord
 
+import de.cloudypanda.main.Huntcraft
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -17,7 +18,7 @@ class DiscordWebhookMessage {
     }
 
     fun send() {
-        val coreConfigModel = de.cloudypanda.main.Huntcraft.instance.coreConfigManager.readFromFile()
+        val coreConfigModel = Huntcraft.instance.coreConfigManager.readFromFile()
         if (!coreConfigModel.webhook.enabled) return
 
         val requestContent = """

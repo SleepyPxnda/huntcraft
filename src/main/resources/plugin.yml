@@ -1,0 +1,13 @@
+name: Huntcraft
+version: 1.0.0
+main: de.cloudypanda.huntcraft.HuntcraftPlugin
+api-version: 1.19
+description: A Minecraft plugin for the Huntcraft server with Domain-Driven Design architecture
+author: CloudyPanda
+website: https://cloudypanda.de
+
+commands:
+  # Add your commands here
+
+permissions:
+  # Add your permissions here

@@ -1,4 +1,6 @@
-package de.cloudypanda.main.core.integrations.discord
+package de.cloudypanda.main.discord
+
+import de.cloudypanda.main.core.integrations.discord.NotificationManager
 
 
 class WebhookNotificationManager : NotificationManager {
