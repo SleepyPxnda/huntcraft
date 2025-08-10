@@ -13,22 +13,23 @@ import org.bukkit.event.player.PlayerQuitEvent
 import java.util.*
 import kotlin.time.Duration.Companion.milliseconds
 
-
 class CoreEventListener() : Listener {
     private val playDuration: MutableMap<UUID, Long> = HashMap<UUID, Long>()
 
     @EventHandler(priority = EventPriority.HIGHEST)
     fun onPlayerJoinEvent(e: PlayerJoinEvent) {
-        val deathTimeoutConfig = Huntcraft.instance.deathTimerConfigManager.readFromFile()
-        val coreConfig = Huntcraft.instance.coreConfigManager.readFromFile()
+        val deathTimeoutConfig = Huntcraft.instance.configManager.config.death;
+        val infoConfig = Huntcraft.instance.configManager.config.infos;
 
         e.joinMessage(TextUtil.getJoinIndicator(e.player.name))
-        e.player.sendMessage(TextUtil.getJoinMessage(
-            coreConfig.infos.rulesLink,
-            coreConfig.infos.discordLink,
-            coreConfig.infos.websiteLink,
-            coreConfig.deathTimer.enabled,
-            deathTimeoutConfig.deathTimeout))
+        e.player.sendMessage(
+            TextUtil.getJoinMessage(
+                infoConfig.rulesLink,
+                infoConfig.discordLink,
+                infoConfig.websiteLink,
+                deathTimeoutConfig.deathTimer
+            )
+        )
 
         playDuration[e.player.uniqueId] = System.currentTimeMillis()
 

@@ -1,5 +1,6 @@
 package de.cloudypanda.main.core.integrations.discord
 
+import de.cloudypanda.main.Huntcraft
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -17,8 +18,8 @@ class DiscordWebhookMessage {
     }
 
     fun send() {
-        val coreConfigModel = de.cloudypanda.main.Huntcraft.instance.coreConfigManager.readFromFile()
-        if (!coreConfigModel.webhook.enabled) return
+        val discordConfig = Huntcraft.instance.configManager.config.discord
+        if (!discordConfig.enabled) return
 
         val requestContent = """
             {
@@ -29,7 +30,7 @@ class DiscordWebhookMessage {
         """.trimIndent()
 
         val request = Request.Builder()
-            .url(coreConfigModel.webhook.webhookUrl)
+            .url(discordConfig.webhookUrl)
             .post(requestContent.toRequestBody())
             .header("Content-Type", "application/json")
             .build()

@@ -3,7 +3,7 @@ package de.cloudypanda.main.util
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor.color
 import java.time.Instant
-import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 class TextUtil {
     companion object {
@@ -20,8 +20,7 @@ class TextUtil {
             rulesLink: String,
             discordLink: String,
             websiteLink: String,
-            isDeathTimeoutActivated: Boolean,
-            deathTimeout: Long? = null
+            deathTimeout: Int
         ): Component {
             return ComponentBuilder()
                 .append("🌟 This Server uses the Huntcraft Plugin 🌟", color(128, 128, 128))
@@ -36,14 +35,12 @@ class TextUtil {
                 .append(websiteLink, color(102, 255, 51))
                 .newLine(2)
                 .apply {
-                    if (isDeathTimeoutActivated && deathTimeout != null) {
-                        val formattedDeathTimeout = deathTimeout.milliseconds.toComponents { hours, minutes, seconds, _ ->
-                            "%02d:%02d:%02d".format(hours, minutes, seconds)
-                        }
-                        append("⏳ Current Deathtimeout: ", color(128, 128, 128))
-                            .append(formattedDeathTimeout, color(255, 153, 0))
-                            .newLine()
+                    val formattedDeathTimeout = deathTimeout.seconds.toComponents { hours, minutes, seconds, _ ->
+                        "%02d:%02d:%02d".format(hours, minutes, seconds)
                     }
+                    append("⏳ Current Deathtimeout: ", color(128, 128, 128))
+                        .append(formattedDeathTimeout, color(255, 153, 0))
+                        .newLine()
                     append("🎉 Have fun! 🎉", color(128, 128, 128))
                         .newLine()
                 }
@@ -69,6 +66,7 @@ class TextUtil {
                 .newLine()
                 .build()
         }
+
         fun getDeathTimerKickMessage(formattedTimeout: String): Component {
             return ComponentBuilder()
                 .append("🚫 Due to the rules of 'Huntcraft' 🚫", color(255, 0, 0))
@@ -80,7 +78,7 @@ class TextUtil {
                 .newLine(2)
                 .append("📜 Read more about the rules in our discord 📜", color(115, 138, 219))
                 .build()
-            }
+        }
 
         fun getDeathTimerTimeoutMessage(formattedDate: String, latestDeath: Long, timeout: Long): Component {
             return ComponentBuilder()

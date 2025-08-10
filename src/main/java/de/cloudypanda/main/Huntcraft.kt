@@ -1,19 +1,19 @@
 package de.cloudypanda.main
 
-import de.cloudypanda.main.config.manager.CoreConfigManager
-import de.cloudypanda.main.config.manager.DeathTimerConfigManager
+import de.cloudypanda.main.config.ConfigManager
+import de.cloudypanda.main.config.HuntcraftConfig
 import de.cloudypanda.main.core.event.CoreEventListener
-import de.cloudypanda.main.core.tablist.TabListManager
 import de.cloudypanda.main.deathtimer.DeathTimerEventListener
 import org.bukkit.plugin.java.JavaPlugin
+import kotlin.io.path.Path
 
 
 class Huntcraft : JavaPlugin() {
-
-    val deathTimerConfigManager = DeathTimerConfigManager("hc_deathtimer", this)
-    val coreConfigManager = CoreConfigManager("hc_core", this)
-
-    val tablistManager = TabListManager()
+    var configManager: ConfigManager<HuntcraftConfig> = ConfigManager(
+        configPath = Path("huntcraft-config.json"),
+        configClass = HuntcraftConfig::class.java,
+        defaultConfig = HuntcraftConfig()
+    )
 
     companion object {
         lateinit var instance: Huntcraft
@@ -21,23 +21,9 @@ class Huntcraft : JavaPlugin() {
 
     override fun onEnable() {
         instance = this
-        //Create main Config file
-        val coreConfig = coreConfigManager.createFileIfNotExists()
+        configManager.loadConfig()
 
-        //Register Core Events
         server.pluginManager.registerEvents(CoreEventListener(), this)
-
-        if (coreConfig.deathTimer.enabled) {
-            registerDeathTimerModule()
-        }
-    }
-
-    private fun registerDeathTimerModule() {
-        //Create config file
-        deathTimerConfigManager.createFileIfNotExists()
-
-        //Register Event Listener
         server.pluginManager.registerEvents(DeathTimerEventListener(this), this)
-        this.componentLogger.info("DeathTimer Module is enabled")
     }
 }

@@ -37,6 +37,8 @@ dependencies {
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.18.1")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
+    implementation("org.spongepowered:configurate-jackson:4.2.0")
+    implementation("org.spongepowered:configurate-extra-kotlin:4.2.0")
 
     compileOnly("org.projectlombok:lombok:1.18.36")
     annotationProcessor("org.projectlombok:lombok:1.18.36")
@@ -68,7 +70,7 @@ tasks.runServer {
     // Configure the Minecraft version for our task.
     // This is the only required configuration besides applying the plugin.
     // Your plugin's jar (or shadowJar if present) will be used automatically.
-    minecraftVersion("1.21.3")
+    minecraftVersion("1.21.8")
 }
 
 
