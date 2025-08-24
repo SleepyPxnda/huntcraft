@@ -10,10 +10,8 @@ buildscript {
 plugins {
     java
     kotlin("jvm")
-
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.22"
     id("com.github.johnrengelman.shadow") version "8.1.1"
-
-    // Apply the plugin
     id("xyz.jpenilla.run-paper") version "2.3.1"
 }
 
@@ -45,6 +43,7 @@ dependencies {
 
     testCompileOnly("org.projectlombok:lombok:1.18.36")
     testAnnotationProcessor("org.projectlombok:lombok:1.18.36")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
     implementation(kotlin("stdlib-jdk8"))
 }
 

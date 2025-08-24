@@ -1,35 +1,37 @@
 package de.cloudypanda.main.config
 
-import org.spongepowered.configurate.objectmapping.ConfigSerializable
+import de.cloudypanda.main.util.UUIDSerializer
+import kotlinx.serialization.Serializable
 import java.util.*
 
-@ConfigSerializable
+@Serializable
 data class HuntcraftConfig(
     val discord: DiscordConfig = DiscordConfig(),
     val infos: InfoConfig = InfoConfig(),
     val death: DeathConfig = DeathConfig()
 ) {
-    @ConfigSerializable
+    @Serializable
     data class DiscordConfig(
         val enabled: Boolean = false,
         val webhookUrl: String = ""
     )
 
-    @ConfigSerializable
+    @Serializable
     data class InfoConfig(
         val discordLink: String = "",
         val websiteLink: String = "",
         val rulesLink: String = ""
     )
 
-    @ConfigSerializable
+    @Serializable
     data class DeathConfig(
         val deathTimer: Int = 60, // in seconds
         val playerTimeouts: MutableList<UserTimeoutConfig> = mutableListOf()
     )
 
-    @ConfigSerializable
+    @Serializable
     data class UserTimeoutConfig(
+        @Serializable(with = UUIDSerializer::class)
         val playerUUID: UUID,
         val latestDeath: Long,
         val playerName: String
