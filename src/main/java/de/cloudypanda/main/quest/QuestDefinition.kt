@@ -18,11 +18,11 @@ data class QuestDefinition (
 
     // For BLOCK_BREAK
     val requiredBlockBreakCount: Int? = 0,
-    val blockBreakType: String? = null,
+    val blockBreakIdentifier: String? = null,
 
     // For BLOCK_PLACE
     val requiredBlockPlaceCount: Int? = 0,
-    val blockPlaceType: String? = null,
+    val blockPlaceIdentifier: String? = null,
 
     // For ENTITY_KILL
     val requiredEntityKillCount: Int? = 0,
@@ -30,12 +30,12 @@ data class QuestDefinition (
 
     // For ITEM_CRAFT
     val requiredItemCraftCount: Int? = 0,
-    val itemCraftType: Material? = null,
+    val itemCraftIdentifier: Material? = null,
 
     // For TURN_IN_ITEM
     val requiredTurnInItemCount: Int? = 0,
-    val turnInItemType: String? = null,
+    val turnInItemIdentifier: String? = null,
 
     // For ACHIEVEMENT
-    val achievementType: String? = null,
+    val achievementIdentifier: String? = null,
 )

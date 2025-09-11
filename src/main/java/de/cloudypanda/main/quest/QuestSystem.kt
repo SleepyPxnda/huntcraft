@@ -47,11 +47,19 @@ object QuestSystem {
         return completedQuestsMap[playerId] ?: emptyList()
     }
 
+    fun executeAchievementEvent(playerId: UUID, achievementId: String) {
+        val availableQuestsForType = getCurrentQuestsForPlayer(playerId, QuestType.ACHIEVEMENT)
+        for(quest in availableQuestsForType){
+            if(quest.achievementIdentifier == achievementId){
+                processQuestProgression(playerId, quest.id)
+            }
+        }
+    }
+
     fun executeItemCraftEvent(playerId: UUID, craftedItem: ItemStack) {
         val availableQuestsForType = getCurrentQuestsForPlayer(playerId, QuestType.ITEM_CRAFT)
         for(quest in availableQuestsForType){
-            val parsedConfigItem = ItemStack.of(Material.getMaterial("${quest.itemCraftType}") ?: Material.AIR)
-            Huntcraft.instance.logger.info("Parsed config item: $parsedConfigItem")
+            val parsedConfigItem = ItemStack.of(Material.getMaterial("${quest.itemCraftIdentifier}") ?: Material.AIR)
             if(parsedConfigItem.type == craftedItem.type){
                 processQuestProgression(playerId, quest.id, craftedItem.amount)
             }
@@ -71,7 +79,7 @@ object QuestSystem {
     fun executeBlockPlaceEvent(playerId: UUID, placedBlock: Block) {
         val availableQuestsForType = getCurrentQuestsForPlayer(playerId, QuestType.BLOCK_PLACE)
         for(quest in availableQuestsForType){
-            val parsedConfigBlock = Material.getMaterial("${quest.blockPlaceType}")
+            val parsedConfigBlock = Material.getMaterial("${quest.blockPlaceIdentifier}")
             if(parsedConfigBlock == placedBlock.type){
                 processQuestProgression(playerId, quest.id)
             }
@@ -81,7 +89,7 @@ object QuestSystem {
     fun executeBlockBreakEvent(playerId: UUID, brokenBlock: Block) {
         val availableQuestsForType = getCurrentQuestsForPlayer(playerId, QuestType.BLOCK_BREAK)
         for(quest in availableQuestsForType){
-            val parsedConfigBlock = Material.getMaterial("${quest.blockBreakType}")
+            val parsedConfigBlock = Material.getMaterial("${quest.blockBreakIdentifier}")
             if(parsedConfigBlock == brokenBlock.type){
                 processQuestProgression(playerId, quest.id)
             }

@@ -12,7 +12,6 @@ class QuestItemCraftEventHandler() : Listener {
         val player = event.viewers.firstOrNull { it is Player } as? Player
 
         if(player == null){
-            println("[QuestItemCraftEventHandler] No player found in crafting event viewers!")
             return
         }
 

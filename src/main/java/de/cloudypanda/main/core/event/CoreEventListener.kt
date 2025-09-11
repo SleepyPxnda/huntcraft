@@ -18,8 +18,8 @@ class CoreEventListener() : Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     fun onPlayerJoinEvent(e: PlayerJoinEvent) {
-        val deathTimeoutConfig = Huntcraft.instance.configManager.config.death;
-        val infoConfig = Huntcraft.instance.configManager.config.infos;
+        val deathTimeoutConfig = Huntcraft.instance.configManager.config.death
+        val infoConfig = Huntcraft.instance.configManager.config.infos
 
         e.joinMessage(TextUtil.getJoinIndicator(e.player.name))
         e.player.sendMessage(

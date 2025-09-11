@@ -40,6 +40,7 @@ class Huntcraft : JavaPlugin() {
         server.pluginManager.registerEvents(QuestBlockPlaceEventListener(), this)
         server.pluginManager.registerEvents(QuestEntityKillEventListener(), this)
         server.pluginManager.registerEvents(QuestItemCraftEventHandler(), this)
+        server.pluginManager.registerEvents(QuestAchievementEventListener(), this)
 
         logger.info { "Events registered!" }
 
