@@ -6,6 +6,11 @@ import de.cloudypanda.main.config.QuestConfig
 import de.cloudypanda.main.config.QuestListConfig
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
+import org.bukkit.Material
+import org.bukkit.block.Block
+import org.bukkit.entity.Entity
+import org.bukkit.entity.EntityType
+import org.bukkit.inventory.ItemStack
 import java.util.*
 import kotlin.io.path.Path
 
@@ -42,6 +47,47 @@ object QuestSystem {
         return completedQuestsMap[playerId] ?: emptyList()
     }
 
+    fun executeItemCraftEvent(playerId: UUID, craftedItem: ItemStack) {
+        val availableQuestsForType = getCurrentQuestsForPlayer(playerId, QuestType.ITEM_CRAFT)
+        for(quest in availableQuestsForType){
+            val parsedConfigItem = ItemStack.of(Material.getMaterial("${quest.itemCraftType}") ?: Material.AIR)
+            Huntcraft.instance.logger.info("Parsed config item: $parsedConfigItem")
+            if(parsedConfigItem.type == craftedItem.type){
+                processQuestProgression(playerId, quest.id, craftedItem.amount)
+            }
+        }
+    }
+
+    fun executeEntityKillEvent(playerId: UUID, killedEntity: Entity) {
+        val availableQuestsForType = getCurrentQuestsForPlayer(playerId, QuestType.ENTITY_KILL)
+        for(quest in availableQuestsForType){
+            val parsedEntity = EntityType.entries.find { it.key.toString() == quest.entityKillIdentifier }
+            if(parsedEntity == killedEntity.type){
+                processQuestProgression(playerId, quest.id)
+            }
+        }
+    }
+
+    fun executeBlockPlaceEvent(playerId: UUID, placedBlock: Block) {
+        val availableQuestsForType = getCurrentQuestsForPlayer(playerId, QuestType.BLOCK_PLACE)
+        for(quest in availableQuestsForType){
+            val parsedConfigBlock = Material.getMaterial("${quest.blockPlaceType}")
+            if(parsedConfigBlock == placedBlock.type){
+                processQuestProgression(playerId, quest.id)
+            }
+        }
+    }
+
+    fun executeBlockBreakEvent(playerId: UUID, brokenBlock: Block) {
+        val availableQuestsForType = getCurrentQuestsForPlayer(playerId, QuestType.BLOCK_BREAK)
+        for(quest in availableQuestsForType){
+            val parsedConfigBlock = Material.getMaterial("${quest.blockBreakType}")
+            if(parsedConfigBlock == brokenBlock.type){
+                processQuestProgression(playerId, quest.id)
+            }
+        }
+    }
+
     fun processQuestProgression(playerId: UUID, questId: String, amount: Int = 1) {
         val playerQuests = ongoingQuestsMap[playerId]?.toMutableList() ?: mutableListOf()
         val questIndex = playerQuests.indexOfFirst { it.id == questId }
@@ -60,15 +106,6 @@ object QuestSystem {
 
         quest.progression += amount
 
-        if (validateQuestCompletion(quest)) {
-            Huntcraft.instance.logger.info { "Player $playerId completed quest ${quest.id}" }
-            Bukkit.getPlayer(playerId)?.sendMessage { Component.text("You completed quest" + quest.id) }
-            Bukkit.getPlayer(playerId)?.sendMessage { Component.text(quest.afterCompletionText) }
-            completeQuestForPlayer(playerId, quest)
-            addNewQuestsForPlayer(playerId)
-            quest.completed = true
-        }
-
         Bukkit.getPlayer(playerId)?.sendMessage {
             Component.text(
                 "Progressed quest ${quest.id}: ${quest.progression}/${
@@ -84,6 +121,15 @@ object QuestSystem {
                     }
                 }"
             )
+        }
+
+        if (validateQuestCompletion(quest)) {
+            completeQuestForPlayer(playerId, quest)
+            addNewQuestsForPlayer(playerId)
+            Huntcraft.instance.logger.info { "Player $playerId completed quest ${quest.id}" }
+            Bukkit.getPlayer(playerId)?.sendMessage { Component.text("You completed quest" + quest.id) }
+            Bukkit.getPlayer(playerId)?.sendMessage { Component.text(quest.afterCompletionText) }
+            quest.completed = true
         }
         save()
     }
@@ -161,7 +207,7 @@ object QuestSystem {
 
         Bukkit.getOfflinePlayers().forEach { player ->
             addNewQuestsForPlayer(player.uniqueId)
-            Huntcraft.instance.logger.info { "Loaded ${player.uniqueId} quests from config" }
+            Huntcraft.instance.logger.info { "Loaded ${player.name} quests from config" }
         }
     }
 

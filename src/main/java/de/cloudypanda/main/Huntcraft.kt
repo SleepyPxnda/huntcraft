@@ -4,9 +4,7 @@ import de.cloudypanda.main.config.ConfigManager
 import de.cloudypanda.main.config.HuntcraftConfig
 import de.cloudypanda.main.core.event.CoreEventListener
 import de.cloudypanda.main.deathtimer.DeathTimerEventListener
-import de.cloudypanda.main.quest.QuestBlockBreakEventListener
-import de.cloudypanda.main.quest.QuestCommand
-import de.cloudypanda.main.quest.QuestSystem
+import de.cloudypanda.main.quest.*
 import org.bukkit.plugin.java.JavaPlugin
 import kotlin.io.path.Path
 
@@ -39,6 +37,9 @@ class Huntcraft : JavaPlugin() {
         server.pluginManager.registerEvents(CoreEventListener(), this)
         server.pluginManager.registerEvents(DeathTimerEventListener(this), this)
         server.pluginManager.registerEvents(QuestBlockBreakEventListener(), this)
+        server.pluginManager.registerEvents(QuestBlockPlaceEventListener(), this)
+        server.pluginManager.registerEvents(QuestEntityKillEventListener(), this)
+        server.pluginManager.registerEvents(QuestItemCraftEventHandler(), this)
 
         logger.info { "Events registered!" }
 

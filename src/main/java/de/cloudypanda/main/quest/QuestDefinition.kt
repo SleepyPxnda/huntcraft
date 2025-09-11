@@ -18,7 +18,7 @@ data class QuestDefinition (
 
     // For BLOCK_BREAK
     val requiredBlockBreakCount: Int? = 0,
-    val blockBreakTypeIdentifier: String? = null,
+    val blockBreakType: String? = null,
 
     // For BLOCK_PLACE
     val requiredBlockPlaceCount: Int? = 0,
@@ -26,7 +26,7 @@ data class QuestDefinition (
 
     // For ENTITY_KILL
     val requiredEntityKillCount: Int? = 0,
-    val entityKillType: String? = null,
+    val entityKillIdentifier: String? = null,
 
     // For ITEM_CRAFT
     val requiredItemCraftCount: Int? = 0,
