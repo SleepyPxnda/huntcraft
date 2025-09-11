@@ -67,6 +67,43 @@ class TextUtil {
                 .build()
         }
 
+        fun getQuestProgressBar(questName: String, progress: Int, maximum: Int): Component {
+            val percent = if (maximum > 0) (progress * 100) / maximum else 0
+            val filledBars = if (maximum > 0) (progress * 10) / maximum else 0
+            val emptyBars = 10 - filledBars
+
+            val filledSegment = "█".repeat(filledBars)
+            val emptySegment = "░".repeat(emptyBars)
+            val percentText = " $percent%"
+
+            return Component.text()
+                .append(Component.text("Quest - $questName", color(255, 215, 0)))
+                .append(Component.text(filledSegment, color(0, 255, 0)))
+                .append(Component.text(emptySegment, color(255, 0, 0)))
+                .append(Component.text(percentText, color(0, 191, 255)))
+                .build()
+        }
+
+        fun getQuestCompletionMessage(questName: String): Component {
+            return Component.text("🎉 You completed the quest: $questName 🎉")
+                .color(color(0, 255, 0))
+        }
+
+        fun getQuestCompletionAnnounceMessage(playerName: String, questName: String): Component {
+            return Component.text("🌟 $playerName has completed the quest: $questName 🌟")
+                .color(color(255, 215, 0))
+        }
+
+        fun getQuestAfterCompletionText(afterCompletionText: String): Component {
+            return Component.text(afterCompletionText)
+                .color(color(0, 191, 255)) // Optional: use a distinct color for aftercompletion text
+        }
+
+        fun getPlayerDeathAnnounceMessage(playerName: String, formattedJoinDate: String): Component {
+            return Component.text("🔥 $playerName has died and was dispelled from the server until $formattedJoinDate 🔥")
+                .color(color(255, 0, 0))
+        }
+
         fun getDeathTimerKickMessage(formattedTimeout: String): Component {
             return ComponentBuilder()
                 .append("🚫 Due to the rules of 'Huntcraft' 🚫", color(255, 0, 0))
@@ -100,9 +137,14 @@ class TextUtil {
                 .build()
         }
 
-        fun getPlayerDeathAnnounceMessage(playerName: String, formattedJoinDate: String): Component {
-            return Component.text("🔥 $playerName has died and was dispelled from the server until $formattedJoinDate 🔥")
-                .color(color(255, 0, 0))
+        fun getQuestListCommandMessage(questName: String, description: String, progression: Int, needed: Int): Component {
+            return Component.text()
+                .append(Component.text("• ", color(255, 215, 0)))
+                .append(Component.text(questName, color(255, 255, 255)))
+                .append(Component.text(" - ", color(255, 215, 0)))
+                .append(Component.text(description, color(173, 216, 230)))
+                .append(Component.text(" (Progress: $progression/$needed)", color(0, 191, 255)))
+                .build()
         }
     }
 }

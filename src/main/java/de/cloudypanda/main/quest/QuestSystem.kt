@@ -4,7 +4,7 @@ import de.cloudypanda.main.Huntcraft
 import de.cloudypanda.main.config.ConfigManager
 import de.cloudypanda.main.config.QuestConfig
 import de.cloudypanda.main.config.QuestListConfig
-import net.kyori.adventure.text.Component
+import de.cloudypanda.main.util.TextUtil
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.block.Block
@@ -115,28 +115,16 @@ object QuestSystem {
         quest.progression += amount
 
         Bukkit.getPlayer(playerId)?.sendMessage {
-            Component.text(
-                "Progressed quest ${quest.id}: ${quest.progression}/${
-                    when (quest.type) {
-                        QuestType.BLOCK_BREAK -> quest.requiredBlockBreakCount
-                        QuestType.BLOCK_PLACE -> quest.requiredBlockPlaceCount
-                        QuestType.ENTITY_KILL -> quest.requiredEntityKillCount
-                        QuestType.ITEM_CRAFT -> quest.requiredItemCraftCount
-                        QuestType.TURN_IN_ITEM -> quest.requiredTurnInItemCount
-                        QuestType.PUZZLE_COMPLETE -> 1
-                        QuestType.ACHIEVEMENT -> 1
-                        else -> 0
-                    }
-                }"
-            )
+            TextUtil.getQuestProgressBar(quest.name, quest.progression, quest.getNeededCount())
         }
 
         if (validateQuestCompletion(quest)) {
             completeQuestForPlayer(playerId, quest)
             addNewQuestsForPlayer(playerId)
             Huntcraft.instance.logger.info { "Player $playerId completed quest ${quest.id}" }
-            Bukkit.getPlayer(playerId)?.sendMessage { Component.text("You completed quest" + quest.id) }
-            Bukkit.getPlayer(playerId)?.sendMessage { Component.text(quest.afterCompletionText) }
+            Bukkit.getPlayer(playerId)?.sendMessage { TextUtil.getQuestCompletionMessage(quest.name) }
+            Bukkit.getPlayer(playerId)?.sendMessage { TextUtil.getQuestAfterCompletionText(quest.afterCompletionText) }
+            Bukkit.broadcast(TextUtil.getQuestCompletionAnnounceMessage(Bukkit.getPlayer(playerId)?.name ?: "Unnamed", quest.name))
             quest.completed = true
         }
         save()

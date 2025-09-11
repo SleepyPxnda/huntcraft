@@ -1,7 +1,9 @@
 package de.cloudypanda.main.quest
 
+import de.cloudypanda.main.util.TextUtil
 import io.papermc.paper.command.brigadier.BasicCommand
 import io.papermc.paper.command.brigadier.CommandSourceStack
+import net.kyori.adventure.text.Component
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
@@ -18,28 +20,22 @@ class QuestCommand() : BasicCommand {
         }
 
         val questsForPlayer = QuestSystem.getCurrentQuestsForPlayer(sender.uniqueId)
-        sender.sendMessage("You have ${questsForPlayer.size} ongoing quests:")
-        for (quest in questsForPlayer) {
-            sender.sendMessage(
-                "- ${quest.name}: (Progress: ${quest.progression}/${
-                    when (quest.type) {
-                        QuestType.BLOCK_BREAK -> quest.requiredBlockBreakCount
-                        QuestType.BLOCK_PLACE -> quest.requiredBlockPlaceCount
-                        QuestType.ENTITY_KILL -> quest.requiredEntityKillCount
-                        QuestType.ITEM_CRAFT -> quest.requiredItemCraftCount
-                        QuestType.TURN_IN_ITEM -> quest.requiredTurnInItemCount
-                        QuestType.PUZZLE_COMPLETE -> 1
-                        QuestType.ACHIEVEMENT -> 1
-                        else -> 0
-                    }
-                })"
-            )
+        val completedQuests: List<QuestDefinition> = QuestSystem.getCompletedQuestsForPlayer(sender.uniqueId)
+
+        // Ongoing Quests Header
+        sender.sendMessage(Component.text("Ongoing Quests:").color(net.kyori.adventure.text.format.TextColor.color(0, 255, 0)))
+        questsForPlayer.forEach { quest ->
+            sender.sendMessage(TextUtil.getQuestProgressBar(quest.name, quest.progression, quest.getNeededCount()))
+            sender.sendMessage(TextUtil.getQuestListCommandMessage(quest.name, quest.description, quest.progression, quest.getNeededCount()))
         }
 
-        val completedQuests: List<QuestDefinition> = QuestSystem.getCompletedQuestsForPlayer(sender.uniqueId)
-        sender.sendMessage("You have ${completedQuests.size} completed quests:")
-        for (quest in completedQuests) {
-            sender.sendMessage("- ${quest.name} ")
+        // Completed Quests Header
+        sender.sendMessage(Component.text("Completed Quests:").color(net.kyori.adventure.text.format.TextColor.color(255, 215, 0)))
+        completedQuests.forEach { quest ->
+            sender.sendMessage(Component.text()
+                .append(Component.text("• ", net.kyori.adventure.text.format.TextColor.color(255, 215, 0)))
+                .append(Component.text(quest.name, net.kyori.adventure.text.format.TextColor.color(192, 192, 192)))
+                .build())
         }
     }
 }

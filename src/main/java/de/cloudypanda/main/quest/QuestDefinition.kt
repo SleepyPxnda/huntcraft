@@ -38,4 +38,30 @@ data class QuestDefinition (
 
     // For ACHIEVEMENT
     val achievementIdentifier: String? = null,
-)
+) {
+    fun isCompleted(): Boolean {
+        return when (type) {
+            QuestType.BLOCK_BREAK -> progression >= (requiredBlockBreakCount ?: 0)
+            QuestType.BLOCK_PLACE -> progression >= (requiredBlockPlaceCount ?: 0)
+            QuestType.ENTITY_KILL -> progression >= (requiredEntityKillCount ?: 0)
+            QuestType.ITEM_CRAFT -> progression >= (requiredItemCraftCount ?: 0)
+            QuestType.TURN_IN_ITEM -> progression >= (requiredTurnInItemCount ?: 0)
+            QuestType.PUZZLE_COMPLETE -> progression >= 1
+            QuestType.ACHIEVEMENT -> progression >= 1
+            else -> false
+        }
+    }
+
+    fun getNeededCount() : Int {
+        return when (type) {
+            QuestType.BLOCK_BREAK -> requiredBlockBreakCount ?: 0
+            QuestType.BLOCK_PLACE -> requiredBlockPlaceCount ?: 0
+            QuestType.ENTITY_KILL -> requiredEntityKillCount ?: 0
+            QuestType.ITEM_CRAFT -> requiredItemCraftCount ?: 0
+            QuestType.TURN_IN_ITEM -> requiredTurnInItemCount ?: 0
+            QuestType.PUZZLE_COMPLETE -> 1
+            QuestType.ACHIEVEMENT -> 1
+            else -> 0
+        }
+    }
+}

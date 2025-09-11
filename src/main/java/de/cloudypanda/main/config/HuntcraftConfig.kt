@@ -25,7 +25,7 @@ data class HuntcraftConfig(
 
     @Serializable
     data class DeathConfig(
-        val deathTimer: Int = 60, // in seconds
+        val deathTimer: Long = 60, // in seconds
         val playerTimeouts: MutableList<UserTimeoutConfig> = mutableListOf()
     )
 
