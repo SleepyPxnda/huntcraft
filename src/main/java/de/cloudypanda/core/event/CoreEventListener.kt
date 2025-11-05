@@ -89,6 +89,9 @@ class CoreEventListener() : Listener {
             }
         }
 
+        //Remove player from "cache"
+        PlayerManager.instance.removePlayerByUUID(e.player.uniqueId)
+
         // Delete player session
         //transaction { PlayerSessionTable.deleteWhere { PlayerSessionTable.playerUuid eq e.player.uniqueId } }
 

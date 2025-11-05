@@ -25,6 +25,10 @@ class PlayerManager {
         return playerList.find { it.uuid == uuid }
     }
 
+    fun removePlayerByUUID(uuid: UUID) {
+        playerList.removeIf { it.uuid == uuid }
+    }
+
     fun loadNewPlayer(player: Player) {
         // Search for existing player data
         val existingMapPlayer = getPlayerByUUID(player.uniqueId)
