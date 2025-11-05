@@ -56,7 +56,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:0.56.0")
     implementation("org.xerial:sqlite-jdbc:3.46.0.0")
 
-    implementation("com.h2database:h2:2.1.212")
+    implementation("com.h2database:h2:2.3.232")
 }
 
 java {

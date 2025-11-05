@@ -9,7 +9,8 @@ import de.cloudypanda.quest.*
 import org.bukkit.plugin.java.JavaPlugin
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.transactions.TransactionManager
+import org.jetbrains.exposed.sql.StdOutSqlLogger
+import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.transactions.transaction
 import kotlin.io.path.Path
 
@@ -49,13 +50,17 @@ class Huntcraft : JavaPlugin() {
 
         logger.info { "Commands registered!" }
 
-        TransactionManager.defaultDatabase = Database.connect("jdbc:h2:mem:test", driver = "org.h2.Driver")
+        Database.connect("jdbc:h2:file:./plugins/huntcraft/huntcraft;AUTO_SERVER=TRUE", driver = "org.h2.Driver")
 
         transaction {
+            addLogger(StdOutSqlLogger)
+
             SchemaUtils.create(
                 PlayerTable, QuestTable, CompletedQuestTable, QuestProgressTable, PlayerSessionTable
             )
         }
+
+        logger.info { "Database connected and tables created!" }
     }
 
     override fun onDisable() {

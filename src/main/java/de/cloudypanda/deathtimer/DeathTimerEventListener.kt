@@ -61,19 +61,16 @@ class DeathTimerEventListener(val huntcraft: Huntcraft) : Listener {
     fun onAsyncPlayerPreLoginEvent(e: AsyncPlayerPreLoginEvent) {
         val deathTimerConfig = huntcraft.configManager.config.death
 
-
         val player = transaction {
-            PlayerTable.selectAll().where { PlayerTable.uuid eq e.uniqueId }.first()
-        }
+            PlayerTable.selectAll().where { PlayerTable.uuid eq e.uniqueId }.firstOrNull()
+        } ?: return
 
         if (player.isAllowedToJoin(deathTimerConfig.deathTimer)) {
             return
         }
 
-        val date =
-            DateUtil.getFormattedStringForDateAfterMillis(player[PlayerTable.latestDeathTime], deathTimerConfig.deathTimer)
-        val message =
-            TextUtil.getDeathTimerTimeoutMessage(date, player[PlayerTable.latestDeathTime], deathTimerConfig.deathTimer)
+        val date = DateUtil.getFormattedStringForDateAfterMillis(player[PlayerTable.latestDeathTime], deathTimerConfig.deathTimer)
+        val message = TextUtil.getDeathTimerTimeoutMessage(date, player[PlayerTable.latestDeathTime], deathTimerConfig.deathTimer)
         e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, message)
     }
 }

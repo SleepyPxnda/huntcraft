@@ -1,10 +1,12 @@
 package de.cloudypanda.core.event
 
+import de.cloudypanda.Huntcraft
 import de.cloudypanda.database.PlayerSessionTable
 import de.cloudypanda.database.PlayerTable
 import de.cloudypanda.player.PlayerManager
 import de.cloudypanda.util.TextUtil
 import io.papermc.paper.event.player.AsyncChatEvent
+import lombok.extern.slf4j.Slf4j
 import net.kyori.adventure.text.Component
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -17,23 +19,30 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 import kotlin.time.Duration.Companion.milliseconds
 
+@Slf4j
 class CoreEventListener() : Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     fun onPlayerJoinEvent(e: PlayerJoinEvent) {
 
-        //Insert player data into database, ignore errors
-        transaction {
-            // Ensure the PlayerEntity exists in the database
-            PlayerTable.insert {
-                it[uuid] = e.player.uniqueId
-                it[onlineTime] = 0L
-                it[canEnterNether] = false
-                it[canEnterEnd] = false
-            }
+        val player = transaction {
+            PlayerTable.selectAll().where { PlayerTable.uuid eq e.player.uniqueId }.firstOrNull()
+        }
 
-            PlayerSessionTable.insert {
-                it[playerUuid] = e.player.uniqueId
-                it[loginTime] = System.currentTimeMillis()
+        if (player == null) {
+            //Insert player data into database, ignore errors
+            transaction {
+                // Ensure the PlayerEntity exists in the database
+                PlayerTable.insert {
+                    it[uuid] = e.player.uniqueId
+                    it[onlineTime] = 0L
+                    it[canEnterNether] = false
+                    it[canEnterEnd] = false
+                }
+
+                PlayerSessionTable.insert {
+                    it[playerUuid] = e.player.uniqueId
+                    it[loginTime] = System.currentTimeMillis()
+                }
             }
         }
 
@@ -45,28 +54,49 @@ class CoreEventListener() : Listener {
     fun onPlayerQuitEvent(e: PlayerQuitEvent) {
 
         //Retrieve player session from database
-        val playerSession = PlayerSessionTable.selectAll()
-            .where { PlayerSessionTable.playerUuid eq e.player.uniqueId }
-            .firstOrNull() ?: return
+        val playerSession = transaction {
+            PlayerSessionTable.selectAll().where { PlayerSessionTable.playerUuid eq e.player.uniqueId }.firstOrNull()
+        }
 
         //Retrieve current onlineTime
-        val playerOnlineTime = PlayerTable.select(PlayerTable.onlineTime)
-            .where { PlayerTable.uuid eq e.player.uniqueId }
-            .firstOrNull() ?: return
+        val playerOnlineTime = transaction {
+            PlayerTable.select(PlayerTable.onlineTime).where { PlayerTable.uuid eq e.player.uniqueId }.firstOrNull()
+        }
+
+        if(playerSession == null || playerOnlineTime == null) {
+            Huntcraft.instance.logger.warning { "Could not retrieve session or online time for player ${e.player.name}" }
+            Huntcraft.instance.logger.info { "PlayerSession $playerSession" }
+            Huntcraft.instance.logger.info { "PlayerOnlineTime $playerOnlineTime" }
+            return
+        }
+
+        Huntcraft.instance.logger.info { "Updating online time for player ${e.player.name}" }
+
+        val previousOnlineTime = playerOnlineTime[PlayerTable.onlineTime]
+        val sessionLoginTime = playerSession[PlayerSessionTable.loginTime]
+
+        Huntcraft.instance.logger.info { "Previous online time: $previousOnlineTime ms" }
+        Huntcraft.instance.logger.info { "Session login time: $sessionLoginTime ms" }
+
+        val sessionDuration = System.currentTimeMillis() - sessionLoginTime
+
+        Huntcraft.instance.logger.info { "Session login time: $sessionLoginTime ms" }
 
         //Update player online time
-        var sessionDuration = 0L
-        PlayerTable.update({ PlayerTable.uuid eq e.player.uniqueId }) {
-            val previousOnlineTime = playerOnlineTime[PlayerTable.onlineTime]
-            val sessionLoginTime = playerSession[PlayerSessionTable.loginTime]
-            sessionDuration = System.currentTimeMillis() - sessionLoginTime
-            it[onlineTime] = previousOnlineTime + sessionDuration
+        transaction {
+            PlayerTable.update({ PlayerTable.uuid eq e.player.uniqueId }) {
+                it[onlineTime] = previousOnlineTime + sessionDuration
+            }
         }
+
+        // Delete player session
+        //transaction { PlayerSessionTable.deleteWhere { PlayerSessionTable.playerUuid eq e.player.uniqueId } }
 
         val sessionDurationString = sessionDuration.milliseconds.toComponents { hours, minutes, seconds, _ ->
             "%02d:%02d:%02d".format(hours, minutes, seconds)
         }
 
+        // Display quit message to player
         e.quitMessage(TextUtil.getQuitIndicator(e.player.name, sessionDurationString))
     }
 

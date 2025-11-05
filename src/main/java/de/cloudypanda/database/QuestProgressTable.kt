@@ -4,7 +4,7 @@ import de.cloudypanda.quest.QuestType
 import org.jetbrains.exposed.dao.id.UUIDTable
 
 object QuestProgressTable : UUIDTable("quest_progress") {
-    val playerUuid = uuid("player_uuid")
+    val playerUuid = uuid("player_uuid").references(PlayerTable.uuid)
     val questId = uuid("quest_id").references(QuestTable.id)
     val name = varchar("name", 255)
     val progression = integer("progression").default(0)
