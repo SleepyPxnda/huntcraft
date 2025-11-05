@@ -18,6 +18,7 @@ plugins {
 group = "de.cloudypanda"
 version = '2'
 
+
 repositories {
     mavenCentral()
     maven {
@@ -32,7 +33,10 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT")
+    compileOnly("org.xerial:sqlite-jdbc:3.46.0.0")
+
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.18.1")
+
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
     implementation("org.spongepowered:configurate-jackson:4.2.0")
@@ -40,11 +44,19 @@ dependencies {
 
     compileOnly("org.projectlombok:lombok:1.18.36")
     annotationProcessor("org.projectlombok:lombok:1.18.36")
-
     testCompileOnly("org.projectlombok:lombok:1.18.36")
     testAnnotationProcessor("org.projectlombok:lombok:1.18.36")
+
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+
     implementation(kotlin("stdlib-jdk8"))
+
+    implementation("org.jetbrains.exposed:exposed-core:0.56.0")
+    implementation("org.jetbrains.exposed:exposed-dao:0.56.0")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.56.0")
+    implementation("org.xerial:sqlite-jdbc:3.46.0.0")
+
+    implementation("com.h2database:h2:2.1.212")
 }
 
 java {

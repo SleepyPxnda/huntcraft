@@ -1,6 +1,6 @@
 name: huntcraft
 version: '2'
-main: de.cloudypanda.main.Huntcraft
+main: de.cloudypanda.Huntcraft
 api-version: '1.21.3'
 load: STARTUP
 authors: [ Pxndarino ]

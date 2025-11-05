@@ -1,0 +1,14 @@
+package de.cloudypanda.database
+
+import de.cloudypanda.quest.QuestType
+import org.jetbrains.exposed.dao.id.UUIDTable
+
+object QuestProgressTable : UUIDTable("quest_progress") {
+    val playerUuid = uuid("player_uuid")
+    val questId = uuid("quest_id").references(QuestTable.id)
+    val name = varchar("name", 255)
+    val progression = integer("progression").default(0)
+    val requiredAmount = integer("required_amount").default(0)
+    val type = enumeration("type", QuestType::class).default(QuestType.NONE)
+    val progressingIdentifier = varchar("progressing_identifier", length = 255).default("")
+}
