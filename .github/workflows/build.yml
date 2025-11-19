@@ -6,6 +6,9 @@ on:
     branches:
       - master
 
+env:
+  PLUGIN_VERSION: ${{ github.ref_name }}
+
 jobs:
     artifact-build:
         name: Build and Publish
@@ -22,12 +25,12 @@ jobs:
             java-version: '21'
 
         - name: Build with Gradle
-          run: ./gradlew build -Pversion=${{ github.ref_name }}
+          run: ./gradlew build -Pversion=${{ env.PLUGIN_VERSION }}
 
         - name: Publish to artifacts
           uses: actions/upload-artifact@v4
           with:
-            path: "build/libs/*.jar"
-            name: build-artifacts
+            path: "build/libs/huntcraft-${{ env.PLUGIN_VERSION }}-all.jar"
+            name: huntcraft-${{ env.PLUGIN_VERSION }}.jar
 
 
