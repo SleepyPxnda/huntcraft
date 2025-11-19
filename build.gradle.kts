@@ -16,7 +16,7 @@ plugins {
 }
 
 group = "de.cloudypanda"
-version = '2'
+version = project.property("version")!!
 
 
 repositories {
@@ -68,6 +68,8 @@ tasks.jar {
         attributes["paperweight-mappings-namespace"] = "mojang"
     }
     archiveBaseName.set("huntcraft")
+
+
 }
 // if you have shadowJar configured
 tasks.shadowJar {
