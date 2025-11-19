@@ -22,7 +22,7 @@ jobs:
             java-version: '21'
 
         - name: Build with Gradle
-          run: ./gradlew build -Pversion={{ github.ref_name }}
+          run: ./gradlew build -Pversion=${{ github.ref_name }}
 
         - name: Publish to artifacts
           uses: actions/upload-artifact@v4
