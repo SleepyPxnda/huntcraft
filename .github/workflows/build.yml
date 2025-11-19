@@ -28,7 +28,7 @@ jobs:
         - name: Add Files to Release
           run: |
             cd ${{github.workspace}}
-            gh release upload ${{github.event.release.tag_name}} build/libs/huntcraft-${{ env.PLUGIN_VERSION }}-all.jar
+            gh release upload ${{ env.PLUGIN_VERSION }} build/libs/huntcraft-${{ env.PLUGIN_VERSION }}-all.jar
           env:
             GITHUB_TOKEN: ${{ github.TOKEN }}
           shell: bash
