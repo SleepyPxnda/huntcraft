@@ -18,7 +18,6 @@ plugins {
 group = "de.cloudypanda"
 version = project.property("version")!!
 
-
 repositories {
     mavenCentral()
     maven {
