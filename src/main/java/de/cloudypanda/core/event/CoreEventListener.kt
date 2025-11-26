@@ -65,22 +65,13 @@ class CoreEventListener() : Listener {
 
         if(playerSession == null || playerOnlineTime == null) {
             Huntcraft.instance.logger.warning { "Could not retrieve session or online time for player ${e.player.name}" }
-            Huntcraft.instance.logger.info { "PlayerSession $playerSession" }
-            Huntcraft.instance.logger.info { "PlayerOnlineTime $playerOnlineTime" }
             return
         }
-
-        Huntcraft.instance.logger.info { "Updating online time for player ${e.player.name}" }
 
         val previousOnlineTime = playerOnlineTime[PlayerTable.onlineTime]
         val sessionLoginTime = playerSession[PlayerSessionTable.loginTime]
 
-        Huntcraft.instance.logger.info { "Previous online time: $previousOnlineTime ms" }
-        Huntcraft.instance.logger.info { "Session login time: $sessionLoginTime ms" }
-
         val sessionDuration = System.currentTimeMillis() - sessionLoginTime
-
-        Huntcraft.instance.logger.info { "Session login time: $sessionLoginTime ms" }
 
         //Update player online time
         transaction {

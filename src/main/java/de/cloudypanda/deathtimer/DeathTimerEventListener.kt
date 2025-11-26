@@ -4,7 +4,7 @@ import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent
 import de.cloudypanda.Huntcraft
 import de.cloudypanda.core.integrations.discord.WebhookNotificationManager
 import de.cloudypanda.database.PlayerTable
-import de.cloudypanda.database.PlayerTable.isAllowedToJoin
+import de.cloudypanda.database.PlayerTable.latestDeathTime
 import de.cloudypanda.util.DateUtil
 import de.cloudypanda.util.TextUtil
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
@@ -14,14 +14,14 @@ import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.updateReturning
+import org.jetbrains.exposed.sql.update
 
 class DeathTimerEventListener(val huntcraft: Huntcraft) : Listener {
 
     @EventHandler
     fun onDeathEvent(e: PlayerDeathEvent) {
         transaction {
-            PlayerTable.updateReturning(PlayerTable.columns, { PlayerTable.uuid eq e.player.uniqueId }) {
+            PlayerTable.update({ PlayerTable.uuid eq e.player.uniqueId }) {
                 it[latestDeathTime] = System.currentTimeMillis()
             }
         }
@@ -34,9 +34,17 @@ class DeathTimerEventListener(val huntcraft: Huntcraft) : Listener {
     fun onPostRespawnEvent(e: PlayerPostRespawnEvent) {
         val deathTimerConfig = huntcraft.configManager.config.death
 
-        val player = PlayerTable.selectAll().where { PlayerTable.uuid eq e.player.uniqueId }.first()
+        val player =
+            transaction {
+                PlayerTable.selectAll().where { PlayerTable.uuid eq e.player.uniqueId }.firstOrNull()
+            } ?: return
 
-        if (player.isAllowedToJoin(deathTimerConfig.deathTimer)) {
+        Huntcraft.instance.logger.info { "Retrieved Player $player" }
+
+        val canJoin = ((System.currentTimeMillis() - player[latestDeathTime]) >= deathTimerConfig.deathTimer)
+
+        if (canJoin) {
+            Huntcraft.instance.logger.info { "player is allowed to join" }
             return
         }
 
@@ -45,9 +53,10 @@ class DeathTimerEventListener(val huntcraft: Huntcraft) : Listener {
         e.player.kick(message)
 
         val date = DateUtil.getFormattedStringForDateAfterMillis(
-            player[PlayerTable.latestDeathTime],
+            player[latestDeathTime],
             deathTimerConfig.deathTimer
         )
+
         Huntcraft.instance.server.sendMessage(
             TextUtil.getPlayerDeathAnnounceMessage(
                 e.player.name,
@@ -65,12 +74,22 @@ class DeathTimerEventListener(val huntcraft: Huntcraft) : Listener {
             PlayerTable.selectAll().where { PlayerTable.uuid eq e.uniqueId }.firstOrNull()
         } ?: return
 
-        if (player.isAllowedToJoin(deathTimerConfig.deathTimer)) {
+        Huntcraft.instance.logger.info { "Retrieved Player $player" }
+
+        val canJoin = ((System.currentTimeMillis() - player[latestDeathTime]) >= deathTimerConfig.deathTimer)
+
+        if (canJoin) {
+            Huntcraft.instance.logger.info { "player is allowed to join" }
             return
         }
 
-        val date = DateUtil.getFormattedStringForDateAfterMillis(player[PlayerTable.latestDeathTime], deathTimerConfig.deathTimer)
-        val message = TextUtil.getDeathTimerTimeoutMessage(date, player[PlayerTable.latestDeathTime], deathTimerConfig.deathTimer)
+        val date = DateUtil.getFormattedStringForDateAfterMillis(
+            player[latestDeathTime],
+            deathTimerConfig.deathTimer
+        )
+
+
+        val message = TextUtil.getDeathTimerTimeoutMessage(date, player[latestDeathTime], deathTimerConfig.deathTimer)
         e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, message)
     }
 }

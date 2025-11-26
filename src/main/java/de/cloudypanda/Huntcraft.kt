@@ -9,8 +9,6 @@ import de.cloudypanda.quest.*
 import org.bukkit.plugin.java.JavaPlugin
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.StdOutSqlLogger
-import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.transactions.transaction
 import kotlin.io.path.Path
 
@@ -53,8 +51,6 @@ class Huntcraft : JavaPlugin() {
         Database.connect("jdbc:h2:file:./plugins/huntcraft/huntcraft;AUTO_SERVER=TRUE", driver = "org.h2.Driver")
 
         transaction {
-            addLogger(StdOutSqlLogger)
-
             SchemaUtils.create(
                 PlayerTable, QuestTable, CompletedQuestTable, QuestProgressTable, PlayerSessionTable
             )
