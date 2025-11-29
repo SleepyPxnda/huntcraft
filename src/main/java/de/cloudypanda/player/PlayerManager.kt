@@ -47,6 +47,7 @@ class PlayerManager {
                 .map {
                     QuestProgressDTO(
                         playerUuid = it[QuestProgressTable.playerUuid],
+                        name = it[QuestProgressTable.name],
                         questId = it[QuestProgressTable.questId],
                         progression = it[QuestProgressTable.progression],
                         requiredAmount = it[QuestProgressTable.requiredAmount],
@@ -69,7 +70,6 @@ class PlayerManager {
                         id = it[QuestTable.id].toString(),
                         name = it[QuestTable.name],
                         description = it[QuestTable.description],
-                        requiredQuests = mutableListOf(), // This would require additional queries to populate // TODO add this, its only informational so it can be ignored for now
                         afterCompletionText = it[QuestTable.afterCompletionText],
                         type = it[QuestTable.type],
                         questProgressionIdentifier = it[QuestTable.questProgressionIdentifier],
@@ -80,10 +80,10 @@ class PlayerManager {
 
         val playerDTO = PlayerDTO(
             uuid = player.uniqueId,
-            onlineTime = existingDatabasePlayer?.get(PlayerTable.onlineTime) ?: 0L,
-            canEnterNether = existingDatabasePlayer?.get(PlayerTable.canEnterNether) ?: false,
-            canEnterEnd = existingDatabasePlayer?.get(PlayerTable.canEnterEnd) ?: false,
-            latestDeathTime = existingDatabasePlayer?.get(PlayerTable.latestDeathTime) ?: 0L,
+            onlineTime = existingDatabasePlayer[PlayerTable.onlineTime],
+            canEnterNether = existingDatabasePlayer[PlayerTable.canEnterNether],
+            canEnterEnd = existingDatabasePlayer[PlayerTable.canEnterEnd],
+            latestDeathTime = existingDatabasePlayer[PlayerTable.latestDeathTime],
             ongoingQuests = ongoingQuestsForPlayer,
             finishedQuests = completedQuestsForPlayer
         )

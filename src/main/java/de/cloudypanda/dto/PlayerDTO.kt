@@ -1,6 +1,9 @@
 package de.cloudypanda.dto
 
 import de.cloudypanda.Huntcraft
+import de.cloudypanda.database.CompletedQuestTable
+import de.cloudypanda.database.QuestProgressTable
+import de.cloudypanda.database.QuestTable
 import de.cloudypanda.util.TextUtil
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
@@ -10,6 +13,12 @@ import org.bukkit.block.Block
 import org.bukkit.entity.Entity
 import org.bukkit.entity.EntityType
 import org.bukkit.inventory.ItemStack
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.deleteWhere
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*
 
 @Serializable
@@ -25,96 +34,109 @@ data class PlayerDTO(
 ) {
 
     fun executeAchievementEvent(playerId: UUID, achievementId: String) {
-        for(quest in ongoingQuests){
-            if(quest.progressingIdentifier == achievementId){
+        for (quest in ongoingQuests) {
+            if (quest.progressingIdentifier == achievementId) {
                 processQuestProgression(playerId, quest.questId)
             }
         }
     }
 
     fun executeItemCraftEvent(playerId: UUID, craftedItem: ItemStack) {
-        for(quest in ongoingQuests){
+        for (quest in ongoingQuests) {
             val parsedConfigItem = ItemStack.of(Material.getMaterial(quest.progressingIdentifier) ?: Material.AIR)
-            if(parsedConfigItem.type == craftedItem.type){
+            if (parsedConfigItem.type == craftedItem.type) {
                 processQuestProgression(playerId, quest.questId, craftedItem.amount)
             }
         }
     }
 
     fun executeEntityKillEvent(playerId: UUID, killedEntity: Entity) {
-        for(quest in ongoingQuests){
+        for (quest in ongoingQuests) {
             val parsedEntity = EntityType.entries.find { it.key.toString() == quest.progressingIdentifier }
-            if(parsedEntity == killedEntity.type){
+            if (parsedEntity == killedEntity.type) {
                 processQuestProgression(playerId, quest.questId)
             }
         }
     }
 
     fun executeBlockPlaceEvent(playerId: UUID, placedBlock: Block) {
-        for(quest in ongoingQuests){
+        for (quest in ongoingQuests) {
             val parsedConfigBlock = Material.getMaterial(quest.progressingIdentifier)
-            if(parsedConfigBlock == placedBlock.type){
+            if (parsedConfigBlock == placedBlock.type) {
                 processQuestProgression(playerId, quest.questId)
             }
         }
     }
 
     fun executeBlockBreakEvent(playerId: UUID, brokenBlock: Block) {
-        for(quest in ongoingQuests){
+        //TODO: ConcurrentModificationException
+        for (quest in ongoingQuests) {
             val parsedConfigBlock = Material.getMaterial(quest.progressingIdentifier)
-            if(parsedConfigBlock == brokenBlock.type){
+            if (parsedConfigBlock == brokenBlock.type) {
                 processQuestProgression(playerId, quest.questId)
             }
         }
     }
 
-    fun processQuestProgression(playerId: UUID, questId: UUID, amount: Int = 1) {
-        val questIndex = ongoingQuests.indexOfFirst { it.questId == questId }
+    fun processQuestProgression(playerUUID: UUID, questUUID: UUID, amount: Int = 1) {
 
-        Huntcraft.instance.logger.info { "Processing quest progression for player $playerId, quest $questId, amount $amount" }
+        if(ongoingQuests.isEmpty()) return
 
-        if (questIndex == -1) {
-            return
-        }
+        val questIndex = ongoingQuests.indexOfFirst { it.questId == questUUID }
+
+        Huntcraft.instance.logger.info { "Processing quest progression for player $playerUUID, quest $questUUID, amount $amount" }
+
+        if (questIndex == -1) return
 
         val quest = ongoingQuests[questIndex]
 
         quest.progression += amount
 
-        Bukkit.getPlayer(playerId)?.sendMessage {
+        Bukkit.getPlayer(playerUUID)?.sendMessage {
             TextUtil.getQuestProgressBar(quest.name, quest.progression, quest.requiredAmount)
         }
 
-        //if (validateQuestCompletion(quest)) {
-        //    completeQuestForPlayer(questId)
-        //    addNewQuestsForPlayer(playerId)
-        //    Huntcraft.instance.logger.info { "Player $playerId completed quest ${quest.id}" }
-        //    Bukkit.getPlayer(playerId)?.sendMessage { TextUtil.Companion.getQuestCompletionMessage(quest.name) }
-        //    Bukkit.getPlayer(playerId)?.sendMessage { TextUtil.Companion.getQuestAfterCompletionText(quest.afterCompletionText) }
-        //    Bukkit.broadcast(TextUtil.Companion.getQuestCompletionAnnounceMessage(Bukkit.getPlayer(playerId)?.name ?: "Unnamed", quest.name))
-        //    quest.completed = true
-        //}
+        if (quest.progression < quest.requiredAmount) return
+
+        val finishedQuest =
+            transaction { QuestTable.selectAll().where { QuestTable.id eq quest.questId }.firstOrNull() }
+
+        if (finishedQuest == null) {
+            Huntcraft.instance.logger.warning { "Could not find quest definition for questId $questUUID" }
+            return
+        }
+
+        //Broadcast completion message
+        Bukkit.getPlayer(playerUUID)
+            ?.sendMessage { TextUtil.getQuestCompletionMessage(finishedQuest[QuestTable.name]) }
+        Bukkit.getPlayer(playerUUID)
+            ?.sendMessage { TextUtil.getQuestAfterCompletionText(finishedQuest[QuestTable.afterCompletionText]) }
+
+        //Remove Quest from cache
+        ongoingQuests.removeAt(questIndex)
+
+        //Update Database
+        transaction {
+            QuestProgressTable.deleteWhere { QuestProgressTable.playerUuid eq playerUUID and (QuestProgressTable.questId eq questUUID) }
+            CompletedQuestTable.insert {
+                it[playerUuid] = playerUUID
+                it[questId] = questUUID
+            }
+        }
+
+        //Add to finished quests in cache
+        finishedQuests.add(
+            QuestDTO(
+                id = finishedQuest[QuestTable.id].toString(),
+                name = finishedQuest[QuestTable.name],
+                description = finishedQuest[QuestTable.description],
+                afterCompletionText = finishedQuest[QuestTable.afterCompletionText],
+                type = finishedQuest[QuestTable.type],
+                questProgressionIdentifier = finishedQuest[QuestTable.questProgressionIdentifier],
+                requiredAmount = finishedQuest[QuestTable.requiredAmount]
+            )
+        )
     }
-
-//    private fun validateQuestCompletion(quest: QuestDefinition): Boolean {
-//        return when (quest.type) {
-//            QuestType.BLOCK_BREAK -> quest.progression >= (quest.requiredBlockBreakCount ?: 0)
-//            QuestType.BLOCK_PLACE -> quest.progression >= (quest.requiredBlockPlaceCount ?: 0)
-//            QuestType.ENTITY_KILL -> quest.progression >= (quest.requiredEntityKillCount ?: 0)
-//            QuestType.ITEM_CRAFT -> quest.progression >= (quest.requiredItemCraftCount ?: 0)
-//            QuestType.TURN_IN_ITEM -> quest.progression >= (quest.requiredTurnInItemCount ?: 0)
-//            QuestType.PUZZLE_COMPLETE -> quest.progression >= 1 // Assuming puzzle is binary (completed or not)
-//            QuestType.ACHIEVEMENT -> quest.progression >= 1 // Assuming achievement is binary (completed or not)
-//            else -> false
-//        }
-//    }
-
-//    private fun completeQuestForPlayer(questId: UUID) {
-//        ongoingQuests.removeIf { it.questId == questId }
-
-//        val completedQuests = finishedQuests.toMutableList()
-//        completedQuests.add(quest)
-//    }
 
 //    private fun addNewQuestsForPlayer(playerId: UUID, questList: List<QuestDefinition>) {
 

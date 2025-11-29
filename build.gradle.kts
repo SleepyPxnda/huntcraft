@@ -32,7 +32,6 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT")
-    compileOnly("org.xerial:sqlite-jdbc:3.46.0.0")
 
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.18.1")
 
@@ -53,9 +52,8 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-core:0.56.0")
     implementation("org.jetbrains.exposed:exposed-dao:0.56.0")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.56.0")
-    implementation("org.xerial:sqlite-jdbc:3.46.0.0")
+    implementation("com.impossibl.pgjdbc-ng:pgjdbc-ng:0.8.9")
 
-    implementation("com.h2database:h2:2.3.232")
 }
 
 java {

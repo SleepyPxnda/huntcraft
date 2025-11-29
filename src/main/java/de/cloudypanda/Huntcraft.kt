@@ -20,7 +20,6 @@ class Huntcraft : JavaPlugin() {
         defaultConfig = HuntcraftConfig()
     )
 
-
     companion object {
         lateinit var instance: Huntcraft
     }
@@ -48,7 +47,7 @@ class Huntcraft : JavaPlugin() {
 
         logger.info { "Commands registered!" }
 
-        Database.connect("jdbc:h2:file:./plugins/huntcraft/huntcraft;AUTO_SERVER=TRUE", driver = "org.h2.Driver")
+        Database.connect("jdbc:pgsql://localhost:5432/huntcraft", driver = "com.impossibl.postgres.jdbc.PGDriver", "postgres", "mysecretpassword")
 
         transaction {
             SchemaUtils.create(
