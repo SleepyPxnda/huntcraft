@@ -21,7 +21,7 @@ version = project.property("version")!!
 repositories {
     mavenCentral()
     maven {
-        name = "papermc-repo"
+        name = "papermc"
         url = uri("https://repo.papermc.io/repository/maven-public/")
     }
     maven {
