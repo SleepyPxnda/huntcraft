@@ -105,34 +105,38 @@ class TextUtil {
         }
 
         fun getDeathTimerKickMessage(formattedTimeout: String): Component {
-            return ComponentBuilder()
-                .append("🚫 Due to the rules of 'Huntcraft' 🚫", color(255, 0, 0))
-                .newLine()
-                .append("You have been dispelled from the server!", color(255, 255, 255))
-                .newLine(2)
-                .append("You have been dispelled for: ", color(255, 0, 0))
-                .append(formattedTimeout, color(255, 0, 0))
-                .newLine(2)
-                .append("📜 Read more about the rules in our discord 📜", color(115, 138, 219))
+            return Component.text()
+                .append(Component.text("Due to the rules of 'Huntcraft'"))
+                .appendNewline()
+                .append(Component.text("You have been dispelled from the server!"))
+                .appendNewline()
+                .appendNewline()
+                .append(Component.text("You have been dispelled for: "))
+                .append(Component.text(formattedTimeout))
+                .appendNewline()
+                .appendNewline()
+                .append(Component.text("Read more about the rules in our discord"))
                 .build()
         }
 
         fun getDeathTimerTimeoutMessage(formattedDate: String, latestDeath: Long, timeout: Long): Component {
-            return ComponentBuilder()
-                .append("🚫 You died. 🚫", color(255, 0, 0))
-                .newLine()
-                .append("You can't rejoin until ", color(255, 255, 255))
-                .append(formattedDate, color(255, 215, 0))
-                .append(".", color(255, 255, 255))
-                .newLine(2)
-                .append("⏳ Time until rejoin is possible:", color(255, 255, 255))
-                .newLine()
+            return Component.text()
+                .append(Component.text("You died."))
+                .appendNewline()
+                .append(Component.text("You can't rejoin until "))
+                .append(Component.text(formattedDate))
+                .appendNewline()
+                .appendNewline()
+                .append(Component.text("⏳ Time until rejoin is possible:"))
+                .appendNewline()
                 .append(
-                    DateUtil.getFormattedDurationUntilJoin(
-                        Instant.now().toEpochMilli(),
-                        latestDeath,
-                        timeout
-                    ), color(124, 252, 0)
+                    Component.text(
+                        DateUtil.getFormattedDurationUntilJoin(
+                            Instant.now().toEpochMilli(),
+                            latestDeath,
+                            timeout
+                        )
+                    )
                 )
                 .build()
         }
