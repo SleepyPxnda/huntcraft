@@ -52,6 +52,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-core:0.56.0")
     implementation("org.jetbrains.exposed:exposed-dao:0.56.0")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.56.0")
+    implementation("org.jetbrains.exposed:exposed-kotlin-datetime:0.56.0")
     implementation("com.impossibl.pgjdbc-ng:pgjdbc-ng:0.8.9")
 }
 

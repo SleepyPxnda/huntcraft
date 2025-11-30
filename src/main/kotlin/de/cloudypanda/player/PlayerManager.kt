@@ -42,9 +42,7 @@ object PlayerManager {
             }
 
             val ongoingQuestsForPlayer = transaction {
-                QuestProgressTable.selectAll()
-                    .where { QuestProgressTable.playerUuid eq uuid }
-                    .map {
+                QuestProgressTable.selectAll().where { QuestProgressTable.playerUuid eq uuid }.map {
                         QuestProgressDTO(
                             playerUuid = it[QuestProgressTable.playerUuid],
                             name = it[QuestProgressTable.name],
@@ -59,12 +57,8 @@ object PlayerManager {
 
             val completedQuestsForPlayer = transaction {
                 CompletedQuestTable.join(
-                    QuestTable,
-                    JoinType.INNER,
-                    onColumn = CompletedQuestTable.questId,
-                    otherColumn = QuestTable.id
-                )
-                    .selectAll()
+                    QuestTable, JoinType.INNER, onColumn = CompletedQuestTable.questId, otherColumn = QuestTable.id
+                ).selectAll()
                     .where { CompletedQuestTable.playerUuid eq uuid }
                     .map {
                         QuestDTO(
@@ -82,8 +76,6 @@ object PlayerManager {
             val playerDTO = PlayerDTO(
                 uuid = uuid,
                 onlineTime = existingDatabasePlayer[PlayerTable.onlineTime],
-                canEnterNether = existingDatabasePlayer[PlayerTable.canEnterNether],
-                canEnterEnd = existingDatabasePlayer[PlayerTable.canEnterEnd],
                 latestDeathTime = existingDatabasePlayer[PlayerTable.latestDeathTime],
                 ongoingQuests = ongoingQuestsForPlayer,
                 finishedQuests = completedQuestsForPlayer

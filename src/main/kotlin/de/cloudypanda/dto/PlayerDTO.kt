@@ -4,6 +4,8 @@ import de.cloudypanda.Huntcraft
 import de.cloudypanda.database.CompletedQuestTable
 import de.cloudypanda.database.QuestProgressTable
 import de.cloudypanda.database.QuestTable
+import de.cloudypanda.quest.QuestType
+import de.cloudypanda.util.DateUtil
 import de.cloudypanda.util.TextUtil
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
@@ -27,14 +29,12 @@ data class PlayerDTO(
     val uuid: UUID,
     var onlineTime: Long,
     val latestDeathTime: Long,
-    var canEnterNether: Boolean,
-    var canEnterEnd: Boolean,
     var ongoingQuests: MutableList<QuestProgressDTO> = mutableListOf(),
     var finishedQuests: MutableList<QuestDTO> = mutableListOf(),
 ) {
 
     fun executeAchievementEvent(playerId: UUID, achievementId: String) {
-        for (quest in ongoingQuests) {
+        for (quest in ongoingQuests.filter{ quest -> QuestType.ACHIEVEMENT == quest.type }) {
             if (quest.progressingIdentifier == achievementId) {
                 processQuestProgression(playerId, quest.questId)
             }
@@ -42,7 +42,7 @@ data class PlayerDTO(
     }
 
     fun executeItemCraftEvent(playerId: UUID, craftedItem: ItemStack) {
-        for (quest in ongoingQuests) {
+        for (quest in ongoingQuests.filter { quest -> QuestType.ITEM_CRAFT == quest.type }) {
             val parsedConfigItem = ItemStack.of(Material.getMaterial(quest.progressingIdentifier) ?: Material.AIR)
             if (parsedConfigItem.type == craftedItem.type) {
                 processQuestProgression(playerId, quest.questId, craftedItem.amount)
@@ -51,7 +51,7 @@ data class PlayerDTO(
     }
 
     fun executeEntityKillEvent(playerId: UUID, killedEntity: Entity) {
-        for (quest in ongoingQuests) {
+        for (quest in ongoingQuests.filter { quest -> QuestType.ENTITY_KILL == quest.type }) {
             val parsedEntity = EntityType.entries.find { it.key.toString() == quest.progressingIdentifier }
             if (parsedEntity == killedEntity.type) {
                 processQuestProgression(playerId, quest.questId)
@@ -60,7 +60,7 @@ data class PlayerDTO(
     }
 
     fun executeBlockPlaceEvent(playerId: UUID, placedBlock: Block) {
-        for (quest in ongoingQuests) {
+        for (quest in ongoingQuests.filter { quest -> QuestType.BLOCK_PLACE == quest.type }) {
             val parsedConfigBlock = Material.getMaterial(quest.progressingIdentifier)
             if (parsedConfigBlock == placedBlock.type) {
                 processQuestProgression(playerId, quest.questId)
@@ -69,8 +69,7 @@ data class PlayerDTO(
     }
 
     fun executeBlockBreakEvent(playerId: UUID, brokenBlock: Block) {
-        //TODO: ConcurrentModificationException
-        for (quest in ongoingQuests) {
+        for (quest in ongoingQuests.filter { quest -> QuestType.BLOCK_BREAK == quest.type }) {
             val parsedConfigBlock = Material.getMaterial(quest.progressingIdentifier)
             if (parsedConfigBlock == brokenBlock.type) {
                 processQuestProgression(playerId, quest.questId)
@@ -121,6 +120,8 @@ data class PlayerDTO(
             CompletedQuestTable.insert {
                 it[playerUuid] = playerUUID
                 it[questId] = questUUID
+                it[completedOn] = DateUtil.currentLocalDate()
+                it[completionState] = de.cloudypanda.quest.QuestCompletionState.COMPLETED
             }
         }
 
