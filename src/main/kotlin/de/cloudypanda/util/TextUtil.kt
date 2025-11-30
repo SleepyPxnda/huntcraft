@@ -11,39 +11,32 @@ class TextUtil {
     companion object {
         fun getJoinIndicator(playerName: String): Component {
             return ComponentBuilder()
-                .append("[", color(128, 128, 128))
-                .append("☁", color(0, 100, 0))
-                .append("] ", color(128, 128, 128))
-                .append(playerName, color(255, 255, 255))
+                .append("[", color(110, 110, 110))
+                .append("☁", color(30, 200, 170))
+                .append("] ", color(110, 110, 110))
+                .append(playerName, color(245, 245, 245))
                 .build()
         }
 
         fun getJoinMessage(
-            rulesLink: String,
-            discordLink: String,
-            websiteLink: String,
             deathTimeout: Int
         ): Component {
+            // refreshed look: cleaner header, brighter accents
             return ComponentBuilder()
-                .append("🌟 This Server uses the Huntcraft Plugin 🌟", color(128, 128, 128))
-                .newLine(2)
-                .append("📜 Rules -> ", color(128, 128, 128))
-                .append(rulesLink, color(181, 31, 8))
+                .append("╔════════════════════════════════════╗", color(90, 90, 90))
                 .newLine()
-                .append("💬 Discord -> ", color(128, 128, 128))
-                .append(discordLink, color(115, 138, 219))
+                .append("  🌟 Welcome to Huntcraft Season 3 🌟  ", color(200, 200, 200))
                 .newLine()
-                .append("🌐 Website -> ", color(128, 128, 128))
-                .append(websiteLink, color(102, 255, 51))
-                .newLine(2)
+                .append("╚════════════════════════════════════╝", color(90, 90, 90))
+                .newLine(1)
                 .apply {
                     val formattedDeathTimeout = deathTimeout.seconds.toComponents { hours, minutes, seconds, _ ->
                         "%02d:%02d:%02d".format(hours, minutes, seconds)
                     }
-                    append("⏳ Current Deathtimeout: ", color(128, 128, 128))
-                        .append(formattedDeathTimeout, color(255, 153, 0))
-                        .newLine()
-                    append("🎉 Have fun! 🎉", color(128, 128, 128))
+                    append("⏳ Deathtimeout: ", color(170, 170, 170))
+                        .append(formattedDeathTimeout, color(255, 170, 0))
+                        .newLine(1)
+                    append("🎉 Have fun and play fair! 🎉", color(200, 200, 200))
                         .newLine()
                 }
                 .build()
@@ -51,21 +44,13 @@ class TextUtil {
 
         fun getQuitIndicator(playerName: String, sessionDurationString: String): Component {
             return ComponentBuilder()
-                .append("[", color(128, 128, 128))
-                .append("☁", color(139, 0, 0))
-                .append("] ", color(128, 128, 128))
-                .append(playerName, color(255, 255, 255))
-                .append(" (played for $sessionDurationString)")
-                .build()
-        }
-
-        fun getTablistHeader(): Component {
-            return ComponentBuilder()
-                .append("☁ ", color(128, 128, 128))
-                .append("Smoothcloud ", color(128, 128, 128))
-                .append("X-MAS ", color(255, 0, 0))
-                .append("Event", color(128, 128, 128))
-                .newLine()
+                .append("[", color(110, 110, 110))
+                .append("☁", color(220, 80, 80))
+                .append("] ", color(110, 110, 110))
+                .append(playerName, color(245, 245, 245))
+                .append("  (played for ")
+                .append(sessionDurationString, color(180, 180, 180))
+                .append(")")
                 .build()
         }
 
@@ -79,57 +64,52 @@ class TextUtil {
             val percentText = " $percent%"
 
             return Component.text()
-                .append(Component.text("Quest - $questName", color(255, 215, 0)))
-                .append(Component.text(filledSegment, color(0, 255, 0)))
-                .append(Component.text(emptySegment, color(255, 0, 0)))
-                .append(Component.text(percentText, color(0, 191, 255)))
+                .append(Component.text(questName, color(255, 230, 120)))
+                .append(Component.text(" | ", color(120, 120, 120)))
+                .append(Component.text(filledSegment, color(60, 200, 80)))
+                .append(Component.text(emptySegment, color(180, 60, 60)))
+                .append(Component.text(percentText, color(150, 220, 255)))
                 .build()
         }
 
         fun getQuestCompletionMessage(questName: String): Component {
-            return Component.text("🎉 You completed the quest: $questName 🎉")
-                .color(color(0, 255, 0))
-        }
-
-        fun getQuestCompletionAnnounceMessage(playerName: String, questName: String): Component {
-            return Component.text("🌟 $playerName has completed the quest: $questName 🌟")
-                .color(color(255, 215, 0))
+            return Component.text("🎉 Quest completed: $questName")
+                .color(color(110, 255, 140))
         }
 
         fun getQuestAfterCompletionText(afterCompletionText: String): Component {
             return Component.text(afterCompletionText)
-                .color(color(0, 191, 255)) // Optional: use a distinct color for aftercompletion text
+                .color(color(150, 215, 255))
         }
 
         fun getPlayerDeathAnnounceMessage(playerName: String, formattedJoinDate: String): Component {
-            return Component.text("🔥 $playerName has died and was dispelled from the server until $formattedJoinDate 🔥")
-                .color(color(255, 0, 0))
+            return Component.text("🔥 $playerName was dispelled until $formattedJoinDate 🔥")
+                .color(color(255, 90, 90))
         }
 
         fun getDeathTimerKickMessage(formattedTimeout: String): Component {
             return Component.text()
-                .append(Component.text("🚫 Due to the rules of 'Huntcraft' 🚫", color(255, 0, 0)))
+                .append(Component.text("🚫 Huntcraft Enforcement 🚫", color(220, 100, 100)))
                 .appendNewline()
-                .append(Component.text("You have been dispelled from the server!", color(255, 255, 255)))
+                .append(Component.text("You have been temporarily expelled from the server.", color(245, 245, 245)))
+                .appendNewline()
+                .append(Component.text("Return available at: ", color(220, 100, 100)))
+                .append(Component.text(formattedTimeout, color(255, 180, 80)))
                 .appendNewline()
                 .appendNewline()
-                .append(Component.text("You have been dispelled until: ", color(255, 0, 0)))
-                .append(Component.text(formattedTimeout, color(255, 0, 0)))
-                .appendNewline()
-                .appendNewline()
-                .append(Component.text("📜 Read more about the rules in our discord 📜", color(115, 138, 219)))
+                .append(Component.text("📜 See the rules on Discord for details.", color(135, 160, 255)))
                 .build()
         }
 
         fun getDeathTimerTimeoutMessage(formattedDate: String, latestDeath: Long, timeout: Long): Component {
             return Component.text()
-                .append(Component.text("🚫 You died.🚫 ", color(255, 0, 0)))
+                .append(Component.text("🚫 You recently died.", color(255, 100, 100)))
                 .appendNewline()
-                .append(Component.text("You can't rejoin until ", color(255, 255, 255)))
+                .append(Component.text("Rejoin allowed at: ", color(245, 245, 245)))
                 .append(Component.text(formattedDate, color(255, 215, 0)))
                 .appendNewline()
                 .appendNewline()
-                .append(Component.text("⏳ Time until rejoin is possible:", color(255, 255, 255)))
+                .append(Component.text("⏳ Time remaining:", color(245, 245, 245)))
                 .appendNewline()
                 .append(
                     Component.text(
@@ -137,23 +117,35 @@ class TextUtil {
                             Instant.now().toEpochMilli(),
                             latestDeath,
                             timeout
-                        ), color(124, 252, 0)
+                        ), color(180, 255, 140)
                     )
                 )
                 .build()
         }
 
-        fun getQuestListCommandMessage(questName: String, description: String, progression: Int, needed: Int): Component {
-            val questName = Component.text(questName, color(255, 255, 255)).hoverEvent() {
-                showText(
-                    Component.text(description, color(255,255,255))
-                ) as HoverEvent<Any>
-            }
+        fun getOngoingQuestListCommandMessage(questName: String, description: String, progression: Int, needed: Int): Component {
+            val questComponent = Component.text(questName, color(245, 245, 245))
+                .hoverEvent(
+                    showText(Component.text(description, color(210, 210, 210))) as HoverEvent<Any>
+                )
 
             return Component.text()
-                .append(Component.text("• ", color(255, 215, 0)))
-                .append(questName)
-                .append(Component.text(" (Progress: $progression/$needed)", color(0, 191, 255)))
+                .append(Component.text("⌛", color(255, 215, 0)))
+                .append(questComponent)
+                .append(Component.text("  "))
+                .append(Component.text("($progression/$needed)", color(160, 220, 255)))
+                .build()
+        }
+
+        fun getCompletedQuestListCommandMessage(questName: String, description: String): Component {
+            val questComponent = Component.text(questName, color(120, 120, 120))
+                .hoverEvent(
+                    showText(Component.text(description, color(210, 210, 210))) as HoverEvent<Any>
+                )
+
+            return Component.text()
+                .append(Component.text("✅", color(180, 255, 140)))
+                .append(questComponent)
                 .build()
         }
     }

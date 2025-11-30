@@ -36,6 +36,11 @@ class CoreEventListener : Listener {
         cancelFailedQuestsForPlayer(e.player.uniqueId)
 
         PlayerManager.loadNewPlayer(e.player)
+
+        Huntcraft.instance.server.sendMessage { TextUtil.getJoinIndicator(e.player.name) }
+
+        val deathTimeout = Huntcraft.instance.config.getInt("deathTimer.timeoutInSeconds")
+        e.player.sendMessage { TextUtil.getJoinMessage(deathTimeout) }
     }
 
     private fun cancelFailedQuestsForPlayer(uniqueId: UUID) {

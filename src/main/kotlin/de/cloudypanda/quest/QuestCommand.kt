@@ -24,18 +24,14 @@ class QuestCommand() : BasicCommand {
         val player = PlayerManager.getPlayerByUUID(sender.uniqueId) ?: return
 
         // Ongoing Quests Header
-        sender.sendMessage(Component.text("Ongoing Quests:").color(TextColor.color(0, 255, 0)))
+        sender.sendMessage(Component.text("Quests").color(TextColor.color(0, 255, 0)))
         player.ongoingQuests.forEach { quest ->
-            sender.sendMessage(TextUtil.getQuestListCommandMessage(quest.name, quest.description, quest.progression,quest.requiredAmount))
+            sender.sendMessage(TextUtil.getOngoingQuestListCommandMessage(quest.name, quest.description, quest.progression,quest.requiredAmount))
         }
 
         // Completed Quests Header
-        sender.sendMessage(Component.text("Completed Quests:").color(TextColor.color(255, 215, 0)))
         player.finishedQuests.forEach { quest ->
-            sender.sendMessage(Component.text()
-                .append(Component.text("• ", TextColor.color(255, 215, 0)))
-                .append(Component.text(quest.name, TextColor.color(192, 192, 192)))
-                .build())
+            sender.sendMessage(TextUtil.getCompletedQuestListCommandMessage(quest.name, quest.description))
         }
     }
 }
