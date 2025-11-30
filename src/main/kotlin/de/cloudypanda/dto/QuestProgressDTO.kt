@@ -1,6 +1,7 @@
 package de.cloudypanda.dto
 
 import de.cloudypanda.quest.QuestType
+import kotlinx.datetime.LocalDate
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import java.util.*
@@ -16,5 +17,6 @@ data class QuestProgressDTO(
     val requiredAmount: Int = 0,
     val type: QuestType = QuestType.NONE,
     val progressingIdentifier: String = "",
+    val dateToBeCompleted: LocalDate = LocalDate(1970,1,1)
 ){
 }

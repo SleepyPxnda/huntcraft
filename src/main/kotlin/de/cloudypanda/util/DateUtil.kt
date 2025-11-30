@@ -1,5 +1,9 @@
 package de.cloudypanda.util
 
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.apache.commons.lang3.time.DurationFormatUtils
 import java.text.SimpleDateFormat
 import java.time.Duration
@@ -19,5 +23,10 @@ class DateUtil {
             val duration = Duration.between(Instant.ofEpochMilli(now), Instant.ofEpochMilli(start + timeout))
             return DurationFormatUtils.formatDuration(duration.toMillis(), "HH:mm:ss", true)
         }
+
+        fun currentLocalDate(): LocalDate = Clock.System
+            .now()
+            .toLocalDateTime(TimeZone.currentSystemDefault())
+            .date
     }
 }

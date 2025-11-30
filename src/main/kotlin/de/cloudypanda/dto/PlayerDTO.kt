@@ -5,6 +5,7 @@ import de.cloudypanda.database.CompletedQuestTable
 import de.cloudypanda.database.QuestProgressTable
 import de.cloudypanda.database.QuestTable
 import de.cloudypanda.quest.QuestType
+import de.cloudypanda.util.DateUtil
 import de.cloudypanda.util.TextUtil
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
@@ -121,6 +122,8 @@ data class PlayerDTO(
             CompletedQuestTable.insert {
                 it[playerUuid] = playerUUID
                 it[questId] = questUUID
+                it[completedOn] = DateUtil.currentLocalDate()
+                it[completionState] = de.cloudypanda.quest.QuestCompletionState.COMPLETED
             }
         }
 
