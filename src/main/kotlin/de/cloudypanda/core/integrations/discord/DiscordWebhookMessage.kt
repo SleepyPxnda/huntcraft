@@ -11,7 +11,7 @@ class DiscordWebhookMessage {
     private var avatarUrl: String
     private var content: String
     private var webhookEnabled = Huntcraft.instance.config.getBoolean("discord.enabled")
-    private var webhookUrl = Huntcraft.instance.config.getString("discord.webhookUrl")
+    private var webhookUrl = Huntcraft.instance.config.getString("discord.webhookURL")
 
     constructor(content: String, username: String, avatarUrl: String) {
         this.content = content
@@ -26,7 +26,7 @@ class DiscordWebhookMessage {
             {
                 "username": "$username",
                 "avatar_url": "$avatarUrl",
-                "content": "@here $content"
+                "content": "$content"
             }
         """.trimIndent()
 

@@ -23,13 +23,30 @@ class DeathTimerEventListener() : Listener {
 
     @EventHandler
     fun onDeathEvent(e: PlayerDeathEvent) {
+
+        var deathTime = System.currentTimeMillis();
+
         transaction {
             PlayerTable.update({ PlayerTable.uuid eq e.player.uniqueId }) {
-                it[latestDeathTime] = System.currentTimeMillis()
+                it[latestDeathTime] = deathTime
             }
         }
 
-        val deathMessage = PlainTextComponentSerializer.plainText().serialize(e.deathMessage()!!)
+        val date = DateUtil.getFormattedStringForDateAfterMillis(
+            deathTime,
+            deathTimerTimeout
+        )
+
+        val playerDeathMessage = TextUtil.getPlayerDeathAnnounceMessage(
+            e.player.name,
+            date
+        )
+
+        Huntcraft.instance.server.sendMessage(playerDeathMessage)
+
+        println("Sending death message")
+        val deathMessage = PlainTextComponentSerializer.plainText().serialize(playerDeathMessage)
+        println(deathMessage)
         WebhookNotificationManager().sendDeathMessage(deathMessage)
     }
 
@@ -43,13 +60,6 @@ class DeathTimerEventListener() : Listener {
         val date = DateUtil.getFormattedStringForDateAfterMillis(
             player[latestDeathTime],
             deathTimerTimeout
-        )
-
-        Huntcraft.instance.server.sendMessage(
-            TextUtil.getPlayerDeathAnnounceMessage(
-                e.player.name,
-                date
-            )
         )
 
         e.player.kick(TextUtil.getDeathTimerKickMessage(date))
