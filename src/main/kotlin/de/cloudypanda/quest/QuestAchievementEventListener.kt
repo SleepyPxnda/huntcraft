@@ -13,7 +13,7 @@ class QuestAchievementEventListener() : Listener {
         val progress = event.player.getAdvancementProgress(event.advancement)
 
         if(progress.isDone){
-            val player = PlayerManager.instance.getPlayerByUUID(event.player.uniqueId) ?: return
+            val player = PlayerManager.getPlayerByUUID(event.player.uniqueId) ?: return
             player.executeAchievementEvent(event.player.uniqueId, event.advancement.key().toString())
         }
     }

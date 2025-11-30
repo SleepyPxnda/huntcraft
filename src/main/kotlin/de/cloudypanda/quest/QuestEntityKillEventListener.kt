@@ -15,7 +15,7 @@ class QuestEntityKillEventListener() : Listener {
         }
 
         val causingEntity = event.damageSource.causingEntity as Player
-        val player = PlayerManager.instance.getPlayerByUUID(causingEntity.uniqueId) ?: return
+        val player = PlayerManager.getPlayerByUUID(causingEntity.uniqueId) ?: return
         player.executeEntityKillEvent(causingEntity.uniqueId, event.entity)
     }
 }

@@ -21,7 +21,7 @@ class QuestCommand() : BasicCommand {
             return
         }
 
-        val player = PlayerManager.instance.getPlayerByUUID(sender.uniqueId) ?: return
+        val player = PlayerManager.getPlayerByUUID(sender.uniqueId) ?: return
 
         // Ongoing Quests Header
         sender.sendMessage(Component.text("Ongoing Quests:").color(TextColor.color(0, 255, 0)))

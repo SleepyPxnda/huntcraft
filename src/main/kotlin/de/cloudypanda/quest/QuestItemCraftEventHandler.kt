@@ -16,7 +16,7 @@ class QuestItemCraftEventHandler() : Listener {
             return
         }
 
-        val player = PlayerManager.instance.getPlayerByUUID(viewer.uniqueId) ?: return
+        val player = PlayerManager.getPlayerByUUID(viewer.uniqueId) ?: return
         player.executeItemCraftEvent(player.uuid, event.recipe.result)
     }
 }

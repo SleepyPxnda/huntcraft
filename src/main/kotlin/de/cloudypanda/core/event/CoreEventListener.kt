@@ -89,7 +89,7 @@ class CoreEventListener() : Listener {
             }
 
             //Load player data into "cache"
-            PlayerManager.instance.loadNewPlayer(e.player)
+            PlayerManager.loadNewPlayer(e.player)
         }
     }
 
@@ -125,7 +125,7 @@ class CoreEventListener() : Listener {
         }
 
         //Remove player from "cache"
-        PlayerManager.instance.removePlayerByUUID(e.player.uniqueId)
+        PlayerManager.removePlayerByUUID(e.player.uniqueId)
 
         // Delete player session
 //        transaction {

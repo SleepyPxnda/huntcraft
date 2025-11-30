@@ -9,7 +9,7 @@ class QuestBlockPlaceEventListener() : Listener {
 
     @EventHandler()
     fun onBlockPlace(event: BlockPlaceEvent){
-        val player = PlayerManager.instance.getPlayerByUUID(event.player.uniqueId) ?: return
+        val player = PlayerManager.getPlayerByUUID(event.player.uniqueId) ?: return
         player.executeBlockPlaceEvent(event.player.uniqueId, event.block)
     }
 }
