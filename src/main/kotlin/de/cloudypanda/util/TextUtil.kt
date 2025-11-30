@@ -10,47 +10,42 @@ import kotlin.time.Duration.Companion.seconds
 class TextUtil {
     companion object {
         fun getJoinIndicator(playerName: String): Component {
-            return ComponentBuilder()
-                .append("[", color(110, 110, 110))
-                .append("☁", color(30, 200, 170))
-                .append("] ", color(110, 110, 110))
-                .append(playerName, color(245, 245, 245))
+            return Component.text()
+                .append(Component.text("[", color(110, 110, 110)))
+                .append(Component.text("☁", color(30, 200, 170)))
+                .append(Component.text("] ", color(110, 110, 110)))
+                .append(Component.text(playerName, color(245, 245, 245)))
                 .build()
         }
 
         fun getJoinMessage(
             deathTimeout: Int
         ): Component {
-            // refreshed look: cleaner header, brighter accents
-            return ComponentBuilder()
-                .append("╔════════════════════════════════════╗", color(90, 90, 90))
-                .newLine()
-                .append("  🌟 Welcome to Huntcraft Season 3 🌟  ", color(200, 200, 200))
-                .newLine()
-                .append("╚════════════════════════════════════╝", color(90, 90, 90))
-                .newLine(1)
-                .apply {
-                    val formattedDeathTimeout = deathTimeout.seconds.toComponents { hours, minutes, seconds, _ ->
-                        "%02d:%02d:%02d".format(hours, minutes, seconds)
-                    }
-                    append("⏳ Deathtimeout: ", color(170, 170, 170))
-                        .append(formattedDeathTimeout, color(255, 170, 0))
-                        .newLine(1)
-                    append("🎉 Have fun and play fair! 🎉", color(200, 200, 200))
-                        .newLine()
-                }
+            val formattedDeathTimeout = deathTimeout.seconds.toComponents { hours, minutes, seconds, _ ->
+                "%02d:%02d:%02d".format(hours, minutes, seconds)
+            }
+
+            return Component.text()
+                .append(Component.text("═════════════════════════════════", color(90, 90, 90)))
+                .append(Component.text("  🌟 Welcome to Huntcraft Season 3 🌟  ", color(200, 200, 200)))
+                .append(Component.text("═════════════════════════════════", color(90, 90, 90)))
+                .appendNewline()
+                .append(Component.text("⏳ Deathtimeout: ", color(170, 170, 170)))
+                .append(Component.text(formattedDeathTimeout, color(255, 170, 0)))
+                .appendNewline()
+                .append(Component.text("🎉 Have fun and play fair! 🎉", color(200, 200, 200)))
                 .build()
         }
 
         fun getQuitIndicator(playerName: String, sessionDurationString: String): Component {
-            return ComponentBuilder()
-                .append("[", color(110, 110, 110))
-                .append("☁", color(220, 80, 80))
-                .append("] ", color(110, 110, 110))
-                .append(playerName, color(245, 245, 245))
-                .append("  (played for ")
-                .append(sessionDurationString, color(180, 180, 180))
-                .append(")")
+            return Component.text()
+                .append(Component.text("[", color(110, 110, 110)))
+                .append(Component.text("☁", color(220, 80, 80)))
+                .append(Component.text("] ", color(110, 110, 110)))
+                .append(Component.text(playerName, color(245, 245, 245)))
+                .append(Component.text("  (played for "))
+                .append(Component.text(sessionDurationString, color(180, 180, 180)))
+                .append(Component.text(")"))
                 .build()
         }
 
