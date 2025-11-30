@@ -76,8 +76,6 @@ object PlayerManager {
             val playerDTO = PlayerDTO(
                 uuid = uuid,
                 onlineTime = existingDatabasePlayer[PlayerTable.onlineTime],
-                canEnterNether = existingDatabasePlayer[PlayerTable.canEnterNether],
-                canEnterEnd = existingDatabasePlayer[PlayerTable.canEnterEnd],
                 latestDeathTime = existingDatabasePlayer[PlayerTable.latestDeathTime],
                 ongoingQuests = ongoingQuestsForPlayer,
                 finishedQuests = completedQuestsForPlayer

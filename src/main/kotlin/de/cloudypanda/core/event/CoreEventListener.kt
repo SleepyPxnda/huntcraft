@@ -136,8 +136,6 @@ class CoreEventListener : Listener {
                 PlayerTable.insert {
                     it[PlayerTable.uuid] = uuid
                     it[PlayerTable.onlineTime] = 0L
-                    it[PlayerTable.canEnterNether] = false
-                    it[PlayerTable.canEnterEnd] = false
                 }
 
                 PlayerSessionTable.insert {

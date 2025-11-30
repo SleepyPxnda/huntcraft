@@ -68,7 +68,7 @@ class DeathTimerEventListener() : Listener {
         val currentTime = System.currentTimeMillis()
         val lastDeathTime = player[latestDeathTime]
         val timeSinceDeath = currentTime - lastDeathTime
-        val deathTimeoutMs = deathTimerTimeout / 1000
+        val deathTimeoutMs = deathTimerTimeout * 1000
 
         val canJoin = timeSinceDeath >= deathTimeoutMs
 

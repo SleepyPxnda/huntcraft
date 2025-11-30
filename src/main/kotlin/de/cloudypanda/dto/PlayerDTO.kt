@@ -29,14 +29,12 @@ data class PlayerDTO(
     val uuid: UUID,
     var onlineTime: Long,
     val latestDeathTime: Long,
-    var canEnterNether: Boolean,
-    var canEnterEnd: Boolean,
     var ongoingQuests: MutableList<QuestProgressDTO> = mutableListOf(),
     var finishedQuests: MutableList<QuestDTO> = mutableListOf(),
 ) {
 
     fun executeAchievementEvent(playerId: UUID, achievementId: String) {
-        for (quest in ongoingQuests) {
+        for (quest in ongoingQuests.filter{ quest -> QuestType.ACHIEVEMENT == quest.type }) {
             if (quest.progressingIdentifier == achievementId) {
                 processQuestProgression(playerId, quest.questId)
             }
