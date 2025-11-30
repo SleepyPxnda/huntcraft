@@ -5,7 +5,6 @@ import org.jetbrains.exposed.dao.id.UUIDTable
 import java.util.*
 
 object QuestTable : UUIDTable("quests") {
-    val key = varchar("key", 50)
     val name = varchar("name", 255)
     val description = text("description")
     val requiredQuests = array<UUID>("required_quest_ids").default(emptyList())
