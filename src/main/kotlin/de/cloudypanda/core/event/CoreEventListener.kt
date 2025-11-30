@@ -28,6 +28,10 @@ class CoreEventListener : Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     fun onPlayerJoinEvent(e: PlayerJoinEvent) {
 
+        e.joinMessage(TextUtil.getJoinIndicator(e.player.name))
+        val deathTimeout = Huntcraft.instance.config.getInt("deathTimer.timeoutInSeconds")
+        e.player.sendMessage { TextUtil.getJoinMessage(deathTimeout) }
+
         // Ensure there is a player record and a session in the database
         ensurePlayerRecordAndSession(e.player.uniqueId)
 
@@ -38,10 +42,6 @@ class CoreEventListener : Listener {
         cancelFailedQuestsForPlayer(e.player)
 
         PlayerManager.loadNewPlayer(e.player)
-
-        e.joinMessage(TextUtil.getJoinIndicator(e.player.name))
-        val deathTimeout = Huntcraft.instance.config.getInt("deathTimer.timeoutInSeconds")
-        e.player.sendMessage { TextUtil.getJoinMessage(deathTimeout) }
     }
 
     private fun cancelFailedQuestsForPlayer(player: Player) {
