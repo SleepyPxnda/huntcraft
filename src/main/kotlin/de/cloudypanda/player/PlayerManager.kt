@@ -4,8 +4,8 @@ import de.cloudypanda.database.CompletedQuestTable
 import de.cloudypanda.database.PlayerTable
 import de.cloudypanda.database.QuestProgressTable
 import de.cloudypanda.database.QuestTable
+import de.cloudypanda.dto.CompletedQuestDTO
 import de.cloudypanda.dto.PlayerDTO
-import de.cloudypanda.dto.QuestDTO
 import de.cloudypanda.dto.QuestProgressDTO
 import org.bukkit.entity.Player
 import org.jetbrains.exposed.sql.JoinType
@@ -65,14 +65,12 @@ object PlayerManager {
                 ).selectAll()
                     .where { CompletedQuestTable.playerUuid eq uuid }
                     .map {
-                        QuestDTO(
+                        CompletedQuestDTO(
                             id = it[QuestTable.id].toString(),
                             name = it[QuestTable.name],
                             description = it[QuestTable.description],
-                            afterCompletionText = it[QuestTable.afterCompletionText],
-                            type = it[QuestTable.type],
-                            questProgressionIdentifier = it[QuestTable.questProgressionIdentifier],
-                            requiredAmount = it[QuestTable.requiredAmount]
+                            completionState = it[CompletedQuestTable.completionState],
+                            completedOn = it[CompletedQuestTable.completedOn],
                         )
                     }.toMutableList()
             }

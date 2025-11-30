@@ -10,6 +10,8 @@ import io.papermc.paper.event.player.AsyncChatEvent
 import kotlinx.datetime.LocalDate
 import lombok.extern.slf4j.Slf4j
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.TextColor.color
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
@@ -26,26 +28,26 @@ class CoreEventListener : Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     fun onPlayerJoinEvent(e: PlayerJoinEvent) {
 
+        e.joinMessage(TextUtil.getJoinIndicator(e.player.name))
+        val deathTimeout = Huntcraft.instance.config.getInt("deathTimer.timeoutInSeconds")
+        e.player.sendMessage { TextUtil.getJoinMessage(deathTimeout) }
+
         // Ensure there is a player record and a session in the database
         ensurePlayerRecordAndSession(e.player.uniqueId)
 
         // Assign available quests and load the player into the in-memory cache
-        assignAvailableQuestsToPlayer(e.player.uniqueId)
+        assignAvailableQuestsToPlayer(e.player)
 
         // Cancel failed quests
-        cancelFailedQuestsForPlayer(e.player.uniqueId)
+        cancelFailedQuestsForPlayer(e.player)
 
         PlayerManager.loadNewPlayer(e.player)
-
-        e.joinMessage(TextUtil.getJoinIndicator(e.player.name))
-        val deathTimeout = Huntcraft.instance.config.getInt("deathTimer.timeoutInSeconds")
-        e.player.sendMessage { TextUtil.getJoinMessage(deathTimeout) }
     }
 
-    private fun cancelFailedQuestsForPlayer(uniqueId: UUID) {
+    private fun cancelFailedQuestsForPlayer(player: Player) {
         val failedQuests = transaction {
             QuestProgressTable.selectAll().filter {
-                it[QuestProgressTable.playerUuid] == uniqueId && it[QuestProgressTable.dateToBeCompleted] < DateUtil.currentLocalDate()
+                it[QuestProgressTable.playerUuid] == player.uniqueId && it[QuestProgressTable.dateToBeCompleted] < DateUtil.currentLocalDate()
             }.toList()
         }
 
@@ -55,7 +57,7 @@ class CoreEventListener : Listener {
             failedQuests.forEach { questProgress ->
                 // Move to CompletedQuestTable with CANCELLED state
                 CompletedQuestTable.insert {
-                    it[CompletedQuestTable.playerUuid] = uniqueId
+                    it[CompletedQuestTable.playerUuid] = player.uniqueId
                     it[CompletedQuestTable.questId] = questProgress[QuestProgressTable.questId]
                     it[completedOn] = DateUtil.currentLocalDate()
                     it[CompletedQuestTable.completionState] = QuestCompletionState.CANCELLED
@@ -65,7 +67,12 @@ class CoreEventListener : Listener {
                 QuestProgressTable.deleteWhere { QuestProgressTable.id eq questProgress[QuestProgressTable.id] }
 
                 Huntcraft.instance.logger.info {
-                    "Cancelled failed quest '${questProgress[QuestProgressTable.questId]}' for player $uniqueId"
+                    "Cancelled failed quest '${questProgress[QuestProgressTable.questId]}' for player $player"
+                }
+
+                val questName = questProgress[QuestProgressTable.name]
+                player.sendMessage {
+                    Component.text("❌ '$questName' has been cancelled as the completion date has passed.", color(220, 80, 80))
                 }
             }
         }
@@ -151,9 +158,9 @@ class CoreEventListener : Listener {
     }
 
     // Helper: Assign all possible quests to the player (not already completed/ongoing and meeting requirements)
-    private fun assignAvailableQuestsToPlayer(playerUuid: UUID) {
-        val completedQuestIds = fetchCompletedQuestIds(playerUuid)
-        val ongoingQuestIds = fetchOngoingQuestIds(playerUuid)
+    private fun assignAvailableQuestsToPlayer(player: Player) {
+        val completedQuestIds = fetchCompletedQuestIds(player.uniqueId)
+        val ongoingQuestIds = fetchOngoingQuestIds(player.uniqueId)
         val unavailableQuestIds = completedQuestIds + ongoingQuestIds
 
         val allPossibleQuests = fetchQuestsNotInListAndDueOn(unavailableQuestIds, DateUtil.currentLocalDate())
@@ -168,7 +175,7 @@ class CoreEventListener : Listener {
         transaction {
             possibleQuests.forEach { quest ->
                 QuestProgressTable.insert {
-                    it[QuestProgressTable.playerUuid] = playerUuid
+                    it[QuestProgressTable.playerUuid] = player.uniqueId
                     it[QuestProgressTable.name] = quest[QuestTable.name]
                     // quest id value may be Int or UUID depending on table definition; use .value to extract
                     it[QuestProgressTable.questId] = quest[QuestTable.id].value
@@ -180,8 +187,12 @@ class CoreEventListener : Listener {
                 }
 
                 Huntcraft.instance.logger.info {
-                    "Assigned new quest '${quest[QuestTable.id]}' to player $playerUuid"
+                    "Assigned new quest '${quest[QuestTable.id]}' to player $player"
                 }
+
+                val questName = quest[QuestTable.name]
+
+                player.sendMessage { Component.text("➕ '$questName' was added to your questlog ", color(110, 255, 140)) }
             }
         }
     }

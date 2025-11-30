@@ -1,5 +1,6 @@
 package de.cloudypanda.util
 
+import de.cloudypanda.quest.QuestCompletionState
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.event.HoverEvent.showText
@@ -132,14 +133,20 @@ class TextUtil {
                 .build()
         }
 
-        fun getCompletedQuestListCommandMessage(questName: String, description: String): Component {
+        fun getCompletedQuestListCommandMessage(questName: String, description: String, completionState: QuestCompletionState): Component {
             val questComponent = Component.text(questName, color(120, 120, 120))
                 .hoverEvent(
                     showText(Component.text(description, color(210, 210, 210))) as HoverEvent<Any>
                 )
 
+            val completionStateComponent = when (completionState) {
+                QuestCompletionState.COMPLETED -> Component.text("🏆", color(180, 255, 140))
+                QuestCompletionState.CANCELLED -> Component.text("❌", color(255, 100, 100))
+                else -> {Component.text("❔", color(120, 120, 120)) }
+            }
+
             return Component.text()
-                .append(Component.text("✅", color(180, 255, 140)))
+                .append(completionStateComponent)
                 .append(questComponent)
                 .build()
         }
