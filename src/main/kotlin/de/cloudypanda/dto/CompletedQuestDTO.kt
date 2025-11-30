@@ -11,6 +11,5 @@ data class CompletedQuestDTO (
     val name: String = "",
     val description: String = "",
     val completionState: QuestCompletionState = QuestCompletionState.NONE,
-    val completedOn: LocalDate? = null,
-) {
-}
+    val completedOn: LocalDate = LocalDate(1970,1,1)
+)

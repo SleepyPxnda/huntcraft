@@ -30,8 +30,9 @@ class QuestCommand() : BasicCommand {
         }
 
         // Completed Quests Header
+        player.finishedQuests.sortByDescending { it.completedOn }
         player.finishedQuests.forEach { quest ->
-            sender.sendMessage(TextUtil.getCompletedQuestListCommandMessage(quest.name, quest.description, quest.completionState))
+            sender.sendMessage(TextUtil.getCompletedQuestListCommandMessage(quest.name, quest.description, quest.completionState, quest.completedOn))
         }
     }
 }
