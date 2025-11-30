@@ -4,6 +4,7 @@ import de.cloudypanda.Huntcraft
 import de.cloudypanda.database.CompletedQuestTable
 import de.cloudypanda.database.QuestProgressTable
 import de.cloudypanda.database.QuestTable
+import de.cloudypanda.quest.QuestCompletionState
 import de.cloudypanda.quest.QuestType
 import de.cloudypanda.util.DateUtil
 import de.cloudypanda.util.TextUtil
@@ -30,7 +31,7 @@ data class PlayerDTO(
     var onlineTime: Long,
     val latestDeathTime: Long,
     var ongoingQuests: MutableList<QuestProgressDTO> = mutableListOf(),
-    var finishedQuests: MutableList<QuestDTO> = mutableListOf(),
+    var finishedQuests: MutableList<CompletedQuestDTO> = mutableListOf(),
 ) {
 
     fun executeAchievementEvent(playerId: UUID, achievementId: String) {
@@ -117,26 +118,27 @@ data class PlayerDTO(
         //Update Database
         transaction {
             QuestProgressTable.deleteWhere { QuestProgressTable.playerUuid eq playerUUID and (QuestProgressTable.questId eq questUUID) }
+
             CompletedQuestTable.insert {
                 it[playerUuid] = playerUUID
                 it[questId] = questUUID
+                it[completionState] = QuestCompletionState.COMPLETED
                 it[completedOn] = DateUtil.currentLocalDate()
-                it[completionState] = de.cloudypanda.quest.QuestCompletionState.COMPLETED
             }
-        }
 
-        //Add to finished quests in cache
-        finishedQuests.add(
-            QuestDTO(
-                id = finishedQuest[QuestTable.id].toString(),
-                name = finishedQuest[QuestTable.name],
-                description = finishedQuest[QuestTable.description],
-                afterCompletionText = finishedQuest[QuestTable.afterCompletionText],
-                type = finishedQuest[QuestTable.type],
-                questProgressionIdentifier = finishedQuest[QuestTable.questProgressionIdentifier],
-                requiredAmount = finishedQuest[QuestTable.requiredAmount]
+            val completedQuest = CompletedQuestTable.selectAll().where { CompletedQuestTable.playerUuid eq playerUUID and (CompletedQuestTable.questId eq questUUID) }.firstOrNull()
+
+            //Add to finished quests in cache
+            finishedQuests.add(
+                CompletedQuestDTO(
+                    id = finishedQuest[QuestTable.id].toString(),
+                    name = finishedQuest[QuestTable.name],
+                    description = finishedQuest[QuestTable.description],
+                    completionState = completedQuest?.get(CompletedQuestTable.completionState) ?: QuestCompletionState.NONE,
+                    completedOn = DateUtil.currentLocalDate(),
+                )
             )
-        )
+        }
     }
 
 //    private fun addNewQuestsForPlayer(playerId: UUID, questList: List<QuestDefinition>) {
