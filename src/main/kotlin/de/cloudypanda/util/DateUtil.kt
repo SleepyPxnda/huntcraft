@@ -15,11 +15,6 @@ class DateUtil {
             return simpleDateFormat.format(Date.from(Instant.ofEpochMilli(death).plusMillis(timeout)))
         }
 
-        fun getFormattedDurationUntilJoin(start: Long, timeout: Long): String {
-            val duration = Duration.between(Instant.ofEpochMilli(start), Instant.ofEpochMilli(start + timeout))
-            return DurationFormatUtils.formatDuration(duration.toMillis(), "HH:mm:ss", true)
-        }
-
         fun getFormattedDurationUntilJoin(now: Long, start: Long, timeout: Long): String {
             val duration = Duration.between(Instant.ofEpochMilli(now), Instant.ofEpochMilli(start + timeout))
             return DurationFormatUtils.formatDuration(duration.toMillis(), "HH:mm:ss", true)

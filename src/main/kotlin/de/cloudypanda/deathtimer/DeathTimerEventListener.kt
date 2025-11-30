@@ -17,7 +17,9 @@ import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 
-class DeathTimerEventListener(val huntcraft: Huntcraft) : Listener {
+class DeathTimerEventListener() : Listener {
+
+    val deathTimerTimeout = Huntcraft.instance.config.getLong("deathTimer.timeoutInSeconds")
 
     @EventHandler
     fun onDeathEvent(e: PlayerDeathEvent) {
@@ -27,16 +29,12 @@ class DeathTimerEventListener(val huntcraft: Huntcraft) : Listener {
             }
         }
 
-        if(huntcraft.configManager.config.discord.enabled) {
-            val deathMessage = PlainTextComponentSerializer.plainText().serialize(e.deathMessage()!!)
-            WebhookNotificationManager().sendDeathMessage(deathMessage)
-        }
+        val deathMessage = PlainTextComponentSerializer.plainText().serialize(e.deathMessage()!!)
+        WebhookNotificationManager().sendDeathMessage(deathMessage)
     }
 
     @EventHandler
     fun onPostRespawnEvent(e: PlayerPostRespawnEvent) {
-        val deathTimerConfig = huntcraft.configManager.config.death
-
         val player =
             transaction {
                 PlayerTable.selectAll().where { PlayerTable.uuid eq e.player.uniqueId }.firstOrNull()
@@ -44,7 +42,7 @@ class DeathTimerEventListener(val huntcraft: Huntcraft) : Listener {
 
         val date = DateUtil.getFormattedStringForDateAfterMillis(
             player[latestDeathTime],
-            deathTimerConfig.deathTimer
+            deathTimerTimeout
         )
 
         Huntcraft.instance.server.sendMessage(
@@ -59,8 +57,6 @@ class DeathTimerEventListener(val huntcraft: Huntcraft) : Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     fun onAsyncPlayerPreLoginEvent(e: AsyncPlayerPreLoginEvent) {
-        val deathTimerConfig = huntcraft.configManager.config.death
-
         val player = transaction {
             PlayerTable.selectAll().where { PlayerTable.uuid eq e.uniqueId }.firstOrNull()
         }
@@ -72,7 +68,7 @@ class DeathTimerEventListener(val huntcraft: Huntcraft) : Listener {
         val currentTime = System.currentTimeMillis()
         val lastDeathTime = player[latestDeathTime]
         val timeSinceDeath = currentTime - lastDeathTime
-        val deathTimeoutMs = deathTimerConfig.deathTimer
+        val deathTimeoutMs = deathTimerTimeout / 1000
 
         val canJoin = timeSinceDeath >= deathTimeoutMs
 

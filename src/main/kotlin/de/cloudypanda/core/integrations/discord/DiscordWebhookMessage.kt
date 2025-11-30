@@ -10,6 +10,8 @@ class DiscordWebhookMessage {
     private var username: String
     private var avatarUrl: String
     private var content: String
+    private var webhookEnabled = Huntcraft.instance.config.getBoolean("discord.enabled")
+    private var webhookUrl = Huntcraft.instance.config.getString("discord.webhookUrl")
 
     constructor(content: String, username: String, avatarUrl: String) {
         this.content = content
@@ -18,8 +20,7 @@ class DiscordWebhookMessage {
     }
 
     fun send() {
-        val discordConfig = Huntcraft.instance.configManager.config.discord
-        if (!discordConfig.enabled) return
+        if (!webhookEnabled || webhookUrl == null) return
 
         val requestContent = """
             {
@@ -30,7 +31,7 @@ class DiscordWebhookMessage {
         """.trimIndent()
 
         val request = Request.Builder()
-            .url(discordConfig.webhookUrl)
+            .url(webhookUrl!!)
             .post(requestContent.toRequestBody())
             .header("Content-Type", "application/json")
             .build()
