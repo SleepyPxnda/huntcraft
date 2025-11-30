@@ -26,7 +26,7 @@ class QuestCommand() : BasicCommand {
         // Ongoing Quests Header
         sender.sendMessage(Component.text("Ongoing Quests:").color(TextColor.color(0, 255, 0)))
         player.ongoingQuests.forEach { quest ->
-            sender.sendMessage(TextUtil.getQuestListCommandMessage(quest.name, quest.progression, quest.requiredAmount))
+            sender.sendMessage(TextUtil.getQuestListCommandMessage(quest.name, quest.description, quest.progression,quest.requiredAmount))
         }
 
         // Completed Quests Header

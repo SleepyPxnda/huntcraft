@@ -1,6 +1,8 @@
 package de.cloudypanda.util
 
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.event.HoverEvent
+import net.kyori.adventure.text.event.HoverEvent.showText
 import net.kyori.adventure.text.format.TextColor.color
 import java.time.Instant
 import kotlin.time.Duration.Companion.seconds
@@ -141,10 +143,16 @@ class TextUtil {
                 .build()
         }
 
-        fun getQuestListCommandMessage(questName: String, progression: Int, needed: Int): Component {
+        fun getQuestListCommandMessage(questName: String, description: String, progression: Int, needed: Int): Component {
+            val questName = Component.text(questName, color(255, 255, 255)).hoverEvent() {
+                showText(
+                    Component.text(description, color(255,255,255))
+                ) as HoverEvent<Any>
+            }
+
             return Component.text()
                 .append(Component.text("• ", color(255, 215, 0)))
-                .append(Component.text(questName, color(255, 255, 255)))
+                .append(questName)
                 .append(Component.text(" (Progress: $progression/$needed)", color(0, 191, 255)))
                 .build()
         }

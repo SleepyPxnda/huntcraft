@@ -13,6 +13,7 @@ data class QuestProgressDTO(
     @Contextual
     val questId: UUID = UUID.randomUUID(),
     val name: String = "",
+    val description: String = "",
     var progression: Int = 0,
     val requiredAmount: Int = 0,
     val type: QuestType = QuestType.NONE,
