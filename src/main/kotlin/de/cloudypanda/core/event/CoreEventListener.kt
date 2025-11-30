@@ -36,6 +36,10 @@ class CoreEventListener : Listener {
         cancelFailedQuestsForPlayer(e.player.uniqueId)
 
         PlayerManager.loadNewPlayer(e.player)
+
+        e.joinMessage(TextUtil.getJoinIndicator(e.player.name))
+        val deathTimeout = Huntcraft.instance.config.getInt("deathTimer.timeoutInSeconds")
+        e.player.sendMessage { TextUtil.getJoinMessage(deathTimeout) }
     }
 
     private fun cancelFailedQuestsForPlayer(uniqueId: UUID) {
@@ -101,9 +105,9 @@ class CoreEventListener : Listener {
         PlayerManager.removePlayerByUUID(e.player.uniqueId)
 
         // Delete player session
-//        transaction {
-//            PlayerSessionTable.deleteWhere { PlayerSessionTable.playerUuid eq e.player.uniqueId }
-//        }
+        transaction {
+            PlayerSessionTable.deleteWhere { PlayerSessionTable.playerUuid eq e.player.uniqueId }
+        }
 
         val sessionDurationString = sessionDuration.milliseconds.toComponents { hours, minutes, seconds, _ ->
             "%02d:%02d:%02d".format(
@@ -137,20 +141,11 @@ class CoreEventListener : Listener {
                     it[PlayerTable.uuid] = uuid
                     it[PlayerTable.onlineTime] = 0L
                 }
+            }
 
-                PlayerSessionTable.insert {
-                    it[PlayerSessionTable.playerUuid] = uuid
-                    it[PlayerSessionTable.loginTime] = System.currentTimeMillis()
-                }
-            } else {
-                // Even if the player exists, ensure a session record exists for this login
-                val session = PlayerSessionTable.selectAll().firstOrNull { it[PlayerSessionTable.playerUuid] == uuid }
-                if (session == null) {
-                    PlayerSessionTable.insert {
-                        it[PlayerSessionTable.playerUuid] = uuid
-                        it[PlayerSessionTable.loginTime] = System.currentTimeMillis()
-                    }
-                }
+            PlayerSessionTable.insertIgnore {
+                it[PlayerSessionTable.playerUuid] = uuid
+                it[PlayerSessionTable.loginTime] = System.currentTimeMillis()
             }
         }
     }

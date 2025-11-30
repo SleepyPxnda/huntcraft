@@ -42,15 +42,19 @@ object PlayerManager {
             }
 
             val ongoingQuestsForPlayer = transaction {
-                QuestProgressTable.selectAll().where { QuestProgressTable.playerUuid eq uuid }.map {
+                QuestProgressTable.join(
+                    QuestTable, JoinType.INNER, onColumn = QuestProgressTable.questId, otherColumn = QuestTable.id
+                )
+                    .selectAll().where { QuestProgressTable.playerUuid eq uuid }.map {
                         QuestProgressDTO(
                             playerUuid = it[QuestProgressTable.playerUuid],
-                            name = it[QuestProgressTable.name],
+                            name = it[QuestTable.name],
+                            description = it[QuestTable.description],
                             questId = it[QuestProgressTable.questId],
                             progression = it[QuestProgressTable.progression],
-                            requiredAmount = it[QuestProgressTable.requiredAmount],
-                            type = it[QuestProgressTable.type],
-                            progressingIdentifier = it[QuestProgressTable.progressingIdentifier],
+                            requiredAmount = it[QuestTable.requiredAmount],
+                            type = it[QuestTable.type],
+                            progressingIdentifier = it[QuestTable.questProgressionIdentifier],
                         )
                     }.toMutableList()
             }
