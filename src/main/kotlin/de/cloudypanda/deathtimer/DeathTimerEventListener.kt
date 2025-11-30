@@ -7,6 +7,8 @@ import de.cloudypanda.database.PlayerTable
 import de.cloudypanda.database.PlayerTable.latestDeathTime
 import de.cloudypanda.util.DateUtil
 import de.cloudypanda.util.TextUtil
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -23,14 +25,33 @@ class DeathTimerEventListener() : Listener {
 
     @EventHandler
     fun onDeathEvent(e: PlayerDeathEvent) {
+
+        val deathTime = System.currentTimeMillis();
+
         transaction {
             PlayerTable.update({ PlayerTable.uuid eq e.player.uniqueId }) {
-                it[latestDeathTime] = System.currentTimeMillis()
+                it[latestDeathTime] = deathTime
             }
         }
 
-        val deathMessage = PlainTextComponentSerializer.plainText().serialize(e.deathMessage()!!)
-        WebhookNotificationManager().sendDeathMessage(deathMessage)
+        val date = DateUtil.getFormattedStringForDateAfterMillis(
+            deathTime,
+            deathTimerTimeout
+        )
+
+        val playerDeathMessage = TextUtil.getPlayerDeathAnnounceMessage(
+            e.player.name,
+            date
+        )
+
+        Huntcraft.instance.server.sendMessage(playerDeathMessage)
+
+        GlobalScope.launch {
+            val deathMessage = PlainTextComponentSerializer.plainText().serialize(playerDeathMessage)
+            WebhookNotificationManager().sendDeathMessage(deathMessage)
+        }
+
+        e.deathMessage(null)
     }
 
     @EventHandler
@@ -43,13 +64,6 @@ class DeathTimerEventListener() : Listener {
         val date = DateUtil.getFormattedStringForDateAfterMillis(
             player[latestDeathTime],
             deathTimerTimeout
-        )
-
-        Huntcraft.instance.server.sendMessage(
-            TextUtil.getPlayerDeathAnnounceMessage(
-                e.player.name,
-                date
-            )
         )
 
         e.player.kick(TextUtil.getDeathTimerKickMessage(date))
