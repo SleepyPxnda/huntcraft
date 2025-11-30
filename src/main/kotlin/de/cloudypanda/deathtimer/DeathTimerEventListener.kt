@@ -7,6 +7,8 @@ import de.cloudypanda.database.PlayerTable
 import de.cloudypanda.database.PlayerTable.latestDeathTime
 import de.cloudypanda.util.DateUtil
 import de.cloudypanda.util.TextUtil
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -24,7 +26,7 @@ class DeathTimerEventListener() : Listener {
     @EventHandler
     fun onDeathEvent(e: PlayerDeathEvent) {
 
-        var deathTime = System.currentTimeMillis();
+        val deathTime = System.currentTimeMillis();
 
         transaction {
             PlayerTable.update({ PlayerTable.uuid eq e.player.uniqueId }) {
@@ -44,10 +46,12 @@ class DeathTimerEventListener() : Listener {
 
         Huntcraft.instance.server.sendMessage(playerDeathMessage)
 
-        println("Sending death message")
-        val deathMessage = PlainTextComponentSerializer.plainText().serialize(playerDeathMessage)
-        println(deathMessage)
-        WebhookNotificationManager().sendDeathMessage(deathMessage)
+        GlobalScope.launch {
+            val deathMessage = PlainTextComponentSerializer.plainText().serialize(playerDeathMessage)
+            WebhookNotificationManager().sendDeathMessage(deathMessage)
+        }
+
+        e.deathMessage(null)
     }
 
     @EventHandler
