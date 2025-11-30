@@ -1,6 +1,7 @@
 package de.cloudypanda.util
 
 import de.cloudypanda.quest.QuestCompletionState
+import kotlinx.datetime.LocalDate
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.event.HoverEvent.showText
@@ -133,7 +134,7 @@ class TextUtil {
                 .build()
         }
 
-        fun getCompletedQuestListCommandMessage(questName: String, description: String, completionState: QuestCompletionState): Component {
+        fun getCompletedQuestListCommandMessage(questName: String, description: String, completionState: QuestCompletionState, completedOn: LocalDate): Component {
             val questComponent = Component.text(questName, color(120, 120, 120))
                 .hoverEvent(
                     showText(Component.text(description, color(210, 210, 210))) as HoverEvent<Any>
@@ -147,6 +148,7 @@ class TextUtil {
 
             return Component.text()
                 .append(completionStateComponent)
+                .append(Component.text(" $completedOn ", color(150, 150, 150)))
                 .append(questComponent)
                 .build()
         }
