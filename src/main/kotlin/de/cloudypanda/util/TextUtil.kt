@@ -111,7 +111,7 @@ class TextUtil {
                 .append(Component.text("You have been dispelled from the server!", color(255, 255, 255)))
                 .appendNewline()
                 .appendNewline()
-                .append(Component.text("You have been dispelled for: ", color(255, 0, 0)))
+                .append(Component.text("You have been dispelled until: ", color(255, 0, 0)))
                 .append(Component.text(formattedTimeout, color(255, 0, 0)))
                 .appendNewline()
                 .appendNewline()
